@@ -1,0 +1,4 @@
+diff a/menri-sub/iconos/app_icon.rc b/menri-sub/iconos/app_icon.rc	(rejected hunks)
+@@ -0,0 +1 @@
++IDI_ICON1 ICON DISCARDABLE "menri.ico"
+\ No newline at end of file

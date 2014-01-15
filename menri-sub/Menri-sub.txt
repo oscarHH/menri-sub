@@ -1,0 +1,39 @@
+14-11-2013
+se corrige el error cuando el nombre de la imagen contiene el simbolo %
+
+
+06-11-13
+--talves para poder arrastrar la imagen se puede aprovechar los eventos del raton
+
+
+02-11-13
+{cosas implementadas}
+--se implemento arrastrar y soltar
+--se puede leer las imagenes desde la  lista
+
+[errores]
+--al querer agregar mas imagenes a la lista esta marca errores
+--si laimagen lleva un caracter especial no se muestra la imagen
+
+{falta implementar}
+--el editor
+--arreglar el bug
+
+01-11-13 version alpha 0
+
+{cosas implementadas}
+--se a implementado la carga de imagenes
+--no consumme demasiados recursos al ralizar zoom
+--se ha implementado arrastrar y soltar los archivos
+
+{falta implementar}
+***imagen***
+-- no se asigna el zoom cuando usa el raton
+--poder rotar la imagen
+--debe de aceptar solo imagenes
+--leer todas las imagenes de  una carpeta
+--leer imagenes selecionando la lista
+***texto***
+--implementar el guardado de texto
+--implementar las palabras claves a resaltar
+--implementar autocompletado

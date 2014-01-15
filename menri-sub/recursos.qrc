@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>iconos/menri.png</file>
+        <file>iconos/zoom+.png</file>
+        <file>iconos/archivos.png</file>
+        <file>iconos/atras.png</file>
+        <file>iconos/ayuda.png</file>
+        <file>iconos/girar.png</file>
+        <file>iconos/girar2.png</file>
+        <file>iconos/herramientas.png</file>
+        <file>iconos/limpiar.png</file>
+        <file>iconos/siguiente.png</file>
+        <file>iconos/zoom-.png</file>
+        <file>iconos/portada.png</file>
+    </qresource>
+</RCC>
