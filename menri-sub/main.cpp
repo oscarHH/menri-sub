@@ -10,13 +10,16 @@ int main(int argc, char* argv[])
     QByteArray  encodedString =  argv[1];
     QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
     QString img = codec->toUnicode(encodedString);
-    //QString img = argv[1];
-    QString plataforma = QApplication::platformName();
+    //QString plataforma = QApplication::platformName();
 
     MainWindow w;
-    if(img != ""){
-    w.mandarImagen(img);
-    w.imagenListwidget(img);
+    if(!img.isEmpty()){
+     QFileInfo info;
+     info.setFile(img);
+     w.RutaImagenes.append(img);
+     w.view->addItem(info.fileName());
+     w.mandarImagen(img);
+     w.updateActions();
     }
     w.show();
     w.setAcceptDrops(true);

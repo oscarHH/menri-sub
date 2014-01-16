@@ -14,7 +14,6 @@
 //variables
 float su ;
 QString version = " \t alfa-0.2   15/11/13";
-QStringList RutaImagenes ;
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
@@ -157,24 +156,23 @@ void MainWindow::panelEditor()
 
 
 //metodo para obtener la imagen
-void MainWindow::obtenerTexto()
+void MainWindow::obtenerImagen()
 {
     //Abrimos la imagen
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
+    QStringList listafileName = QFileDialog::getOpenFileNames(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
+    QFileInfo info1;
 
     //verificamos que la cadena no este vacia
-    if (!fileName.isEmpty()) {
+    if (!listafileName.isEmpty()) {
+        foreach (QString archivo, listafileName) {
+            info1.setFile(archivo);
+            RutaImagenes.append(archivo);
+            view->addItem(info1.fileName());
 
-            QImage image(fileName);
-            //si esta vacia mostramos el siguinte mensaje
-            if (image.isNull()) {
-                QMessageBox::information(this, tr("Image Viewer"),
-                                         tr("Cannot load %1.").arg(fileName));
-                 return;
-            }
-            imagenListwidget(fileName);
-
+        }
     }
+    mandarImagen(listafileName.at(0));
+    updateActions();
 }
 
 
@@ -182,7 +180,7 @@ void MainWindow::obtenerTexto()
 void MainWindow::open()
 {
     //color = QColorDialog::getColor(Qt::green, this);
-    obtenerTexto();
+    obtenerImagen();
 }
 
 //implementacion del slot zoom +
@@ -301,10 +299,8 @@ void MainWindow::createActions()
     aboutQtAct->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    herramientascript = new QAction(tr("&Scripts"),this);
+    herramientascript = new QAction(tr("&Descomprimir"),this);
     herramientascript->setShortcut(tr("Ctrl+h"));
-    herramientascript->setCheckable(true);
-    herramientascript->setChecked(false);
     herramientascript->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
     connect(herramientascript, SIGNAL(triggered()),this, SLOT(listarScripts()));
 
@@ -378,20 +374,7 @@ void MainWindow::mandarImagen(QString nombreImagen)
     scrollArea->setWidget(pw);
 }
 
-void MainWindow::imagenListwidget(QString nombre)
-{
-    grados =0;
-    QFileInfo info1;
-    info1.setFile(nombre);
-    RutaImagenes.append(nombre);
-    //agrega la imagen a la lista
-    //view->addItem(new QListWidgetItem(QIcon(nombre),"", 0));
 
-    view->addItem(info1.fileName());
-    mandarImagen(nombre);
-    updateActions();
-
-}
 
 //reimplementacion de arrastrar y soltar elementos a la ventana
 void MainWindow::dragEnterEvent (QDragEnterEvent  *event){
@@ -567,11 +550,11 @@ void MainWindow::RotarImagen()
 {
 
 
-        grados +=90;
+    grados +=90;
 
-if(grados > 360){
-    grados = 90;
-}
+    if(grados > 360){
+        grados = 90;
+    }
 
     pw->setGrados(grados);
     pw->repaint();
@@ -588,12 +571,6 @@ void MainWindow::listarScripts()
     //ListArchive("C:/Users/oscar/Documents/proyectos/build-pruebaunrar-Desktop_Qt_5_2_0_MSVC2010_32bit_OpenGL-Release/release/UnRDLL.rar");
     //manejozip = new EventosZip();
     guizip = new GuiZip();
-    //QStringList ren = manejozip->listarzip();
-    /*for(int i=0; i < ren.size();i++){
-        qDebug()<<ren.at(i);
-        guizip->cargarArchivos(ren.at(i));
-
-    }*/
     guizip->show();
 
 }

@@ -36,10 +36,10 @@ public:
     //QPixmap *icon_to_be_shown;
     int posicion_ruta;
     void mandarImagen(QString  nombreImagen);
-    void imagenListwidget(QString nombre);
     bool eventFilter(QObject * watched, QEvent * e);
-
-
+    QStringList RutaImagenes ;
+    QListWidget *view;
+    void updateActions();
 public slots:
     void panelImagen();
     void panelEditor();
@@ -48,7 +48,7 @@ public slots:
     void zoomOut();
     void normalSize();
     void about();
-    void obtenerTexto();
+    void obtenerImagen();
     void on_listWidget_clicked(const QModelIndex &index);
 
     void siguienteImagen();
@@ -64,7 +64,7 @@ private:
 
     void createActions();
     void createMenus();
-    void updateActions();
+
     //void scaleImage(double factor);
     //void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
@@ -107,7 +107,7 @@ protected:
     QMenu *herramientas;
     // QColor color;
     QScrollArea *scrollArea;
-    QListWidget *view;
+
     PixmapWidget *pw;
 
     QPushButton *btnSiguiente;

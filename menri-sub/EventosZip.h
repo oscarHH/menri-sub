@@ -14,8 +14,15 @@ class EventosZip
 public:
     EventosZip();
     ~EventosZip();
-    QStringList  listarzip(QString ruta);
+    void setListar(QString ruta);
+    QStringList  getListarzip();
     void descomprimir(QString archivo,QString rutaDescompresion);
+    void setComentario(QString coment);
+    QString getComentario();
+
+private:
+    QString comentario;
+    QStringList listaArchivos;
 };
 
 #endif // EVENTOSZIP_H

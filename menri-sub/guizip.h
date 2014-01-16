@@ -2,9 +2,11 @@
 #define GUIZIP_H
 
 #include <QDialog>
+#include <QWidget>
 #include "EventosZip.h"
 QT_BEGIN_NAMESPACE
 class EventosZip;
+class DialogOptionsWidget;
 QT_END_NAMESPACE
 
 namespace Ui {
@@ -20,14 +22,15 @@ public:
     ~GuiZip();
     void cargarArchivos(QString archivo);
     QString fileName;
-private slots:
-    void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+private slots:
+    void on_btnAbrir_clicked();
+    void on_btnDescomprimir_clicked();
 
 private:
     Ui::GuiZip *ui;
     EventosZip *manejozip;
+    DialogOptionsWidget *fileDialogOptionsWidget;
 };
 
 #endif // GUIZIP_H

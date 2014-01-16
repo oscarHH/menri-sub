@@ -7,6 +7,8 @@ GuiZip::GuiZip(QWidget *parent) :
     ui(new Ui::GuiZip)
 {
     ui->setupUi(this);
+    manejozip = new EventosZip();
+    ui->txtComentarios->setEnabled(false);
 }
 
 GuiZip::~GuiZip()
@@ -19,20 +21,46 @@ void GuiZip::cargarArchivos(QString archivo)
     ui->jlArchivos->addItem(archivo);
 }
 
-void GuiZip::on_pushButton_clicked()
+
+
+//abrir el archivo comprimido
+void GuiZip::on_btnAbrir_clicked()
 {
-    fileName = QFileDialog::getOpenFileName(this,tr("Abrir archivo comprimido"), QDir::homePath(), tr("Archivo comprimido (*.zip *.gzip"));
+    fileName = QFileDialog::getOpenFileName(this,tr("Abrir archivo comprimido"), QDir::homePath(),tr("Archivo comprimido (*.zip)"));
 
-    manejozip = new EventosZip();
-    QStringList ren = manejozip->listarzip(fileName);
+    if( !fileName.isEmpty()){
+        //limpia la lista
+        ui->jlArchivos->clear();
+        ui->txtComentarios->setEnabled(false);
+        ui->txtComentarios->setPlainText("");
+        //asignamos la ruta
+        manejozip->setListar(fileName);
+        //obtenemos los comentarios
+        if(!manejozip->getComentario().isEmpty()){
+            ui->txtComentarios->setEnabled(true);
+            ui->txtComentarios->setPlainText(manejozip->getComentario());
+        }
 
-    for(int i=0; i < ren.size();i++){
-        ui->jlArchivos->addItem(ren.at(i));
+        //obtenemos los archivos
+        QStringList ren = manejozip->getListarzip();
+        //mostramos la lista de archivos
+        for(int i=0; i < ren.size();i++){
+            ui->jlArchivos->addItem(ren.at(i));
+        }
+        ui->btnDescomprimir->setEnabled(true);
     }
 }
 
-void GuiZip::on_pushButton_2_clicked()
+
+//descomprimir
+void GuiZip::on_btnDescomprimir_clicked()
 {
-    manejozip = new EventosZip();
-    manejozip->descomprimir(fileName,"F:/");
+    QString directorio = QFileDialog::getExistingDirectory(this,
+                                                           tr("Seleccione el Directorio"),
+                                                           QDir::homePath(),
+                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
+    if(!directorio.isEmpty()){
+        manejozip->descomprimir(fileName,directorio+"/");
+    }
+
 }
