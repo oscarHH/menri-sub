@@ -7,11 +7,12 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QFileInfo>
-#include "eventoszip.h"
+//#include "EventosZip.h"
+#include "guizip.h"
 
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
-class EventosZip;
+//class EventosZip;
 class QAction;
 class QLabel;
 class QMenu;
@@ -20,6 +21,7 @@ class QScrollBar;
 class QDockWidget;
 class CodeEditor;
 class QEvent;
+class GuiZip;
 QT_END_NAMESPACE
 
 //![0]
@@ -69,10 +71,10 @@ private:
 
     QDockWidget * templateDocker;
     QDockWidget * DocArchivos;
-
+    GuiZip * guizip;
     CodeEditor *codeEditor;
     Highlighter *highlighter;
-    EventosZip *manejozip;
+    //EventosZip *manejozip;
 
 protected:
     virtual  void dragEnterEvent(QDragEnterEvent * event);

@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
     QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
     QString img = codec->toUnicode(encodedString);
     //QString img = argv[1];
+    QString plataforma = QApplication::platformName();
 
     MainWindow w;
     if(img != ""){

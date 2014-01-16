@@ -160,8 +160,7 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerTexto()
 {
     //Abrimos la imagen
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
 
     //verificamos que la cadena no este vacia
     if (!fileName.isEmpty()) {
@@ -587,12 +586,15 @@ void MainWindow::listarScripts()
     script <<"C:/Python27/ren.pyw";
     proceso.start("C:/Python27/pythonw.exe",script);*/
     //ListArchive("C:/Users/oscar/Documents/proyectos/build-pruebaunrar-Desktop_Qt_5_2_0_MSVC2010_32bit_OpenGL-Release/release/UnRDLL.rar");
-    manejozip = new EventosZip();
-    QStringList ren = manejozip->listarzip();
-    for(int i=0; i < ren.size();i++){
+    //manejozip = new EventosZip();
+    guizip = new GuiZip();
+    //QStringList ren = manejozip->listarzip();
+    /*for(int i=0; i < ren.size();i++){
         qDebug()<<ren.at(i);
-    }
+        guizip->cargarArchivos(ren.at(i));
 
+    }*/
+    guizip->show();
 
 }
 
