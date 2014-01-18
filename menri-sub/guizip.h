@@ -3,7 +3,10 @@
 
 #include <QDialog>
 #include <QWidget>
-#include "EventosZip.h"
+#include <JlCompress.h>
+#include <quazipfile.h>
+#include <quazip.h>
+#include <zip.h>
 QT_BEGIN_NAMESPACE
 class EventosZip;
 class DialogOptionsWidget;
@@ -31,6 +34,8 @@ private:
     Ui::GuiZip *ui;
     EventosZip *manejozip;
     DialogOptionsWidget *fileDialogOptionsWidget;
+    void ListarArchivos();
+    void descomPrimirZip(QString archivo,QString rutaDescompresion);
 };
 
 #endif // GUIZIP_H

@@ -13,7 +13,7 @@
 
 //variables
 float su ;
-QString version = " \t alfa-0.2   15/11/13";
+QString version = " \t alfa-0.2   17/01/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
@@ -408,9 +408,10 @@ void MainWindow::dropEvent(QDropEvent * event){
         //removemos algunos caracteres innecesarios
         fileName.remove(0,8);
         //si la ruta contiene % se elimina el numero 25 que aparece
-        if(fileName.contains("%",Qt::CaseInsensitive)){
-            fileName.remove(fileName.lastIndexOf("%")+1,2);
-        }
+            if(fileName.contains("%",Qt::CaseInsensitive)){
+                fileName.replace(QString("%25"), QString("%"));
+            }
+
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()

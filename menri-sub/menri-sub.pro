@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     highlighter.cpp \
     PixmapWidget.cpp \
-    EventosZip.cpp \
     guizip.cpp
 
 
@@ -31,7 +30,6 @@ HEADERS  += mainwindow.h \
     codeeditor.h \
     highlighter.h \
     PixmapWidget.h \
-    EventosZip.h \
     guizip.h
 
 
