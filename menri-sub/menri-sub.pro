@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     highlighter.cpp \
     PixmapWidget.cpp \
-    guizip.cpp
+    guizip.cpp \
+    visor.cpp \
+    form.cpp
 
 
 
@@ -30,14 +32,18 @@ HEADERS  += mainwindow.h \
     codeeditor.h \
     highlighter.h \
     PixmapWidget.h \
-    guizip.h
+    guizip.h \
+    visor.h \
+    form.h
 
 
 RESOURCES += \
     recursos.qrc
 
 FORMS += \
-    guizip.ui
+    guizip.ui \
+    visor.ui \
+    form.ui
 
 OTHER_FILES += \
     Menri-sub.txt

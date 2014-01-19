@@ -1,25 +1,31 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QTextCodec>
-#include <QDebug>
-
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);
-    QByteArray  encodedString =  argv[1];
-    QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
-    QString img = codec->toUnicode(encodedString);
+
+   // QByteArray  encodedString =(char) a.arguments().at(0);
+    //QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
+   // QTextCodec *codec =  QTextCodec::codecForLocale();
+    //QString img = codec->toUnicode(encodedString);
+    QStringList img;
+    img = a.arguments();
+
+
     //QString plataforma = QApplication::platformName();
     MainWindow w;
-    if(!img.isEmpty()){
+
+    if( (img.size()==2)   && ( !img.at(1).isEmpty() )){
         QFileInfo info;
-        info.setFile(img);
-        w.RutaImagenes.append(img);
+        info.setFile(img.at(1));
+        w.RutaImagenes.append(img.at(1));
         w.view->addItem(info.fileName());
-        w.mandarImagen(img);
+        w.mandarImagen(img.at(1));
         w.updateActions();
     }
+
     w.show();
     w.setAcceptDrops(true);
 

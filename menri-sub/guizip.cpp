@@ -3,22 +3,29 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 #include <QDebug>
+
+
+
 GuiZip::GuiZip(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GuiZip)
 {
     ui->setupUi(this);
     ui->txtComentarios->setEnabled(false);
+    connect(ui->jlArchivos,SIGNAL(clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
+    vs = new visor();
 }
 
 GuiZip::~GuiZip()
 {
     delete ui;
+
 }
 
 void GuiZip::cargarArchivos(QString archivo)
 {
     ui->jlArchivos->addItem(archivo);
+
 }
 
 
@@ -41,50 +48,67 @@ void GuiZip::on_btnDescomprimir_clicked()
     }
 }
 
+void GuiZip::on_listWidget_clicked(const QModelIndex &index)
+{
+    posicion = index.row();
+    qDebug()<<posicion;
+
+}
+
 void GuiZip::ListarArchivos()
 {
+
     QProgressDialog progreso(this);
     fileName = QFileDialog::getOpenFileName(this,tr("Abrir archivo comprimido"), QDir::homePath(),tr("Archivo comprimido (*.zip)"));
-    progreso.setLabelText(tr("Cargando archivos de %1").arg(fileName));
-    QuaZip zip(fileName);
-    //se abre el archivo zip
-    zip.open(QuaZip::mdUnzip);
-    //obtener comentarios
-    QByteArray comment = zip.getComment().toLatin1();
-    QStringList listaArchivos = zip.getFileNameList();
-    zip.close();
-    if( !listaArchivos.isEmpty()){
-        //limpia la lista
-        ui->jlArchivos->clear();
-        ui->txtComentarios->setEnabled(false);
-        ui->txtComentarios->setPlainText("");
 
-        //obtenemos los comentarios
-        if(!comment.isEmpty()){
-            ui->txtComentarios->setEnabled(true);
-            ui->txtComentarios->setPlainText(comment);
-        }
-        //obtenemos los archivos
+    if(!fileName.isEmpty()){
+        respaldo = fileName;
+        progreso.setLabelText(tr("Cargando archivos de %1").arg(fileName));
+        QuaZip zip(fileName);
+        //se abre el archivo zip
+        zip.open(QuaZip::mdUnzip);
+        //obtener comentarios
+        QByteArray comment = zip.getComment().toLatin1();
+        listaArchivos = zip.getFileNameList();
+        zip.close();
+        if( !listaArchivos.isEmpty()){
+            //limpia la lista
+            ui->jlArchivos->clear();
+            ui->txtComentarios->setEnabled(false);
+            ui->txtComentarios->setPlainText("");
 
-        progreso.setRange(0,listaArchivos.size());
-        progreso.setModal(true);
-        //mostramos la lista de archivos
-        for(int i=0; i < listaArchivos.size();i++){
-            //actualizamos la barra de progreso
-            progreso.setValue(i);
-            qApp->processEvents();
-            if(progreso.wasCanceled()){
-                ui->jlArchivos->clear();
+            //obtenemos los comentarios
+            if(!comment.isEmpty()){
+                ui->txtComentarios->setEnabled(true);
+                ui->txtComentarios->setPlainText(comment);
             }
-            ui->jlArchivos->addItem(listaArchivos.at(i));
+            //obtenemos los archivos
+
+            progreso.setRange(0,listaArchivos.size());
+            progreso.setModal(true);
+            //mostramos la lista de archivos
+            for(int i=0; i < listaArchivos.size();i++){
+                //actualizamos la barra de progreso
+                progreso.setValue(i);
+                qApp->processEvents();
+                if(progreso.wasCanceled()){
+                    ui->jlArchivos->clear();
+                }
+                ui->jlArchivos->addItem(listaArchivos.at(i));
+            }
+            ui->btnDescomprimir->setEnabled(true);
+            ui->btnDescomprimirIndividual->setEnabled(true);
+            ui->btnvisualizar->setEnabled(true);
         }
-        ui->btnDescomprimir->setEnabled(true);
+    }else{
+        fileName= respaldo;
     }
 }
 
 void GuiZip::descomPrimirZip(QString archivo,QString rutaDescompresion)
 {
     int i = 1;
+
     QProgressDialog progreso(this);
     progreso.setLabelText(tr("Descomprimiendo archivos en  %1").arg(rutaDescompresion));
     QuaZip zip(archivo);
@@ -105,7 +129,10 @@ void GuiZip::descomPrimirZip(QString archivo,QString rutaDescompresion)
         QString filePath = zip.getCurrentFileName();
         QuaZipFile zFile( zip.getZipName(), filePath );
         zFile.open( QIODevice::ReadOnly );
-        ba =""+ zFile.read(1000000000);
+        ba =zFile.read(1000000000);
+
+
+
         zFile.close();
         //la ruta donde se guardara + el nobre del archivo
         QFile dstFile( rutaDescompresion+filePath );
@@ -114,6 +141,91 @@ void GuiZip::descomPrimirZip(QString archivo,QString rutaDescompresion)
         dstFile.close();
         ba.clear();
         i++;
+
     }
+
     zip.close();
+}
+
+//@parametro nombre del archivo a descomprimir,nombre del zip, ruta descompresion
+void GuiZip::descompreionIndividual(int index,QString archivo,QString rutaDescompresion)
+{
+
+    QProgressDialog progreso(this);
+    progreso.setLabelText(tr("Descomprimiendo archivo en  %1").arg(rutaDescompresion));
+    QuaZip zip(archivo);
+    QByteArray ba ;
+    //abre el archivo
+    zip.open(QuaZip::mdUnzip);
+    progreso.setRange(0,2);
+    progreso.setModal(true);
+
+
+    //actualizamos la barra de progreso
+    progreso.setValue(1);
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    //nombre del zip
+    QString filePath = listaArchivos.at(index);
+    QuaZipFile zFile( zip.getZipName(), filePath );
+    zFile.open( QIODevice::ReadOnly );
+    ba =zFile.read(1000000000);
+    zFile.close();
+    //la ruta donde se guardara + el nobre del archivo
+    QFile dstFile( rutaDescompresion+filePath );
+    dstFile.open( QIODevice::WriteOnly);
+    dstFile.write( ba);
+    dstFile.close();
+    ba.clear();
+    zip.close();
+}
+
+void GuiZip::visualizarImagen(int index,QString archivo)
+{
+
+
+    QProgressDialog progreso(this);
+    progreso.setLabelText(tr("Cargando imagen"));
+    QuaZip zip(archivo);
+    QByteArray ba ;
+    //abre el archivo
+    zip.open(QuaZip::mdUnzip);
+    progreso.setRange(0,2);
+    progreso.setModal(true);
+    //actualizamos la barra de progreso
+    progreso.setValue(1);
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    //nombre del zip
+    QString filePath = listaArchivos.at(index);
+    QuaZipFile zFile( zip.getZipName(), filePath );
+    zFile.open( QIODevice::ReadOnly );
+    ba =zFile.read(1000000000);
+    if(p.loadFromData(ba,"") ){
+
+        //int w = ui->lblimagen->width();
+        //int h = ui->lblimagen->height();
+
+        vs->cargarImagen(p);
+        //ui->lblimagen->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
+    }
+    zFile.close();
+    ba.clear();
+    zip.close();
+    vs->show();
+
+}
+
+void GuiZip::on_btnDescomprimirIndividual_clicked()
+{
+    QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::homePath(),
+                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
+
+    if(!directorio.isEmpty()){
+        descompreionIndividual(posicion,fileName,directorio+"/");
+
+    }
+}
+
+void GuiZip::on_btnvisualizar_clicked()
+{
+    visualizarImagen(posicion,fileName);
 }

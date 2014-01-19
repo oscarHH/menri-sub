@@ -3,7 +3,6 @@
 #include <QTreeView>
 #include "mainwindow.h"
 #include <QDebug>
-#include <QFileDialog>
 #include <QDragEnterEvent>
 #include <QToolButton>
 #include <QMimeData>
@@ -17,11 +16,14 @@ QString version = " \t alfa-0.2   17/01/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
+
+
+QStringList listafileName;
 QProcess proceso;
 //! [0] construccion de la ventana
 MainWindow::MainWindow()
 {
-
+    guizip = new GuiZip();
     //contenedor
     QWidget * w = new QWidget;
     //layout verticcal
@@ -113,7 +115,6 @@ MainWindow::MainWindow()
     mStatLabel2->setText("que tal");
     statusBar()->addPermanentWidget(mStatLabel2);
     statusBar()->addPermanentWidget(mStatLabel);
-
     setAcceptDrops(true);
     //tamaño de la ventana
     //el programa inicia maximizado
@@ -158,8 +159,11 @@ void MainWindow::panelEditor()
 //metodo para obtener la imagen
 void MainWindow::obtenerImagen()
 {
+
+
     //Abrimos la imagen
-    QStringList listafileName = QFileDialog::getOpenFileNames(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
+
+    listafileName = QFileDialog::getOpenFileNames(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
     QFileInfo info1;
 
     //verificamos que la cadena no este vacia
@@ -170,9 +174,11 @@ void MainWindow::obtenerImagen()
             view->addItem(info1.fileName());
 
         }
+        mandarImagen(listafileName.at(0));
+        updateActions();
     }
-    mandarImagen(listafileName.at(0));
-    updateActions();
+    listafileName.clear();
+
 }
 
 
@@ -570,10 +576,8 @@ void MainWindow::listarScripts()
     script <<"C:/Python27/ren.pyw";
     proceso.start("C:/Python27/pythonw.exe",script);*/
     //ListArchive("C:/Users/oscar/Documents/proyectos/build-pruebaunrar-Desktop_Qt_5_2_0_MSVC2010_32bit_OpenGL-Release/release/UnRDLL.rar");
-    //manejozip = new EventosZip();
-    guizip = new GuiZip();
-    guizip->show();
 
+    guizip->show();
 }
 
 

@@ -7,9 +7,11 @@
 #include <quazipfile.h>
 #include <quazip.h>
 #include <zip.h>
+#include "visor.h"
 QT_BEGIN_NAMESPACE
-class EventosZip;
+
 class DialogOptionsWidget;
+class visor;
 QT_END_NAMESPACE
 
 namespace Ui {
@@ -25,17 +27,26 @@ public:
     ~GuiZip();
     void cargarArchivos(QString archivo);
     QString fileName;
-
+    visor *vs;
+    QPixmap p;
 private slots:
     void on_btnAbrir_clicked();
     void on_btnDescomprimir_clicked();
+    void on_listWidget_clicked(const QModelIndex &index);
+    void on_btnDescomprimirIndividual_clicked();
+    void on_btnvisualizar_clicked();
 
 private:
     Ui::GuiZip *ui;
-    EventosZip *manejozip;
     DialogOptionsWidget *fileDialogOptionsWidget;
     void ListarArchivos();
     void descomPrimirZip(QString archivo,QString rutaDescompresion);
+    void descompreionIndividual(int index,QString archivo,QString rutaDescompresion);
+    void visualizarImagen(int index,QString archivo);
+    QString respaldo;
+    QStringList listaArchivos;
+    int posicion ;
+
 };
 
 #endif // GUIZIP_H

@@ -9,7 +9,8 @@
 #include <QFileInfo>
 //#include "EventosZip.h"
 #include "guizip.h"
-
+#include "form.h"
+#include <QFileDialog>
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
 //class EventosZip;
@@ -40,6 +41,7 @@ public:
     QStringList RutaImagenes ;
     QListWidget *view;
     void updateActions();
+    QFileDialog *abrir;
 public slots:
     void panelImagen();
     void panelEditor();
