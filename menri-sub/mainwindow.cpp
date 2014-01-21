@@ -12,14 +12,14 @@
 
 //variables
 float su ;
-QString version = " \t alfa-0.2   17/01/14";
+QString version = " \t alfa-0.2   18/01/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
 
-
 QStringList listafileName;
 QProcess proceso;
+
 //! [0] construccion de la ventana
 MainWindow::MainWindow()
 {
@@ -38,13 +38,13 @@ MainWindow::MainWindow()
     highlighter = new Highlighter(codeEditor->document());
     //coloco el icono a la ventanaprincipal
     //creo una lista para almacenar las imagenes
-    view = new QListWidget;
 
-    //para agregar el tamaño del icono
-    /*QSize tam;
-    tam.setHeight(300);
-    tam.setWidth(300);
-    view->setIconSize(tam);*/
+    //view = new QListWidget;
+    m_imageView   = new ImagesView( this );
+    m_imagesModel = new ImagesModel( this );
+    m_imageView->setModel( m_imagesModel );
+    connect( m_imagesModel, SIGNAL( imageAdded()   ), this, SLOT( actionStatusSetter() ) );
+    connect( m_imagesModel, SIGNAL( imageRemoved() ), this, SLOT( actionStatusSetter() ) );
 
     //creo botones para cambiar de imagenes y limpiar la lista
     btnAnterior = new QPushButton;
@@ -56,7 +56,7 @@ MainWindow::MainWindow()
     btnAnterior->setEnabled(false);
     btnSiguiente->setEnabled(false);
     btnLimpiar->setEnabled(false);
-    mainLayout->addWidget(view);
+    mainLayout->addWidget(m_imageView );
     buttonLayout->addWidget(btnAnterior);
     buttonLayout->addWidget(btnLimpiar);
     buttonLayout->addWidget(btnSiguiente);
@@ -86,7 +86,6 @@ MainWindow::MainWindow()
     addDockWidget(Qt::LeftDockWidgetArea, DocArchivos);
     //agregamos el contenido de los paneles
     templateDocker->setWidget(codeEditor);
-
     DocArchivos->setWidget(w);
     //agregamos en el are de en medio
     setCentralWidget(scrollArea);
@@ -120,10 +119,11 @@ MainWindow::MainWindow()
     //el programa inicia maximizado
     setWindowState(Qt::WindowMaximized );
     //conectamos
-    connect(view, SIGNAL( clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
+    connect(m_imageView, SIGNAL( clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
     connect(btnAnterior,SIGNAL(clicked()),this,SLOT(anteriorImagen()));
     connect(btnSiguiente,SIGNAL(clicked()),this,SLOT(siguienteImagen()));
     connect(btnLimpiar,SIGNAL(clicked()),this,SLOT(limpiar_lista()));
+    abrir = new QFileDialog();
 
 }
 
@@ -160,25 +160,17 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-
-    //Abrimos la imagen
-
-    listafileName = QFileDialog::getOpenFileNames(this, tr("Open Image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.psd *.svg *.psd"));
-    QFileInfo info1;
+    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath()+"/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd "),0, QFileDialog::DontUseNativeDialog );
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
-        foreach (QString archivo, listafileName) {
-            info1.setFile(archivo);
-            RutaImagenes.append(archivo);
-            view->addItem(info1.fileName());
-
+        m_imagesModel->addImages(listafileName);
+        if(m_imagesModel->tamanioLista() <= 0){
+            mandarImagen(listafileName.at(0));
         }
-        mandarImagen(listafileName.at(0));
         updateActions();
-    }
+     }
     listafileName.clear();
-
 }
 
 
@@ -363,8 +355,10 @@ void MainWindow::updateActions()
     btnSiguiente->setEnabled(true);
     btnLimpiar->setEnabled(true);
     limpiar->setEnabled(true);
-    view->installEventFilter(this);
-    view->setEnabled(true);
+    //view->installEventFilter(this);
+    m_imageView->installEventFilter(this);
+    //view->setEnabled(true);
+    m_imageView->setEnabled(true);
     scrollArea->setEnabled(true);
     rotarImagen->setEnabled(true);
 }
@@ -403,78 +397,67 @@ void MainWindow::dropEvent(QDropEvent * event){
     //variable de tipo archivo para obtener informacion.
     QFileInfo info1;
     //lista que  almacena la ruta de los archivos
-    lista =event->mimeData()->urls();
-    //almacenara el nombre de la posicion i de  lista
+    QStringList respaldo;
+    lista = event->mimeData()->urls();
     QString fileName="";
 
     //recorremos la lista
     for(int i=0 ; i < lista.size();i++){
         //obtenemos la ruta del archivo
         fileName=lista.at(i).toString();
+
         //removemos algunos caracteres innecesarios
         fileName.remove(0,8);
         //si la ruta contiene % se elimina el numero 25 que aparece
-            if(fileName.contains("%",Qt::CaseInsensitive)){
-                fileName.replace(QString("%25"), QString("%"));
-            }
+        if(fileName.contains("%",Qt::CaseInsensitive)){
+            fileName.replace(QString("%25"), QString("%"));
+        }
 
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()
         //sera bienvenido al codigo xD
-        //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
-        if(  (fileName.endsWith(".jpg") || fileName.endsWith(".png") ||fileName.endsWith(".jpeg") ||fileName.endsWith(".bmp") ||fileName.endsWith(".svg") ||fileName.endsWith(".psd")  )
-             && (info1.isFile() == true)){
-            //para mostrar la primer imagen de la lista
-            if(i == 0){
-                mandarImagen(fileName);
-                updateActions();
-            }
-            //se agreaga la imagen a la lista
-            RutaImagenes.append(fileName);
-            //se agrega el nombre de la imagen a la lista
-            view->addItem(info1.fileName());
 
-            //icono
-            //nuevo.addFile(fileName,QSize(0,0),QIcon::Normal,QIcon::On);
-            //{agrega una miniatura al programa sera implementada cuando se optimise}
-            //view->addItem(new QListWidgetItem(nuevo,info1.baseName(), 0));
+        //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
+        if(  (info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") ||info1.completeSuffix().endsWith("bmp") ||info1.completeSuffix().endsWith("svg") ||info1.completeSuffix().endsWith("psd") )
+             ){
+            //se agreaga la imagen a la lista
+            respaldo.append(fileName);
 
             //si es una carpeta
         }else  if(info1.isDir()){
             //{recorre la carpeta en busca de imagenes y las agrega a la lista y a la listwidget}
             QDir carpeta (fileName);
             QString dato;
-            bool i = false;
             foreach (QFileInfo direc,carpeta.entryInfoList()) {
                 if(direc.isFile()){
                     dato = direc.absoluteFilePath();
                     info1.setFile(dato);
                     if(  (dato.endsWith(".jpg") || dato.endsWith(".png") ||dato.endsWith(".jpeg") ||dato.endsWith(".bmp") ||dato.endsWith(".svg") || dato.endsWith(".psd")  )
                          && (info1.isFile() == true)){
-                        //se agreaga la imagen a la lista
-                        RutaImagenes.append(dato);
-                        //mostrara la primer imagen
-                        if(i == false){
-                            i = true;
-                            mandarImagen(RutaImagenes.at(RutaImagenes.size()-1));
-                            updateActions();
-                        }
-                        //se muestra la ruta de la imagen en la lista
-                        view->addItem(direc.fileName());
+
+                       respaldo.append(dato);
                     }
 
                 }
             }
         }
     }
+    m_imagesModel->addImages(respaldo);
+    if(m_imagesModel->tamanioLista() <= 0){
+        mandarImagen(respaldo.at(0));
+    }
+    respaldo.clear();
+    updateActions();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    qDebug()<<"adios";
+
+    m_imagesModel->stopAddImages();
     proceso.kill();
     this->close();
+    event->accept();
 }
 
 //para la obtener la posicion de cada elemnto del  listwidget
@@ -483,7 +466,7 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
     //obtenemos el valor de la listwidget
     posicion_ruta = index.row();
     //obtenemos el valor y lo convertimos a texto
-    QString Ruta = RutaImagenes.at(posicion_ruta);
+    QString Ruta = m_imagesModel->rutaImagen(posicion_ruta);
     //pasamos el nombre de la imagen
     mandarImagen(Ruta);
     updateActions();
@@ -494,20 +477,23 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
 void MainWindow::siguienteImagen()
 {
     grados =0;
-    if(posicion_ruta < RutaImagenes.size()){
+    if(posicion_ruta < m_imagesModel->tamanioLista()){
         posicion_ruta++;
+        btnSiguiente->setEnabled(true);
     }
 
-    if(posicion_ruta < RutaImagenes.size()){
-        QString sol = RutaImagenes.at(posicion_ruta);
+    if(posicion_ruta < m_imagesModel->tamanioLista()){
+        QString sol = m_imagesModel->rutaImagen(posicion_ruta);
         //pasamos el nombre de la imagen
         mandarImagen(sol);
         updateActions();
     }
 
-    if(posicion_ruta == RutaImagenes.size()){
-        posicion_ruta=RutaImagenes.size()-1;
+    if(posicion_ruta == m_imagesModel->tamanioLista()){
+        posicion_ruta=m_imagesModel->tamanioLista()-1;
+        btnSiguiente->setEnabled(false);
     }
+
 
 }
 
@@ -515,12 +501,13 @@ void MainWindow::anteriorImagen()
 {
     grados =0;
     //comprobamos el tamaño de la lista
-    if(RutaImagenes.size() > 0){
+    if(m_imagesModel->tamanioLista() > 0){
         posicion_ruta--;
+        btnAnterior->setEnabled(true);
     }
 
     if(posicion_ruta >= 0){
-        QString sol = RutaImagenes.at(posicion_ruta);
+        QString sol = m_imagesModel->rutaImagen(posicion_ruta);
         //pasamos el nombre de la imagen
         mandarImagen(sol);
         updateActions();
@@ -529,15 +516,14 @@ void MainWindow::anteriorImagen()
     //comprobamos que la variable posicion_ruta
     if(posicion_ruta <  0){
         posicion_ruta = 0;
+        btnAnterior->setEnabled(false);
     }
 }
 
 void MainWindow::limpiar_lista()
 {
-    //limpiamos la lista
-    RutaImagenes.clear();
     //limpia el listwidget
-    view->clear();
+    m_imagesModel->removeAll();
     mandarImagen(":/img/iconos/portada.png");
     zoomInAct->setEnabled(false);
     zoomOutAct->setEnabled(false);
@@ -548,15 +534,13 @@ void MainWindow::limpiar_lista()
     btnSiguiente->setEnabled(false);
     btnLimpiar->setEnabled(false);
     limpiar->setEnabled(false);
-    view->setEnabled(false);
+    m_imageView->setEnabled(false);
     scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
 }
 
 void MainWindow::RotarImagen()
 {
-
-
     grados +=90;
 
     if(grados > 360){
@@ -565,18 +549,16 @@ void MainWindow::RotarImagen()
 
     pw->setGrados(grados);
     pw->repaint();
-
 }
 
 void MainWindow::listarScripts()
 {
     /*qDebug()<<"hola";
-
     QStringList script;
     script <<"C:/Python27/ren.pyw";
     proceso.start("C:/Python27/pythonw.exe",script);*/
     //ListArchive("C:/Users/oscar/Documents/proyectos/build-pruebaunrar-Desktop_Qt_5_2_0_MSVC2010_32bit_OpenGL-Release/release/UnRDLL.rar");
-
+   // m_imagesModel->removeAll(1,RutaImagenes.size()-1 );
     guizip->show();
 }
 
@@ -584,7 +566,7 @@ void MainWindow::listarScripts()
 //metodo para los eventos
 bool MainWindow::eventFilter(QObject * watched, QEvent * e)
 {
-    if (watched == view && e->type() == QEvent::KeyPress) {
+    if (watched == m_imageView && e->type() == QEvent::KeyPress) {
         QKeyEvent * ke = static_cast<QKeyEvent * >(e);
 
         if (ke->key() == Qt::Key_Up ) {

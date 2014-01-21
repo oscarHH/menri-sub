@@ -19,12 +19,12 @@ GuiZip::GuiZip(QWidget *parent) :
 GuiZip::~GuiZip()
 {
     delete ui;
-
 }
 
 void GuiZip::cargarArchivos(QString archivo)
 {
     ui->jlArchivos->addItem(archivo);
+
 
 }
 
@@ -41,7 +41,10 @@ void GuiZip::on_btnAbrir_clicked()
 void GuiZip::on_btnDescomprimir_clicked()
 {
     QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::homePath(),
-                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
+                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
+
+
+
 
     if(!directorio.isEmpty()){
         descomPrimirZip(fileName,directorio+"/");
@@ -59,8 +62,7 @@ void GuiZip::ListarArchivos()
 {
 
     QProgressDialog progreso(this);
-    fileName = QFileDialog::getOpenFileName(this,tr("Abrir archivo comprimido"), QDir::homePath(),tr("Archivo comprimido (*.zip)"));
-
+    fileName = QFileDialog::getOpenFileName(this,tr("Abrir archivo comprimido"), QDir::homePath(),tr("Archivo comprimido (*.zip)"),0, QFileDialog::DontUseNativeDialog);
     if(!fileName.isEmpty()){
         respaldo = fileName;
         progreso.setLabelText(tr("Cargando archivos de %1").arg(fileName));
@@ -70,6 +72,7 @@ void GuiZip::ListarArchivos()
         //obtener comentarios
         QByteArray comment = zip.getComment().toLatin1();
         listaArchivos = zip.getFileNameList();
+
         zip.close();
         if( !listaArchivos.isEmpty()){
             //limpia la lista
@@ -181,8 +184,6 @@ void GuiZip::descompreionIndividual(int index,QString archivo,QString rutaDescom
 
 void GuiZip::visualizarImagen(int index,QString archivo)
 {
-
-
     QProgressDialog progreso(this);
     progreso.setLabelText(tr("Cargando imagen"));
     QuaZip zip(archivo);
@@ -200,29 +201,25 @@ void GuiZip::visualizarImagen(int index,QString archivo)
     zFile.open( QIODevice::ReadOnly );
     ba =zFile.read(1000000000);
     if(p.loadFromData(ba,"") ){
-
-        //int w = ui->lblimagen->width();
-        //int h = ui->lblimagen->height();
-
         vs->cargarImagen(p);
-        //ui->lblimagen->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
     }
     zFile.close();
     ba.clear();
     zip.close();
     vs->show();
-
 }
+
 
 void GuiZip::on_btnDescomprimirIndividual_clicked()
 {
     QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::homePath(),
-                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
+                                                           QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly| QFileDialog::DontUseNativeDialog);
 
     if(!directorio.isEmpty()){
         descompreionIndividual(posicion,fileName,directorio+"/");
 
     }
+
 }
 
 void GuiZip::on_btnvisualizar_clicked()

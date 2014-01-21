@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     PixmapWidget.cpp \
     guizip.cpp \
     visor.cpp \
-    form.cpp
+    imageloader.cpp \
+    imagesmodel.cpp \
+    imagesview.cpp
 
 
 
@@ -34,7 +36,9 @@ HEADERS  += mainwindow.h \
     PixmapWidget.h \
     guizip.h \
     visor.h \
-    form.h
+    imageloader.h \
+    imagesmodel.h \
+    imagesview.h
 
 
 RESOURCES += \
@@ -42,8 +46,7 @@ RESOURCES += \
 
 FORMS += \
     guizip.ui \
-    visor.ui \
-    form.ui
+    visor.ui
 
 OTHER_FILES += \
     Menri-sub.txt

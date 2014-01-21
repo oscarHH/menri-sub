@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
 #include <QMainWindow>
 #include "codeeditor.h"
 #include "highlighter.h"
@@ -7,13 +8,12 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QFileInfo>
-//#include "EventosZip.h"
 #include "guizip.h"
-#include "form.h"
 #include <QFileDialog>
+#include "imagesmodel.h"
+#include "imagesview.h"
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
-//class EventosZip;
 class QAction;
 class QLabel;
 class QMenu;
@@ -23,6 +23,9 @@ class QDockWidget;
 class CodeEditor;
 class QEvent;
 class GuiZip;
+class ImagesView;
+class ImagesModel;
+class QSettings;
 QT_END_NAMESPACE
 
 //![0]
@@ -34,14 +37,18 @@ public:
 
 
     MainWindow();
+    ~MainWindow(){}
     //QPixmap *icon_to_be_shown;
     int posicion_ruta;
     void mandarImagen(QString  nombreImagen);
     bool eventFilter(QObject * watched, QEvent * e);
-    QStringList RutaImagenes ;
-    QListWidget *view;
+
+
     void updateActions();
     QFileDialog *abrir;
+
+     ImagesModel *m_imagesModel;
+
 public slots:
     void panelImagen();
     void panelEditor();
@@ -70,13 +77,17 @@ private:
     //void scaleImage(double factor);
     //void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
+    QAction   *m_addImages;
+    bool       m_stopImageAdd;
 
     QDockWidget * templateDocker;
     QDockWidget * DocArchivos;
     GuiZip * guizip;
     CodeEditor *codeEditor;
     Highlighter *highlighter;
-    //EventosZip *manejozip;
+
+
+    ImagesView  *m_imageView;
 
 protected:
     virtual  void dragEnterEvent(QDragEnterEvent * event);
@@ -86,7 +97,6 @@ protected:
     void closeEvent(QCloseEvent *event);
 
     QAction *openAct;
-    //QAction *printAct;
     QAction *exitAct;
     QAction *zoomInAct;
     QAction *zoomOutAct;
@@ -115,8 +125,6 @@ protected:
     QPushButton *btnSiguiente;
     QPushButton *btnAnterior;
     QPushButton *btnLimpiar;
-
-
 
     float zoom;
     QList<QUrl> lista;
