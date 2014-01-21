@@ -13,7 +13,7 @@ ImagesView::ImagesView(QWidget *parent)
         setResizeMode( QListView::Adjust );
         setWrapping( true );
         setIconSize( QSize(170, 170) );
-        setGridSize( QSize(170, 170) );
+        setGridSize( QSize(200, 200) );
         setSpacing( 2 );
         setSelectionMode( QAbstractItemView::SingleSelection );
 }

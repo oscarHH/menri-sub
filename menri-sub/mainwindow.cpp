@@ -379,6 +379,7 @@ void MainWindow::mandarImagen(QString nombreImagen)
 //reimplementacion de arrastrar y soltar elementos a la ventana
 void MainWindow::dragEnterEvent (QDragEnterEvent  *event){
     event->acceptProposedAction();
+
 }
 
 void	MainWindow::dragLeaveEvent(QDragLeaveEvent * event){
@@ -392,6 +393,7 @@ void	MainWindow::dragMoveEvent(QDragMoveEvent * event){
 
 //almacena las rutas de las imagenes
 void MainWindow::dropEvent(QDropEvent * event){
+
     //QIcon nuevo;
     grados =0;
     //variable de tipo archivo para obtener informacion.
@@ -400,30 +402,15 @@ void MainWindow::dropEvent(QDropEvent * event){
     QStringList respaldo;
 
     lista = event->mimeData()->urls();
-     //QByteArray  encodedString = lista.at(0).toLocalFile()
-   //  QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
-    //QTextCodec *codec =  QTextCodec::codecForLocale();
-     //QString fileName = codec->toUnicode(encodedString);
-        QString fileName="";
+    QString fileName="";
 
 
     //recorremos la lista
     for(int i=0 ; i < lista.size();i++){
         //obtenemos la ruta del archivo
-        fileName=lista.at(i).toString();
-
-        //removemos algunos caracteres innecesarios
-        if(QApplication::platformName() != "windows"){
-            fileName.remove(0,7);
-        }else{
-            fileName.remove(0,8);
-        }
-
+        fileName=lista.at(i).toLocalFile();
         //si la ruta contiene % se elimina el numero 25 que aparece
-        if(fileName.contains("%",Qt::CaseInsensitive)){
-            fileName.replace(QString("%25"), QString("%"));
-        }
-
+        qDebug()<<fileName;
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()
@@ -446,7 +433,6 @@ void MainWindow::dropEvent(QDropEvent * event){
                     info1.setFile(dato);
                     if(  (dato.endsWith(".jpg") || dato.endsWith(".png") ||dato.endsWith(".jpeg") ||dato.endsWith(".bmp") ||dato.endsWith(".svg") || dato.endsWith(".psd")  )
                          && (info1.isFile() == true)){
-
                         respaldo.append(dato);
                     }
 

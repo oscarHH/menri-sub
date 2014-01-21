@@ -2,8 +2,8 @@
 #include <QDebug>
 
 
-#include "ImagesModel.h"
-#include "ImageLoader.h"
+#include "imagesmodel.h"
+#include "imageloader.h"
 
 ImagesModel::ImagesModel(QObject *parent): QAbstractListModel( parent )
   , m_loadCount( 0 )
@@ -113,6 +113,7 @@ void ImagesModel::addImages( const QStringList list )
 
     foreach( QString location, list )
         addImage( location );
+
 }
 
 void ImagesModel::imageLoaded( const QString &filename, const QImage &thumbnail, const QString &description )
