@@ -1,7 +1,7 @@
 #ifndef IMAGESMODEL_H
 #define IMAGESMODEL_H
 
-#include "ImageLoader.h"
+#include "imageloader.h"
 
 #include <QAbstractListModel>
 #include <QIcon>

@@ -169,7 +169,7 @@ void MainWindow::obtenerImagen()
             mandarImagen(listafileName.at(0));
         }
         updateActions();
-     }
+    }
     listafileName.clear();
 }
 
@@ -398,8 +398,14 @@ void MainWindow::dropEvent(QDropEvent * event){
     QFileInfo info1;
     //lista que  almacena la ruta de los archivos
     QStringList respaldo;
+
     lista = event->mimeData()->urls();
-    QString fileName="";
+     //QByteArray  encodedString = lista.at(0).toLocalFile()
+   //  QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
+    //QTextCodec *codec =  QTextCodec::codecForLocale();
+     //QString fileName = codec->toUnicode(encodedString);
+        QString fileName="";
+
 
     //recorremos la lista
     for(int i=0 ; i < lista.size();i++){
@@ -407,7 +413,12 @@ void MainWindow::dropEvent(QDropEvent * event){
         fileName=lista.at(i).toString();
 
         //removemos algunos caracteres innecesarios
-        fileName.remove(0,8);
+        if(QApplication::platformName() != "windows"){
+            fileName.remove(0,7);
+        }else{
+            fileName.remove(0,8);
+        }
+
         //si la ruta contiene % se elimina el numero 25 que aparece
         if(fileName.contains("%",Qt::CaseInsensitive)){
             fileName.replace(QString("%25"), QString("%"));
@@ -436,7 +447,7 @@ void MainWindow::dropEvent(QDropEvent * event){
                     if(  (dato.endsWith(".jpg") || dato.endsWith(".png") ||dato.endsWith(".jpeg") ||dato.endsWith(".bmp") ||dato.endsWith(".svg") || dato.endsWith(".psd")  )
                          && (info1.isFile() == true)){
 
-                       respaldo.append(dato);
+                        respaldo.append(dato);
                     }
 
                 }
@@ -558,7 +569,7 @@ void MainWindow::listarScripts()
     script <<"C:/Python27/ren.pyw";
     proceso.start("C:/Python27/pythonw.exe",script);*/
     //ListArchive("C:/Users/oscar/Documents/proyectos/build-pruebaunrar-Desktop_Qt_5_2_0_MSVC2010_32bit_OpenGL-Release/release/UnRDLL.rar");
-   // m_imagesModel->removeAll(1,RutaImagenes.size()-1 );
+    // m_imagesModel->removeAll(1,RutaImagenes.size()-1 );
     guizip->show();
 }
 
