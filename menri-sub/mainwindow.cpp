@@ -410,7 +410,7 @@ void MainWindow::dropEvent(QDropEvent * event){
         //obtenemos la ruta del archivo
         fileName=lista.at(i).toLocalFile();
         //si la ruta contiene % se elimina el numero 25 que aparece
-        qDebug()<<fileName;
+       // qDebug()<<fileName;
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()

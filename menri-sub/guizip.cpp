@@ -70,8 +70,15 @@ void GuiZip::ListarArchivos()
         //se abre el archivo zip
         zip.open(QuaZip::mdUnzip);
         //obtener comentarios
-        QByteArray comment = zip.getComment().toLatin1();
-        listaArchivos = zip.getFileNameList();
+         //QByteArray  encodedString =zip.getComment().unicode();
+         //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+         //QTextCodec *codec =  QTextCodec::codecForLocale();
+         //QString img = codec->toUnicode(encodedString);
+
+
+
+         QByteArray comment = zip.getComment().toUtf8();
+         listaArchivos = zip.getFileNameList();
 
         zip.close();
         if( !listaArchivos.isEmpty()){
@@ -98,6 +105,7 @@ void GuiZip::ListarArchivos()
                     ui->jlArchivos->clear();
                 }
                 ui->jlArchivos->addItem(listaArchivos.at(i));
+
             }
             ui->btnDescomprimir->setEnabled(true);
             ui->btnDescomprimirIndividual->setEnabled(true);
