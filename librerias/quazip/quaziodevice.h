@@ -4,7 +4,8 @@
 #include <QIODevice>
 #include "quazip_global.h"
 
-#include <QtZlib/zlib.h>
+//#include <QtZlib/zlib.h>
+#include "../Zlibqt/zlib.h"
 
 class QuaZIODevicePrivate;
 

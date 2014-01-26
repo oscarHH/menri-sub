@@ -47,6 +47,7 @@ private:
     QStringList listaArchivos;
     int posicion ;
 
+
 };
 
 #endif // GUIZIP_H

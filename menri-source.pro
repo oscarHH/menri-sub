@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = librerias/quazip librerias/QPsdPlugin menri-sub
+SUBDIRS =  librerias/quazip librerias/QPsdPlugin menri-sub
