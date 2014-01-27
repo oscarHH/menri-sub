@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 #include <QDebug>
-#include <QDesktopServices>
+//#include <QDesktopServices>
 #include <QMessageBox>
 
 GuiZip::GuiZip(QWidget *parent) :
@@ -33,34 +33,33 @@ void GuiZip::cargarArchivos(QString archivo)
 //abrir el archivo comprimido
 void GuiZip::on_btnAbrir_clicked()
 {
-    ListarArchivos();
+        ListarArchivos();
+
 }
 
 
 //descomprimir
 void GuiZip::on_btnDescomprimir_clicked()
 {
- QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::rootPath(),
+    QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::rootPath(),
                                                            QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
 
 
- directorio.replace("/",QDir::separator());
+    directorio.replace("/",QDir::separator());
 
- if(!directorio.isEmpty() && directorio.endsWith(QDir::separator()) ){
-     //descompreionIndividual(posicion,fileName,directorio);
-     descomPrimirZip(fileName,directorio);
- }else if(!directorio.isEmpty()  && !directorio.endsWith(QDir::separator())){
-     //descompreionIndividual(posicion,fileName,directorio+QDir::separator());
-     descomPrimirZip(fileName,directorio+QDir::separator());
- }
+    if(!directorio.isEmpty() && directorio.endsWith(QDir::separator()) ){
+        //descompreionIndividual(posicion,fileName,directorio);
+        descomPrimirZip(fileName,directorio);
+    }else if(!directorio.isEmpty()  && !directorio.endsWith(QDir::separator())){
+        //descompreionIndividual(posicion,fileName,directorio+QDir::separator());
+        descomPrimirZip(fileName,directorio+QDir::separator());
+    }
 
 }
 
 void GuiZip::on_btnDescomprimirIndividual_clicked()
 {
     QString directorio = QFileDialog::getExistingDirectory(this,tr("Descomprimir en"), QDir::homePath(),QFileDialog::ShowDirsOnly| QFileDialog::DontUseNativeDialog);
-
-
 
     directorio.replace("/",QDir::separator());
 
@@ -75,7 +74,6 @@ void GuiZip::on_btnDescomprimirIndividual_clicked()
 void GuiZip::on_btnvisualizar_clicked()
 {
     visualizarImagen(posicion,fileName);
-
 }
 
 
@@ -86,6 +84,7 @@ void GuiZip::on_listWidget_clicked(const QModelIndex &index)
 
 }
 
+//metodo para listar los archivos
 void GuiZip::ListarArchivos()
 {
 
@@ -98,15 +97,13 @@ void GuiZip::ListarArchivos()
         //se abre el archivo zip
         zip.open(QuaZip::mdUnzip);
         //obtener comentarios
-         //QByteArray  encodedString =zip.getComment().unicode();
-         //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-         //QTextCodec *codec =  QTextCodec::codecForLocale();
-         //QString img = codec->toUnicode(encodedString);
+        //QByteArray  encodedString =zip.getComment().unicode();
+        //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+        //QTextCodec *codec =  QTextCodec::codecForLocale();
+        //QString img = codec->toUnicode(encodedString);
 
-
-
-         QByteArray comment = zip.getComment().toUtf8();
-         listaArchivos = zip.getFileNameList();
+        QByteArray comment = zip.getComment().toUtf8();
+        listaArchivos = zip.getFileNameList();
 
         zip.close();
         if( !listaArchivos.isEmpty()){
@@ -142,12 +139,14 @@ void GuiZip::ListarArchivos()
     }else{
         fileName= respaldo;
     }
+
+
 }
 
+//@parametro nombre del zip, ruta descompresion
 void GuiZip::descomPrimirZip(QString archivo,QString rutaDescompresion)
 {
     int i = 1;
-
     QProgressDialog progreso(this);
     progreso.setLabelText(tr("Descomprimiendo archivos en  %1").arg(rutaDescompresion));
     QuaZip zip(archivo);
@@ -215,6 +214,7 @@ void GuiZip::descompreionIndividual(int index,QString archivo,QString rutaDescom
     zip.close();
 }
 
+//@parametro indice del archivo, nombre del zip
 void GuiZip::visualizarImagen(int index,QString archivo)
 {
     QProgressDialog progreso(this);
