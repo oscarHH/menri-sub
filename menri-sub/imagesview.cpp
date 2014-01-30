@@ -5,16 +5,17 @@
 #include <QItemSelectionModel>
 #include <QContextMenuEvent>
 #include <QPainter>
+
 ImagesView::ImagesView(QWidget *parent)
  : QListView( parent )
 {
         setViewMode( QListView::IconMode );
-        setMovement( QListView::Static );
+        setMovement(QListView::Static );
         setResizeMode( QListView::Adjust );
-        setWrapping( true );
-        setIconSize( QSize(170, 170) );
+        //setWrapping( true );
+        setIconSize( QSize(150, 150) );
         setGridSize( QSize(200, 200) );
-        setSpacing( 2 );
+        setSpacing( 0 );
         setSelectionMode( QAbstractItemView::SingleSelection );
 }
 
@@ -47,8 +48,8 @@ void ImagesView::contextMenuEvent( QContextMenuEvent *event )
     if( indexes.isEmpty() )
         return;
 
-    QMenu context( tr( "Actions" ), this );
-    const QString text = tr( "Remove %n image(s)", "", indexes.size() );
+    QMenu context( tr( "Accion" ), this );
+    const QString text = tr( "Remover %n imagen(es)", "", indexes.size() );
     context.addAction( text, this, SLOT( removeSelectedImages() ) );
     context.exec( event->globalPos() );
 }
@@ -79,9 +80,9 @@ void ImagesView::paintEvent( QPaintEvent *event )
 
     QFont font = painter.font();
     font.setBold( true );
-    font.setPointSize( font.pointSize() + 10 );
+    font.setPointSize( font.pointSize()+10  );
 
-    const QString text = tr( "Agregar Imagenes" );
+    const QString text = tr( "Agregar \n Imagenes" );
 
     const QFontMetrics fm( font );
     if( fm.width( text ) > viewport()->rect().width() )
@@ -89,6 +90,6 @@ void ImagesView::paintEvent( QPaintEvent *event )
 
     painter.setPen( pen );
     painter.setFont( font );
-
     painter.drawText( rect(), Qt::AlignCenter, text );
+
 }

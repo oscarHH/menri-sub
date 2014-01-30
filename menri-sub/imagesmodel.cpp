@@ -24,7 +24,7 @@ QVariant ImagesModel::data( const QModelIndex &index, int role ) const
     if( role == Qt::DisplayRole )
     {
         QFileInfo info( m_filenames.at( index.row() ) );
-        QString description = info.fileName() + "\n" + m_descriptions.at( index.row() );
+        QString description = m_descriptions.at( index.row()) +"\n" +info.fileName();
         return description;
     }
 
@@ -125,9 +125,9 @@ void ImagesModel::imageLoaded( const QString &filename, const QImage &thumbnail,
     // we must create the icon here and not in the thread because QWidget and friends aren't reentrant.
     QIcon iconThumb = QIcon( QPixmap::fromImage( thumbnail ) );
 
-    m_filenames.insert( row, filename );
     m_thumbnails.insert( row, iconThumb );
-    m_descriptions.insert( row, description );
+    m_filenames.insert( row, filename );
+    m_descriptions.insert( row,description );
 
     endInsertRows();
     emit imageAdded();

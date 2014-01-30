@@ -31,7 +31,7 @@ MainWindow::MainWindow()
     //layout horizontal
     QHBoxLayout * buttonLayout = new QHBoxLayout;
 
-    posicion_ruta=0;
+    posicion_ruta = 0;
     //creamos el editor
     codeEditor = new CodeEditor;
     //resalta la sintaxis
@@ -40,23 +40,23 @@ MainWindow::MainWindow()
     //creo una lista para almacenar las imagenes
 
     //view = new QListWidget;
-    m_imageView   = new ImagesView( this );
-    m_imagesModel = new ImagesModel( this );
-    m_imageView->setModel( m_imagesModel );
-    connect( m_imagesModel, SIGNAL( imageAdded()   ), this, SLOT( actionStatusSetter() ) );
-    connect( m_imagesModel, SIGNAL( imageRemoved() ), this, SLOT( actionStatusSetter() ) );
+    m_imageView   = new ImagesView(this);
+    m_imagesModel = new ImagesModel(this);
+    m_imageView->setModel(m_imagesModel);
+    connect(m_imagesModel, SIGNAL(imageAdded()), this, SLOT(actionStatusSetter()));
+    connect(m_imagesModel, SIGNAL(imageRemoved()), this, SLOT(actionStatusSetter()));
 
     //creo botones para cambiar de imagenes y limpiar la lista
     btnAnterior = new QPushButton;
     btnSiguiente = new QPushButton;
-    btnLimpiar =new QPushButton;
+    btnLimpiar = new QPushButton;
     btnSiguiente->setIcon(QIcon(QPixmap(":/img/iconos/siguiente.png")));
     btnAnterior->setIcon(QIcon(QPixmap(":/img/iconos/atras.png")));
     btnLimpiar->setIcon(QIcon(QPixmap(":/img/iconos/limpiar.png")));
     btnAnterior->setEnabled(false);
     btnSiguiente->setEnabled(false);
     btnLimpiar->setEnabled(false);
-    mainLayout->addWidget(m_imageView );
+    mainLayout->addWidget(m_imageView);
     buttonLayout->addWidget(btnAnterior);
     buttonLayout->addWidget(btnLimpiar);
     buttonLayout->addWidget(btnSiguiente);
@@ -94,7 +94,7 @@ MainWindow::MainWindow()
     //se crea los menus
     createMenus();
     //titulo de la ventana
-    setWindowTitle(tr("Menri-sub  ")+ version);
+    setWindowTitle(tr("Menri-sub  ") + version);
     mandarImagen(":/img/iconos/portada.png");
 
     templateDocker->setVisible(false);
@@ -106,7 +106,7 @@ MainWindow::MainWindow()
     mainToolBar->addAction(zoomInAct);
     mainToolBar->addAction(zoomOutAct);
     //toolBarArea();
-    addToolBar(Qt::RightToolBarArea,mainToolBar);
+    addToolBar(Qt::RightToolBarArea, mainToolBar);
     //barra de estado
     QLabel *mStatLabel = new QLabel;
     QLabel *mStatLabel2 = new QLabel;
@@ -117,12 +117,12 @@ MainWindow::MainWindow()
     setAcceptDrops(true);
     //tamaño de la ventana
     //el programa inicia maximizado
-    setWindowState(Qt::WindowMaximized );
+    setWindowState(Qt::WindowMaximized);
     //conectamos
-    connect(m_imageView, SIGNAL( clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
-    connect(btnAnterior,SIGNAL(clicked()),this,SLOT(anteriorImagen()));
-    connect(btnSiguiente,SIGNAL(clicked()),this,SLOT(siguienteImagen()));
-    connect(btnLimpiar,SIGNAL(clicked()),this,SLOT(limpiar_lista()));
+    connect(m_imageView, SIGNAL(clicked(QModelIndex)), this, SLOT(on_listWidget_clicked(QModelIndex)));
+    connect(btnAnterior, SIGNAL(clicked()), this, SLOT(anteriorImagen()));
+    connect(btnSiguiente, SIGNAL(clicked()), this, SLOT(siguienteImagen()));
+    connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
     abrir = new QFileDialog();
 
 }
@@ -131,12 +131,12 @@ MainWindow::MainWindow()
 //implementacion del slot para mostrar u ocultar el panel imagenes
 void MainWindow::panelImagen()
 {
-    if(activoPanelImagen == true){
+    if (activoPanelImagen == true) {
         DocArchivos->setVisible(false);
-        activoPanelImagen= false;
-    }else{
+        activoPanelImagen = false;
+    } else {
         DocArchivos->setVisible(true);
-        activoPanelImagen= true;
+        activoPanelImagen = true;
     }
 }
 
@@ -145,12 +145,12 @@ void MainWindow::panelImagen()
 void MainWindow::panelEditor()
 {
 
-    if(activoPanelEditor == false){
+    if (activoPanelEditor == false) {
         templateDocker->setVisible(true);
         activoPanelEditor = true;
-    }else{
+    } else {
         templateDocker->setVisible(false);
-        activoPanelEditor= false;
+        activoPanelEditor = false;
     }
 
 }
@@ -160,12 +160,12 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath()+"/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd "),0, QFileDialog::DontUseNativeDialog );
+    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg"), 0, QFileDialog::DontUseNativeDialog);
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
         m_imagesModel->addImages(listafileName);
-        if(m_imagesModel->tamanioLista() <= 0){
+        if (m_imagesModel->tamanioLista() <= 0) {
             mandarImagen(listafileName.at(0));
         }
         updateActions();
@@ -194,11 +194,11 @@ void MainWindow::zoomIn()
 void MainWindow::zoomOut()
 {
     zoom = pw->f - 0.05f;
-    if( zoom <= 0.00968523   ){
+    if (zoom <= 0.00968523) {
         zoom = 00.00968523f;
         //pasamos el valor del zoom
         pw->setZoomFactor(zoom);
-    }else{
+    } else {
         //pasamos el valor del zoom
         pw->setZoomFactor(zoom);
     }
@@ -277,13 +277,13 @@ void MainWindow::createActions()
     connect(rotarImagen, SIGNAL(triggered()), this, SLOT(RotarImagen()));
 
 
-    imagenes = new QAction(tr("&Imagen"),this);
+    imagenes = new QAction(tr("&Imagen"), this);
     imagenes->setCheckable(true);
     imagenes->setShortcut(tr("Ctrl+i"));
     imagenes->setChecked(true);
     connect(imagenes, SIGNAL(triggered()), this, SLOT(panelImagen()));
 
-    editor = new QAction(tr("&Editor"),this);
+    editor = new QAction(tr("&Editor"), this);
     editor->setShortcut(tr("Ctrl+e"));
     editor->setCheckable(true);
     editor->setChecked(false);
@@ -297,10 +297,10 @@ void MainWindow::createActions()
     aboutQtAct->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    herramientascript = new QAction(tr("&Descomprimir"),this);
+    herramientascript = new QAction(tr("&Descomprimir"), this);
     herramientascript->setShortcut(tr("Ctrl+h"));
     herramientascript->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
-    connect(herramientascript, SIGNAL(triggered()),this, SLOT(listarScripts()));
+    connect(herramientascript, SIGNAL(triggered()), this, SLOT(listarScripts()));
 
 
 }
@@ -326,7 +326,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 
-    herramientas  = new QMenu(tr("&Herramientas"),this);
+    herramientas  = new QMenu(tr("&Herramientas"), this);
     herramientas->addAction(herramientascript);
 
     panel = viewMenu->addMenu(tr("&panel"));
@@ -366,8 +366,8 @@ void MainWindow::updateActions()
 //metodo que recibe la ruta de la imagen y la manda para poder mostrar
 void MainWindow::mandarImagen(QString nombreImagen)
 {
-    grados =0;
-    pw = new PixmapWidget( nombreImagen,  scrollArea );
+    grados = 0;
+    pw = new PixmapWidget(nombreImagen,  scrollArea);
     //asigamos que se pueda redimensionar
     scrollArea->setWidgetResizable(true);
     //el scrollArea contiene a pw y dibuja la imagen
@@ -377,62 +377,66 @@ void MainWindow::mandarImagen(QString nombreImagen)
 
 
 //reimplementacion de arrastrar y soltar elementos a la ventana
-void MainWindow::dragEnterEvent (QDragEnterEvent  *event){
+void MainWindow::dragEnterEvent(QDragEnterEvent  *event)
+{
     event->acceptProposedAction();
 
 }
 
-void	MainWindow::dragLeaveEvent(QDragLeaveEvent * event){
+void    MainWindow::dragLeaveEvent(QDragLeaveEvent * event)
+{
 
     event->accept();
 }
 
-void	MainWindow::dragMoveEvent(QDragMoveEvent * event){
+void    MainWindow::dragMoveEvent(QDragMoveEvent * event)
+{
     event->accept();
 }
 
 //almacena las rutas de las imagenes
-void MainWindow::dropEvent(QDropEvent * event){
+void MainWindow::dropEvent(QDropEvent * event)
+{
 
     //QIcon nuevo;
-    grados =0;
+    grados = 0;
     //variable de tipo archivo para obtener informacion.
     QFileInfo info1;
     //lista que  almacena la ruta de los archivos
     QStringList respaldo;
 
     lista = event->mimeData()->urls();
-    QString fileName="";
+    QString fileName = "";
 
 
     //recorremos la lista
-    for(int i=0 ; i < lista.size();i++){
+    for (int i = 0 ; i < lista.size(); i++) {
         //obtenemos la ruta del archivo
-        fileName=lista.at(i).toLocalFile();
+        fileName = lista.at(i).toLocalFile();
         //si la ruta contiene % se elimina el numero 25 que aparece
-       // qDebug()<<fileName;
+        // qDebug()<<fileName;
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()
         //sera bienvenido al codigo xD
 
         //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
-        if(  (info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") ||info1.completeSuffix().endsWith("bmp") ||info1.completeSuffix().endsWith("svg") ||info1.completeSuffix().endsWith("psd") )
-             ){
+        if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd"))
+           ) {
             //se agreaga la imagen a la lista
             respaldo.append(fileName);
 
             //si es una carpeta
-        }else  if(info1.isDir()){
+        } else  if (info1.isDir()) {
             //{recorre la carpeta en busca de imagenes y las agrega a la lista y a la listwidget}
-            QDir carpeta (fileName);
+            QDir carpeta(fileName);
             QString dato;
-            foreach (QFileInfo direc,carpeta.entryInfoList()) {
-                if(direc.isFile()){
+            foreach(QFileInfo direc, carpeta.entryInfoList()) {
+                if (direc.isFile()) {
                     dato = direc.absoluteFilePath();
                     info1.setFile(dato);
-                    if(  (dato.endsWith(".jpg") || dato.endsWith(".png") ||dato.endsWith(".jpeg") ||dato.endsWith(".bmp") ||dato.endsWith(".svg") || dato.endsWith(".psd")  )
-                         && (info1.isFile() == true)){
+                    if ((dato.endsWith(".jpg") || dato.endsWith(".png") || dato.endsWith(".jpeg") || dato.endsWith(".bmp") || dato.endsWith(".svg") || dato.endsWith(".psd"))
+                        && (info1.isFile() == true)) {
                         respaldo.append(dato);
                     }
 
@@ -441,7 +445,7 @@ void MainWindow::dropEvent(QDropEvent * event){
         }
     }
     m_imagesModel->addImages(respaldo);
-    if(m_imagesModel->tamanioLista() <= 0){
+    if (m_imagesModel->tamanioLista() <= 0) {
         mandarImagen(respaldo.at(0));
     }
     respaldo.clear();
@@ -459,7 +463,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 //para la obtener la posicion de cada elemnto del  listwidget
 void MainWindow::on_listWidget_clicked(const QModelIndex &index)
-{ 
+{
     //obtenemos el valor de la listwidget
     posicion_ruta = index.row();
     //obtenemos el valor y lo convertimos a texto
@@ -473,21 +477,21 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
 
 void MainWindow::siguienteImagen()
 {
-    grados =0;
-    if(posicion_ruta < m_imagesModel->tamanioLista()){
+    grados = 0;
+    if (posicion_ruta < m_imagesModel->tamanioLista()) {
         posicion_ruta++;
         btnSiguiente->setEnabled(true);
     }
 
-    if(posicion_ruta < m_imagesModel->tamanioLista()){
+    if (posicion_ruta < m_imagesModel->tamanioLista()) {
         QString sol = m_imagesModel->rutaImagen(posicion_ruta);
         //pasamos el nombre de la imagen
         mandarImagen(sol);
         updateActions();
     }
 
-    if(posicion_ruta == m_imagesModel->tamanioLista()){
-        posicion_ruta=m_imagesModel->tamanioLista()-1;
+    if (posicion_ruta == m_imagesModel->tamanioLista()) {
+        posicion_ruta = m_imagesModel->tamanioLista() - 1;
         btnSiguiente->setEnabled(false);
     }
 
@@ -496,14 +500,14 @@ void MainWindow::siguienteImagen()
 
 void MainWindow::anteriorImagen()
 {
-    grados =0;
+    grados = 0;
     //comprobamos el tamaño de la lista
-    if(m_imagesModel->tamanioLista() > 0){
+    if (m_imagesModel->tamanioLista() > 0) {
         posicion_ruta--;
         btnAnterior->setEnabled(true);
     }
 
-    if(posicion_ruta >= 0){
+    if (posicion_ruta >= 0) {
         QString sol = m_imagesModel->rutaImagen(posicion_ruta);
         //pasamos el nombre de la imagen
         mandarImagen(sol);
@@ -511,7 +515,7 @@ void MainWindow::anteriorImagen()
     }
 
     //comprobamos que la variable posicion_ruta
-    if(posicion_ruta <  0){
+    if (posicion_ruta <  0) {
         posicion_ruta = 0;
         btnAnterior->setEnabled(false);
     }
@@ -538,9 +542,9 @@ void MainWindow::limpiar_lista()
 
 void MainWindow::RotarImagen()
 {
-    grados +=90;
+    grados += 90;
 
-    if(grados > 360){
+    if (grados > 360) {
         grados = 90;
     }
 
@@ -566,10 +570,10 @@ bool MainWindow::eventFilter(QObject * watched, QEvent * e)
     if (watched == m_imageView && e->type() == QEvent::KeyPress) {
         QKeyEvent * ke = static_cast<QKeyEvent * >(e);
 
-        if (ke->key() == Qt::Key_Up ) {
+        if (ke->key() == Qt::Key_Up) {
             anteriorImagen();
             return true;
-        }else if(ke->key() == Qt::Key_Down){
+        } else if (ke->key() == Qt::Key_Down) {
             siguienteImagen();
             return true;
         }

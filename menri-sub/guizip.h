@@ -3,13 +3,11 @@
 
 #include <QDialog>
 #include <QWidget>
-#include <JlCompress.h>
 #include <quazipfile.h>
 #include <quazip.h>
-#include <zip.h>
 #include "visor.h"
+#include "manejozip.h"
 QT_BEGIN_NAMESPACE
-
 class DialogOptionsWidget;
 class visor;
 QT_END_NAMESPACE
@@ -25,10 +23,11 @@ class GuiZip : public QDialog
 public:
     explicit GuiZip(QWidget *parent = 0);
     ~GuiZip();
-    void cargarArchivos(QString archivo);
+
     QString fileName;
     visor *vs;
     QPixmap p;
+    ManejoZip *fileZip;
 private slots:
     void on_btnAbrir_clicked();
     void on_btnDescomprimir_clicked();

@@ -18,6 +18,8 @@ public:
     int grados;
     void setGrados(int grados);
     int getGrados();
+
+
 public slots:
     void setZoomFactor( float );
 
@@ -30,7 +32,8 @@ protected:
     void wheelEvent( QWheelEvent* );
 
 private:
-
+     void tamanioWidget();
+    int w, h;
     double zoomFactor;
     qreal m_rotation;
 };

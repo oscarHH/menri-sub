@@ -55,7 +55,8 @@ void ImageLoader::run()
         QImage image( filename );
         QImage scaled = image.scaled( 170, 170, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
-        QStringList suffixes; suffixes << "B" << "KB" << "MB" << "GB";
+        QStringList suffixes;
+        suffixes << "B" << "KB" << "MB" << "GB";
         QString suffix = suffixes.takeFirst();
 
         QFileInfo info( filename );

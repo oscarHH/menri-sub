@@ -23,18 +23,27 @@ PixmapWidget::~PixmapWidget()
 void PixmapWidget::setGrados(int grados)
 {
     this->grados = grados;
+    tamanioWidget();
 }
 
 int PixmapWidget::getGrados()
 {
-
     return grados;
+}
+
+void PixmapWidget::tamanioWidget(){
+
+    if(getGrados() == 90 || getGrados() == 270){
+        setMinimumSize( h, w );
+    }else{
+        setMinimumSize( w, h);
+    }
 }
 
 
 void PixmapWidget::setZoomFactor( float f )
 {
-    int w, h;
+
     this->f = f;
     if( this->f == zoomFactor )
         return;
@@ -44,12 +53,18 @@ void PixmapWidget::setZoomFactor( float f )
 
     w = m_pm->width()*zoomFactor;
     h = m_pm->height()*zoomFactor;
-    setMinimumSize( w, h);
 
+
+    if(getGrados() == 90 || getGrados() == 270){
+        setMinimumSize( h, w );
+    }else{
+        setMinimumSize( w, h);
+    }
 
     QWidget *p = dynamic_cast<QWidget*>( parent() );
     if( p )
-       resize( p->width(), p->height() );
+        resize( p->width(), p->height() );
+
 
     repaint();
 }
@@ -58,61 +73,50 @@ void PixmapWidget::setZoomFactor( float f )
 
 void PixmapWidget::paintEvent( QPaintEvent * /*event*/ )
 {
-    //QMatrix matrix;
-    //event->DragMove;
     int xoffset, yoffset;
 
+    //ancho
+    if( width() > m_pm->width()*zoomFactor ){
 
-    if( width() > m_pm->width()*zoomFactor )
-    {
-        xoffset = (width()-m_pm->width()*zoomFactor)/2;
-
-    }
-    else
-    {
+        if(getGrados() == 90 || getGrados() == 270){
+            xoffset = (height()-m_pm->width()*zoomFactor)/2;
+        }else{
+            xoffset = (width()-m_pm->width()*zoomFactor)/2;
+        }
+    }else{
         xoffset = 0;
     }
 
-    if( height() > m_pm->height()*zoomFactor )
-    {
-        yoffset = (height()-m_pm->height()*zoomFactor)/2;
 
-    }
-    else
-    {
+    //altura
+    if( height() > m_pm->height()*zoomFactor ){
+        if(getGrados() == 90 || getGrados() == 270){
+            yoffset = (width()-m_pm->height()*zoomFactor)/2;
+        }else{
+            yoffset = (height()-m_pm->height()*zoomFactor)/2;
+        }
+    }else{
         yoffset = 0;
     }
+
 
     QPainter p( this );
     p.setRenderHint(QPainter::Antialiasing,true);
     p.setRenderHint(QPainter::SmoothPixmapTransform,true);
 
 
-
-/*
     if(getGrados() == 90 || getGrados() == 270){
-
-        p.setViewport( yoffset , xoffset, m_pm->height()*zoomFactor/2,m_pm->width()*zoomFactor/2);
-        QRect r1(50,50, 100, 100);
-        p.setWindow(r1);
-        p.rotate(getGrados());
-        //le hace caso al setWindow
-        p.drawPixmap( 100,100,-50,-50, *m_pm);
-    }else{
-        p.setViewport(  xoffset-1, yoffset-1, m_pm->width()*zoomFactor, m_pm->height()*zoomFactor);
+        p.setViewport( yoffset,xoffset, m_pm->height()*zoomFactor, m_pm->width()*zoomFactor);
         p.setWindow(-50, -50, 100, 100);
-        p.rotate(getGrados());
-        //le hace caso al setWindow
-        p.drawPixmap( -50, -50, 100, 100, *m_pm);
-    }*/
-    p.setViewport(  xoffset-1, yoffset-1, m_pm->width()*zoomFactor, m_pm->height()*zoomFactor);
-    p.setWindow(-50, -50, 100, 100);
+    }else{
+        p.setViewport(  xoffset, yoffset, m_pm->width()*zoomFactor, m_pm->height()*zoomFactor);
+        p.setWindow(-50, -50, 100, 100);
+    }
+
     p.rotate(getGrados());
-    //le hace caso al setWindow
     p.drawPixmap( -50, -50, 100, 100, *m_pm);
 }
 
-    //p.restore();
 
 
 void PixmapWidget::wheelEvent( QWheelEvent *event )

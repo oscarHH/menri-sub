@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     visor.cpp \
     imageloader.cpp \
     imagesmodel.cpp \
-    imagesview.cpp
+    imagesview.cpp \
+    manejozip.cpp
 
 
 
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     visor.h \
     imageloader.h \
     imagesmodel.h \
-    imagesview.h
+    imagesview.h \
+    manejozip.h
 
 
 RESOURCES += \
@@ -63,3 +65,5 @@ else:unix: LIBS += -L$$OUT_PWD/../librerias/quazip/ -lquazip
 INCLUDEPATH += $$PWD/../librerias/quazip
 DEPENDPATH += $$PWD/../librerias/quazip
 HEADERS +=
+
+
