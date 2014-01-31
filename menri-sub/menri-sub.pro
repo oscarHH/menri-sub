@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     imageloader.cpp \
     imagesmodel.cpp \
     imagesview.cpp \
-    manejozip.cpp
+    manejozip.cpp \
+    tipoarchivo.cpp
 
 
 
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     imageloader.h \
     imagesmodel.h \
     imagesview.h \
-    manejozip.h
+    manejozip.h \
+    tipoarchivo.h
 
 
 RESOURCES += \

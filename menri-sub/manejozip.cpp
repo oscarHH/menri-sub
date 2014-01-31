@@ -17,8 +17,29 @@ QStringList ManejoZip::getListarArchivos()
     zip.setZipName(archivoZip);
     //se abre el archivo zip
     zip.open(QuaZip::mdUnzip);
+    QuaZipFile inf(&zip);
+    datos.clear();
+
+    //datos = new QList<TipoArchivo>;
+    for(bool more = zip.goToFirstFile();more;more=zip.goToNextFile()){
+        TipoArchivo * tip = new TipoArchivo;
+        tip->setNombreDelArchivo(inf.getActualFileName());
+        datos.append(tip);
+    }
+
+    for(int i=0; i< datos.size()  ;i++){
+        qDebug()<< datos.at(i)->getNombreDelArchivo();
+    }
+
+
+
+
     listaArchivos = zip.getFileNameList();
     zip.close();
+
+
+
+
     return listaArchivos;
 }
 
@@ -29,14 +50,11 @@ QString ManejoZip::getComentarios()
     //accionamos la codificacion del comentario
     zip.setCommentCodec(QTextCodec::codecForLocale());
     //obtiene el comentario
-    QString comentario = zip.getComment().toUtf8();
+    QString comentario = zip.getComment();
     zip.close();
     if (!comentario.isEmpty() ){
         return comentario;
     }else{
         return "";
     }
-
-
-
 }

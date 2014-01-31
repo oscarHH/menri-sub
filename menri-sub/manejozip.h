@@ -2,11 +2,10 @@
 #include <QString>
 #include <quazipfile.h>
 #include <quazip.h>
-
+#include <QList>
+#include "tipoarchivo.h"
 
 #define MANEJOZIP_H
-
-
 
 class ManejoZip
 {
@@ -15,6 +14,12 @@ public:
     void setArchivoZip(QString nombreZip);
     QStringList getListarArchivos();
     QString getComentarios();
+    QString getTipoArchivo();
+    QString getFechaModificacion();
+    QString getCrc();
+    double getTamanioArchivo();
+    double getTamanioComprimido();
+
 
 private:
     QString archivoZip;
@@ -22,6 +27,7 @@ private:
     QuaZip zip;
     QStringList listaArchivos;
     QString comentarios;
+    QList<TipoArchivo *> datos;
 
 };
 
