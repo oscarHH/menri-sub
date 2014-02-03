@@ -34,42 +34,14 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
         datos.append(tip);
 
     }
-
+    //cierra zip
     zip.close();
+    //ordenando los datos
     qSort(datos.begin(),datos.end(),qLess<TipoArchivo>());
-    foreach (TipoArchivo a, datos) {
-        qDebug()<<a.getNombreDelArchivo();
-    }
     return datos;
 }
 
-QStringList ManejoZip::getListarArchivos2(){
-    if(!archivoZip.isEmpty()){
-        respaldo = archivoZip;
-    }
 
-    QString informacion;
-
-    zip.setZipName(archivoZip);
-    //se abre el archivo zip
-    zip.open(QuaZip::mdUnzip);
-    //clase para obtener informacion de los archivos comprimidos
-    QuaZipFile inf (&zip);
-    for(bool more = zip.goToFirstFile();more;more=zip.goToNextFile()){
-        inf.open(QIODevice::ReadOnly);
-        informacion = inf.getActualFileName() + "-" + QString::number(inf.size()) + "-" +QString::number(inf.csize());
-        inf.close();
-        datos2.append(informacion);
-    }
-
-    zip.close();
-    return datos2;
-}
-
-bool ManejoZip::dtcomp(TipoArchivo &a, TipoArchivo &b)
-{
-    return &a.getNombreDelArchivo() < &b.getNombreDelArchivo();
-}
 
 //retorna el comentario del zip
 QString ManejoZip::getComentarios()

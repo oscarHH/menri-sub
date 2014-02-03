@@ -27,8 +27,8 @@ public:
         tamanioArchivo = other.tamanioArchivo;
         tamanioComprimido = other.tamanioComprimido;
         return *this;
-    };
-    bool   operator <(const TipoArchivo &other) const { return (nombreDelArchivo < other.getNombreDelArchivo()); };
+    }
+    bool   operator <(const TipoArchivo &other) const { return (nombreDelArchivo < other.getNombreDelArchivo()); }
 
 private:
     QString nombreDelArchivo;

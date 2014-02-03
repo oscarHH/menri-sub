@@ -14,7 +14,7 @@ GuiZip::GuiZip(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->txtComentarios->setEnabled(false);
-    connect(ui->jlArchivos,SIGNAL(clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
+    //connect(ui->jlArchivos,SIGNAL(clicked(QModelIndex)),this,SLOT(on_listWidget_clicked(QModelIndex)));
     vs = new visor();
     ui->treeWidget->setColumnCount(4);
     QStringList a;
@@ -30,6 +30,7 @@ GuiZip::~GuiZip()
 //metodo para agregar  padre al arbol
 void GuiZip::AddRoot(QString nombre,QString tamanio,QString comprimido,QString tipo,bool esRaiz,int index)
 {
+     QList<TipoArchivo> resp;
     //si es una carpeta
     if(esRaiz == true){
         itm = new QTreeWidgetItem(ui->treeWidget);
@@ -38,7 +39,7 @@ void GuiZip::AddRoot(QString nombre,QString tamanio,QString comprimido,QString t
         itm->setText(1,tamanio);
         itm->setText(2,comprimido);
         itm->setText(3,tipo);
-        QList<TipoArchivo> resp;
+
         //agregamos las ramas
         for(int i = 0; i < tip.size();i++){
             if( !tip.at(i).getNombreDelArchivo().startsWith(nombre)){
@@ -47,8 +48,6 @@ void GuiZip::AddRoot(QString nombre,QString tamanio,QString comprimido,QString t
             //si la rama contiene el nombre de la carpeta se agrega
             if(tip.at(i).getNombreDelArchivo().startsWith(nombre) && tip.at(i).getTipoArchivo() !="directorio"){
                 AddChild(itm, tip.at(i).getNombreDelArchivo(),QString::number(tip.at(i).getTamanioArchivo()) ,QString::number(tip.at(i).getTamanioComprimido()),tip.at(i).getTipoArchivo());
-                //tip.removeAt(i);
-                resp.append(tip.at(i));
             }
         }
         tip.clear();
@@ -63,8 +62,20 @@ void GuiZip::AddRoot(QString nombre,QString tamanio,QString comprimido,QString t
             itm->setText(1,tamanio);
             itm->setText(2,comprimido);
             itm->setText(3,tipo);
+           // qDebug()<<"aaa::::"<<nombre;
+            tip.removeAt(index);
+            resp = tip;
+            tip.clear();
+            tip = resp;
+            resp.clear();
         }
+
     }
+
+   /* foreach(TipoArchivo j , tip){
+        qDebug()<<"------------"<<j.getNombreDelArchivo();
+    }*/
+
 }
 
 
@@ -95,19 +106,30 @@ void GuiZip::on_btnAbrir_clicked()
         //almacena los datos de los archivos comprimidos
         respaldoDatosComprimidos = fileZip.getListarArchivos();
         tip = fileZip.getListarArchivos();
-        //recorre la lista
-
-
-
-        for(int i =0; i < tip.size();i++){
+        //qDebug()<<tip.size();
+        /*for(int i =0; i < tip.size();++i){
             //si es directorio
             if(tip.at(i).getTipoArchivo() == ("directorio") ){
+                AddRoot(tip.at(i).getNombreDelArchivo(),QString::number(tip.at(i).getTamanioArchivo()) ,QString::number(tip.at(i).getTamanioComprimido()),tip.at(i).getTipoArchivo(),true,i);
 
-                AddRoot(tip.at(i).getNombreDelArchivo(),QString::number(tip.at(i).getTamanioArchivo()) ,QString::number(tip.at(i).getTamanioComprimido()),tip.at(i).getTipoArchivo(),true,0);
-            }/*si no es drectorio*/else{
-                AddRoot(tip.at(i).getNombreDelArchivo(),QString::number(tip.at(i).getTamanioArchivo()) ,QString::number(tip.at(i).getTamanioComprimido()),tip.at(i).getTipoArchivo(),false,0);
+            }else{
+                //si no es drectorio*
+                AddRoot(tip.at(i).getNombreDelArchivo(),QString::number(tip.at(i).getTamanioArchivo()) ,QString::number(tip.at(i).getTamanioComprimido()),tip.at(i).getTipoArchivo(),false,i);
             }
+             i=0;
+            qDebug()<<i;
+            qDebug()<<tip.size()<<tip.at(i).getNombreDelArchivo();
+        }*/
 
+        while(!tip.isEmpty()){
+            //si es directorio
+            if(tip.at(0).getTipoArchivo() == ("directorio") ){
+                AddRoot(tip.at(0).getNombreDelArchivo(),QString::number(tip.at(0).getTamanioArchivo()) ,QString::number(tip.at(0).getTamanioComprimido()),tip.at(0).getTipoArchivo(),true,0);
+
+            }else{
+                //si no es drectorio*
+                AddRoot(tip.at(0).getNombreDelArchivo(),QString::number(tip.at(0).getTamanioArchivo()) ,QString::number(tip.at(0).getTamanioComprimido()),tip.at(0).getTipoArchivo(),false,0);
+            }
         }
 
 
@@ -207,7 +229,7 @@ void GuiZip::ListarArchivos()
         listaArchivos = zip.getFileNameList();
         if( !listaArchivos.isEmpty()){
             //limpia la lista
-            ui->jlArchivos->clear();
+            //ui->jlArchivos->clear();
             ui->txtComentarios->setEnabled(false);
             ui->txtComentarios->setPlainText("");
 
@@ -227,12 +249,12 @@ void GuiZip::ListarArchivos()
                 qApp->processEvents();
 
                 if(progreso.wasCanceled()){
-                    ui->jlArchivos->clear();
+                    //ui->jlArchivos->clear();
                     break;
                     zip.close();
                 }
 
-                ui->jlArchivos->addItem(listaArchivos.at(i));
+                //ui->jlArchivos->addItem(listaArchivos.at(i));
                 i++;
                 //informacion de archivos comprimidos
                 inf.open(QIODevice::ReadOnly);

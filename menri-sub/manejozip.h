@@ -15,24 +15,18 @@ public:
     void setArchivoZip(QString nombreZip);
     QList<TipoArchivo > getListarArchivos();
     QString getComentarios();
-    QString getTipoArchivo();
-    QString getFechaModificacion();
-    QString getCrc();
-    double getTamanioArchivo();
-    double getTamanioComprimido();
     bool descomprimir();
     bool descomprimirIndividual();
-    QStringList getListarArchivos2();
-    bool dtcomp(TipoArchivo &a ,  TipoArchivo &b);
+
 
 private:
     QString archivoZip;
     QString respaldo;
     QuaZip zip;
-    QStringList listaArchivos;
+
     QString comentarios;
     QList<TipoArchivo > datos;
-    QStringList datos2;
+
 };
 
 #endif // MANEJOZIP_H
