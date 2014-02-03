@@ -5,32 +5,34 @@
 class TipoArchivo
 {
 public:
-    TipoArchivo();
+
+    TipoArchivo(QString tipo,double tamanio,double comprimido);
+    TipoArchivo(const TipoArchivo &other);
     //nombre del archivo comprimido
-    void setNombreDelArchivo(QString);
-    QString getNombreDelArchivo();
+    void setNombreDelArchivo(QString) ;
+    QString getNombreDelArchivo() const;
     //tipo de archivo comprimido
     void setTipoArchivo(QString);
-    QString getTipoArchivo();
-    //fecha de modificacion del archivo comprimido
-    void setFechaModificacion(QString);
-    QString getFechaModificacion();
-    //crc del archivo comprimido
-    void setCrc(QString);
-    QString getCrc();
+    QString getTipoArchivo() const;
     //tamaño del archivo original
     void setTamanioARchivo(double);
-    double getTamanioArchivo();
+    double getTamanioArchivo() const;
     //tamaño del archivo comprimido
     void setTamanioComprimido(double);
-    double getTamanioComprimido();
+
+    double getTamanioComprimido() const;
+    TipoArchivo & operator = (const TipoArchivo &other){
+        nombreDelArchivo = other.nombreDelArchivo;
+        tipoArchivo = other.tipoArchivo;
+        tamanioArchivo = other.tamanioArchivo;
+        tamanioComprimido = other.tamanioComprimido;
+        return *this;
+    };
+    bool   operator <(const TipoArchivo &other) const { return (nombreDelArchivo < other.getNombreDelArchivo()); };
 
 private:
     QString nombreDelArchivo;
-    QString comentarios;
-    QString tiposArchivo;
-    QString fechaModificacion;
-    QString crc;
+    QString tipoArchivo;
     double tamanioArchivo;
     double tamanioComprimido;
 };

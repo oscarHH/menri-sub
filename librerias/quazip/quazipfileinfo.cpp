@@ -23,7 +23,6 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
 #include "quazipfileinfo.h"
-
 static QFile::Permissions permissionsFromExternalAttr(quint32 externalAttr) {
     quint32 uPerm = (externalAttr & 0xFFFF0000u) >> 16;
     QFile::Permissions perm = 0;
@@ -69,6 +68,7 @@ bool QuaZipFileInfo64::toQuaZipFileInfo(QuaZipFileInfo &info) const
     info.method = method;
     info.dateTime = dateTime;
     info.crc = crc;
+
     if (compressedSize > 0xFFFFFFFFu) {
         info.compressedSize = 0xFFFFFFFFu;
         noOverflow = false;

@@ -1,48 +1,77 @@
 #include "manejozip.h"
 #include <QDebug>
+#include <quazipfileinfo.h>
 ManejoZip::ManejoZip()
 {    
 }
 
+//asigna el nombre del zip
 void ManejoZip::setArchivoZip(QString nombreZip)
 {
     this->archivoZip = nombreZip;
 }
 
 
-QStringList ManejoZip::getListarArchivos()
+//obtiene los datos de cada archivo comprimido
+QList<TipoArchivo > ManejoZip::getListarArchivos()
 {
-    if(!archivoZip.isEmpty())
+    if(!archivoZip.isEmpty()){
         respaldo = archivoZip;
+    }
+
     zip.setZipName(archivoZip);
     //se abre el archivo zip
     zip.open(QuaZip::mdUnzip);
-    QuaZipFile inf(&zip);
+    //clase para obtener informacion de los archivos comprimidos
+    QuaZipFile inf (&zip);
+    //borrar datos de los archivos
     datos.clear();
 
-    //datos = new QList<TipoArchivo>;
+    //agregamos la informacion de cada archivo comprimido
     for(bool more = zip.goToFirstFile();more;more=zip.goToNextFile()){
-        TipoArchivo * tip = new TipoArchivo;
-        tip->setNombreDelArchivo(inf.getActualFileName());
+        TipoArchivo  tip(inf.getActualFileName(),inf.usize(),inf.csize());
+        tip.setTipoArchivo(inf.getActualFileName());
         datos.append(tip);
+
     }
 
-    for(int i=0; i< datos.size()  ;i++){
-        qDebug()<< datos.at(i)->getNombreDelArchivo();
-    }
-
-
-
-
-    listaArchivos = zip.getFileNameList();
     zip.close();
-
-
-
-
-    return listaArchivos;
+    qSort(datos.begin(),datos.end(),qLess<TipoArchivo>());
+    foreach (TipoArchivo a, datos) {
+        qDebug()<<a.getNombreDelArchivo();
+    }
+    return datos;
 }
 
+QStringList ManejoZip::getListarArchivos2(){
+    if(!archivoZip.isEmpty()){
+        respaldo = archivoZip;
+    }
+
+    QString informacion;
+
+    zip.setZipName(archivoZip);
+    //se abre el archivo zip
+    zip.open(QuaZip::mdUnzip);
+    //clase para obtener informacion de los archivos comprimidos
+    QuaZipFile inf (&zip);
+    for(bool more = zip.goToFirstFile();more;more=zip.goToNextFile()){
+        inf.open(QIODevice::ReadOnly);
+        informacion = inf.getActualFileName() + "-" + QString::number(inf.size()) + "-" +QString::number(inf.csize());
+        inf.close();
+        datos2.append(informacion);
+    }
+
+    zip.close();
+    return datos2;
+}
+
+bool ManejoZip::dtcomp(TipoArchivo &a, TipoArchivo &b)
+{
+    return &a.getNombreDelArchivo() < &b.getNombreDelArchivo();
+}
+
+//retorna el comentario del zip
 QString ManejoZip::getComentarios()
 {
     //abre el zip
@@ -58,3 +87,11 @@ QString ManejoZip::getComentarios()
         return "";
     }
 }
+
+//retorna true si se descomprimio
+bool ManejoZip::descomprimir()
+{
+    return true;
+}
+
+
