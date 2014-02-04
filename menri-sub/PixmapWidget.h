@@ -18,7 +18,7 @@ public:
     int grados;
     void setGrados(int grados);
     int getGrados();
-
+    QString getTamanioImagen();
 
 public slots:
     void setZoomFactor( float );

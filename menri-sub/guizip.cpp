@@ -123,7 +123,7 @@ void GuiZip::on_btnAbrir_clicked()
 
         while(!tip.isEmpty()){
             //si es directorio
-            if(tip.at(0).getTipoArchivo() == ("directorio") ){
+            if(tip.at(0).getTipoArchivo() == "directorio" ){
                 AddRoot(tip.at(0).getNombreDelArchivo(),QString::number(tip.at(0).getTamanioArchivo()) ,QString::number(tip.at(0).getTamanioComprimido()),tip.at(0).getTipoArchivo(),true,0);
 
             }else{
@@ -388,5 +388,11 @@ void GuiZip::limpiar()
     ui->btnvisualizar->setEnabled(false);
     ui->txtComentarios->clear();
     ui->treeWidget->clear();
+}
+
+void GuiZip::activar(){
+    ui->btnDescomprimir->setEnabled(true);
+    ui->btnDescomprimirIndividual->setEnabled(true);
+    ui->btnvisualizar->setEnabled(true);
 }
 

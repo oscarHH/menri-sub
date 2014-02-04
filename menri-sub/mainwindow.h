@@ -2,16 +2,18 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "codeeditor.h"
-#include "highlighter.h"
-#include "PixmapWidget.h"
 #include <QListWidget>
 #include <QPushButton>
 #include <QFileInfo>
-#include "guizip.h"
+#include <QLabel>
 #include <QFileDialog>
+#include "guizip.h"
 #include "imagesmodel.h"
 #include "imagesview.h"
+#include "codeeditor.h"
+#include "highlighter.h"
+#include "PixmapWidget.h"
+
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
 class QAction;
@@ -42,12 +44,12 @@ public:
     int posicion_ruta;
     void mandarImagen(QString  nombreImagen);
     bool eventFilter(QObject * watched, QEvent * e);
-
+    QLabel mStatLabel ;
+    QLabel mStatLabel2 ;
 
     void updateActions();
     QFileDialog *abrir;
-
-     ImagesModel *m_imagesModel;
+    ImagesModel *m_imagesModel;
 
 public slots:
     void panelImagen();

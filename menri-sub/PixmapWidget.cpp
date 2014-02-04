@@ -8,8 +8,8 @@
 PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QWidget( parent )
 {
     m_pm = new QPixmap( filename );
-    zoomFactor = 0.3;
-    this->f = zoomFactor;
+    zoomFactor = 0.4;
+    emit(tamanioWidget());
     setMinimumSize(  m_pm->width()*zoomFactor, m_pm->height()*zoomFactor );
     grados = 0;
 }
@@ -31,13 +31,22 @@ int PixmapWidget::getGrados()
     return grados;
 }
 
+QString PixmapWidget::getTamanioImagen()
+{
+    return  QString::number(m_pm->width()) + " x "+ QString::number(m_pm->height());
+}
+
 void PixmapWidget::tamanioWidget(){
+
+    w = m_pm->width()*zoomFactor;
+    h = m_pm->height()*zoomFactor;
 
     if(getGrados() == 90 || getGrados() == 270){
         setMinimumSize( h, w );
     }else{
         setMinimumSize( w, h);
     }
+    repaint();
 }
 
 

@@ -12,7 +12,7 @@
 
 //variables
 float su ;
-QString version = " \t alfa-0.2   18/01/14";
+QString version = " \t alfa-0.2   03/02/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
@@ -39,7 +39,6 @@ MainWindow::MainWindow()
     //coloco el icono a la ventanaprincipal
     //creo una lista para almacenar las imagenes
 
-    //view = new QListWidget;
     m_imageView   = new ImagesView(this);
     m_imagesModel = new ImagesModel(this);
     m_imageView->setModel(m_imagesModel);
@@ -105,15 +104,18 @@ MainWindow::MainWindow()
     mainToolBar->addAction(siguiente);
     mainToolBar->addAction(zoomInAct);
     mainToolBar->addAction(zoomOutAct);
+
     //toolBarArea();
-    addToolBar(Qt::RightToolBarArea, mainToolBar);
+    addToolBar(Qt::BottomToolBarArea, mainToolBar);
+
     //barra de estado
-    QLabel *mStatLabel = new QLabel;
-    QLabel *mStatLabel2 = new QLabel;
-    mStatLabel->setText("hola mundo");
-    mStatLabel2->setText("que tal");
-    statusBar()->addPermanentWidget(mStatLabel2);
-    statusBar()->addPermanentWidget(mStatLabel);
+    //mStatLabel = new QLabel;
+    //mStatLabel2 = new QLabel;
+    //mStatLabel->setText("hola mundo");
+    //mStatLabel2->setText("que tal");
+    mStatLabel.setText("");
+    statusBar()->addPermanentWidget(&mStatLabel2);
+    statusBar()->addPermanentWidget(&mStatLabel);
     setAcceptDrops(true);
     //tamaño de la ventana
     //el programa inicia maximizado
@@ -124,7 +126,6 @@ MainWindow::MainWindow()
     connect(btnSiguiente, SIGNAL(clicked()), this, SLOT(siguienteImagen()));
     connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
     abrir = new QFileDialog();
-
 }
 
 
@@ -141,7 +142,7 @@ void MainWindow::panelImagen()
 }
 
 
-//implementacion del slot para mostrar u ocultar el panel editor
+//slot  mostrar u ocultar el panel editor
 void MainWindow::panelEditor()
 {
 
@@ -228,6 +229,9 @@ void MainWindow::createActions()
     openAct->setShortcut(tr("Ctrl+O"));
     //colocamos un icono al menu
     openAct->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
+
+
+
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
     exitAct = new QAction(tr("&Salir"), this);
@@ -247,13 +251,13 @@ void MainWindow::createActions()
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
     anterior = new QAction(tr("anterior (<)"), this);
-    anterior->setShortcut(Qt::Key_Left);
+    anterior->setShortcut(Qt::ALT +Qt::Key_Left);
     anterior->setEnabled(false);
     anterior->setIcon((QIcon(QPixmap(":/img/iconos/atras.png"))));
     connect(anterior, SIGNAL(triggered()), this, SLOT(anteriorImagen()));
 
     siguiente = new QAction(tr("siguiente (>)"), this);
-    siguiente->setShortcut(Qt::Key_Right);
+    siguiente->setShortcut(Qt::ALT + Qt::Key_Right);
     siguiente->setEnabled(false);
     siguiente->setIcon((QIcon(QPixmap(":/img/iconos/siguiente.png"))));
     connect(siguiente, SIGNAL(triggered()), this, SLOT(siguienteImagen()));
@@ -372,6 +376,7 @@ void MainWindow::mandarImagen(QString nombreImagen)
     scrollArea->setWidgetResizable(true);
     //el scrollArea contiene a pw y dibuja la imagen
     scrollArea->setWidget(pw);
+    mStatLabel.setText("Resolucion: "+pw->getTamanioImagen());
 }
 
 
@@ -477,7 +482,6 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
 
 void MainWindow::siguienteImagen()
 {
-    grados = 0;
     if (posicion_ruta < m_imagesModel->tamanioLista()) {
         posicion_ruta++;
         btnSiguiente->setEnabled(true);
@@ -494,7 +498,6 @@ void MainWindow::siguienteImagen()
         posicion_ruta = m_imagesModel->tamanioLista() - 1;
         btnSiguiente->setEnabled(false);
     }
-
 
 }
 
@@ -549,7 +552,7 @@ void MainWindow::RotarImagen()
     }
 
     pw->setGrados(grados);
-    pw->repaint();
+
 }
 
 void MainWindow::listarScripts()

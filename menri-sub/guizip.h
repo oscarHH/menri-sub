@@ -49,6 +49,7 @@ private:
     void descompreionIndividual(int index,QString archivo,QString rutaDescompresion);
     void visualizarImagen(int index,QString archivo);
     void limpiar();
+    void activar();
     QString respaldo;
     QStringList listaArchivos;
     int posicion ;
