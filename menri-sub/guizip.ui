@@ -24,6 +24,35 @@
    <double>3.000000000000000</double>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1" colspan="2">
+    <widget class="QPlainTextEdit" name="txtComentarios">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+       <horstretch>30</horstretch>
+       <verstretch>30</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>382</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="btnAbrir">
+     <property name="text">
+      <string>Abrir</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -38,24 +67,17 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="btnAbrir">
-     <property name="text">
-      <string>Abrir</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QPushButton" name="btnDescomprimirIndividual">
+   <item row="3" column="3">
+    <widget class="QPushButton" name="btnvisualizar">
      <property name="enabled">
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>Descomprimir</string>
+      <string>visualizar</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
+   <item row="3" column="1">
     <widget class="QPushButton" name="btnDescomprimir">
      <property name="enabled">
       <bool>false</bool>
@@ -65,13 +87,13 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
-    <widget class="QPushButton" name="btnvisualizar">
+   <item row="3" column="2">
+    <widget class="QPushButton" name="btnDescomprimirIndividual">
      <property name="enabled">
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>visualizar</string>
+      <string>Descomprimir 1 archivo</string>
      </property>
     </widget>
    </item>
@@ -123,25 +145,17 @@
      </column>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QPlainTextEdit" name="txtComentarios">
-     <property name="enabled">
-      <bool>true</bool>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="brnDetener">
+     <property name="text">
+      <string>detener</string>
      </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>30</horstretch>
-       <verstretch>30</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>382</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
      </property>
     </widget>
    </item>

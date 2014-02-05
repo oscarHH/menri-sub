@@ -22,13 +22,13 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     highlighter.cpp \
     PixmapWidget.cpp \
-    guizip.cpp \
     visor.cpp \
     imageloader.cpp \
     imagesmodel.cpp \
     imagesview.cpp \
     manejozip.cpp \
-    tipoarchivo.cpp
+    tipoarchivo.cpp \
+    guizip.cpp
 
 
 
@@ -36,21 +36,21 @@ HEADERS  += mainwindow.h \
     codeeditor.h \
     highlighter.h \
     PixmapWidget.h \
-    guizip.h \
     visor.h \
     imageloader.h \
     imagesmodel.h \
     imagesview.h \
     manejozip.h \
-    tipoarchivo.h
+    tipoarchivo.h \
+    guizip.h
 
 
 RESOURCES += \
     recursos.qrc
 
 FORMS += \
-    guizip.ui \
-    visor.ui
+    visor.ui \
+    guizip.ui
 
 OTHER_FILES += \
     Menri-sub.txt

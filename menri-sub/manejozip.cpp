@@ -1,14 +1,18 @@
 #include "manejozip.h"
 #include <QDebug>
 #include <quazipfileinfo.h>
-ManejoZip::ManejoZip()
-{    
+#include<QMessageBox>
+ManejoZip::ManejoZip(QObject*parent):QThread(parent)
+{
+    detener = false;
 }
-
+bool det  = true;
 //asigna el nombre del zip
 void ManejoZip::setArchivoZip(QString nombreZip)
 {
     this->archivoZip = nombreZip;
+    this->detener =false;
+
 }
 
 
@@ -38,6 +42,8 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
     zip.close();
     //ordenando los datos
     qSort(datos.begin(),datos.end(),qLess<TipoArchivo>());
+    qDebug()<<zip.getZipError();
+    this->totalArchivos = datos.size();
     return datos;
 }
 
@@ -53,6 +59,7 @@ QString ManejoZip::getComentarios()
     //obtiene el comentario
     QString comentario = zip.getComment();
     zip.close();
+    qDebug()<<zip.getZipError();
     if (!comentario.isEmpty() ){
         return comentario;
     }else{
@@ -60,10 +67,62 @@ QString ManejoZip::getComentarios()
     }
 }
 
-//retorna true si se descomprimio
-bool ManejoZip::descomprimir()
+
+void ManejoZip::setRutaDescompresion(QString rutaDescompresion)
 {
-    return true;
+    this->rutaDescompresion = rutaDescompresion;
 }
+
+void ManejoZip::setDetener(bool detener)
+{
+    this->detener = detener;
+}
+
+void ManejoZip::detenerHilo()
+{
+    mutex.lock();
+    this->detener = true;
+    mutex.unlock();
+}
+
+
+
+void ManejoZip::run()
+{
+
+
+    unsigned int i =0;
+    qDebug()<<totalArchivos;
+    QByteArray ba;
+    zip.open(QuaZip::mdUnzip);
+    for(bool more = zip.goToFirstFile();more  ;more = zip.goToNextFile()){
+        mutex.lock();
+        if(detener){
+           detener = false;
+            mutex.unlock();
+            break;
+        }
+
+        QString filePath = zip.getCurrentFileName();
+        QuaZipFile zFile( zip.getZipName(), filePath );
+        zFile.open( QIODevice::ReadOnly );
+        ba =zFile.read(zFile.size());
+        zFile.close();
+        //la ruta donde se guardara + el nobre del archivo
+        QFile dstFile( rutaDescompresion+filePath );
+        dstFile.open( QIODevice::WriteOnly);
+        dstFile.write( ba);
+        dstFile.close();
+        ba.clear();
+        ++i;
+        mutex.unlock();
+        emit valor(i);
+    }
+    zip.close();
+
+    qDebug()<<detener;
+    qDebug()<<"fin";
+}
+
 
 

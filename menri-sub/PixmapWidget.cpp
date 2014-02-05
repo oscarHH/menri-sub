@@ -8,7 +8,8 @@
 PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QWidget( parent )
 {
     m_pm = new QPixmap( filename );
-    zoomFactor = 0.4;
+    this->f =0.4f;
+    zoomFactor = f;
     emit(tamanioWidget());
     setMinimumSize(  m_pm->width()*zoomFactor, m_pm->height()*zoomFactor );
     grados = 0;

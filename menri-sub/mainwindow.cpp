@@ -95,7 +95,7 @@ MainWindow::MainWindow()
     //titulo de la ventana
     setWindowTitle(tr("Menri-sub  ") + version);
     mandarImagen(":/img/iconos/portada.png");
-
+    pw->setZoomFactor(0.3f);
     templateDocker->setVisible(false);
     //menu
     QToolBar * mainToolBar = addToolBar(tr("Main Toolbar"));
@@ -189,6 +189,7 @@ void MainWindow::zoomIn()
     zoom  = pw->f + 0.05f;
     //pasamos el valor del zoom
     pw->setZoomFactor(zoom);
+    qDebug()<<zoom;
 }
 
 //implementacion del slot zoom -
@@ -208,7 +209,7 @@ void MainWindow::zoomOut()
 //implementacion del slot tamaño normal de la imagen
 void MainWindow::normalSize()
 {
-    zoom = 0.3f;
+    zoom = 0.4f;
     pw->setZoomFactor(zoom);
 }
 
