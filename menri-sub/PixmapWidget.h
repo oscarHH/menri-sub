@@ -1,12 +1,13 @@
 #ifndef PIXMAPWIDGET_H
 #define PIXMAPWIDGET_H
 
-#include <QWidget>
+//#include <QWidget>
+#include <QLabel>
 #include <QString>
 
 class QPixmap;
 
-class PixmapWidget : public QWidget
+class PixmapWidget : public QLabel
 {
     Q_OBJECT
 

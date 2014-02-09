@@ -13,6 +13,7 @@
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "PixmapWidget.h"
+#include <QImageIOPlugin>
 
 QT_BEGIN_NAMESPACE
 class PixmapWidget;

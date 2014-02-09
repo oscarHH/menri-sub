@@ -5,7 +5,8 @@
 #include "PixmapWidget.h"
 #include "mainwindow.h"
 #include <QGraphicsPixmapItem>
-PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QWidget( parent )
+
+PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QLabel( parent )
 {
     m_pm = new QPixmap( filename );
     this->f =0.4f;
@@ -13,6 +14,7 @@ PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QWidget
     emit(tamanioWidget());
     setMinimumSize(  m_pm->width()*zoomFactor, m_pm->height()*zoomFactor );
     grados = 0;
+
 }
 
 
@@ -24,6 +26,7 @@ PixmapWidget::~PixmapWidget()
 void PixmapWidget::setGrados(int grados)
 {
     this->grados = grados;
+
     tamanioWidget();
 }
 
@@ -125,6 +128,8 @@ void PixmapWidget::paintEvent( QPaintEvent * /*event*/ )
 
     p.rotate(getGrados());
     p.drawPixmap( -50, -50, 100, 100, *m_pm);
+
+
 }
 
 

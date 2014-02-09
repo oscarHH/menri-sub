@@ -24,6 +24,7 @@ QProcess proceso;
 MainWindow::MainWindow()
 {
     guizip = new GuiZip();
+
     //contenedor
     QWidget * w = new QWidget;
     //layout verticcal
@@ -126,6 +127,7 @@ MainWindow::MainWindow()
     connect(btnSiguiente, SIGNAL(clicked()), this, SLOT(siguienteImagen()));
     connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
     abrir = new QFileDialog();
+
 }
 
 
@@ -161,7 +163,7 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg"), 0, QFileDialog::DontUseNativeDialog);
+    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif"), 0, QFileDialog::DontUseNativeDialog);
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
@@ -209,7 +211,7 @@ void MainWindow::zoomOut()
 //implementacion del slot tamaño normal de la imagen
 void MainWindow::normalSize()
 {
-    zoom = 0.4f;
+    zoom = 1.0f;
     pw->setZoomFactor(zoom);
 }
 
@@ -371,6 +373,7 @@ void MainWindow::updateActions()
 //metodo que recibe la ruta de la imagen y la manda para poder mostrar
 void MainWindow::mandarImagen(QString nombreImagen)
 {
+
     grados = 0;
     pw = new PixmapWidget(nombreImagen,  scrollArea);
     //asigamos que se pueda redimensionar
@@ -419,7 +422,6 @@ void MainWindow::dropEvent(QDropEvent * event)
     for (int i = 0 ; i < lista.size(); i++) {
         //obtenemos la ruta del archivo
         fileName = lista.at(i).toLocalFile();
-        //si la ruta contiene % se elimina el numero 25 que aparece
         // qDebug()<<fileName;
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
@@ -427,7 +429,7 @@ void MainWindow::dropEvent(QDropEvent * event)
         //sera bienvenido al codigo xD
 
         //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
-        if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd"))
+        if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd") || info1.completeSuffix().endsWith("gif"))
            ) {
             //se agreaga la imagen a la lista
             respaldo.append(fileName);
@@ -441,7 +443,7 @@ void MainWindow::dropEvent(QDropEvent * event)
                 if (direc.isFile()) {
                     dato = direc.absoluteFilePath();
                     info1.setFile(dato);
-                    if ((dato.endsWith(".jpg") || dato.endsWith(".png") || dato.endsWith(".jpeg") || dato.endsWith(".bmp") || dato.endsWith(".svg") || dato.endsWith(".psd"))
+                    if ((dato.endsWith(".jpg") || dato.endsWith(".png") || dato.endsWith(".jpeg") || dato.endsWith(".bmp") || dato.endsWith(".svg") || dato.endsWith(".psd") || dato.endsWith(".gif"))
                         && (info1.isFile() == true)) {
                         respaldo.append(dato);
                     }

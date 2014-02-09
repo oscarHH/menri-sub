@@ -42,7 +42,6 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
     zip.close();
     //ordenando los datos
     qSort(datos.begin(),datos.end(),qLess<TipoArchivo>());
-    qDebug()<<zip.getZipError();
     this->totalArchivos = datos.size();
     return datos;
 }
@@ -62,9 +61,8 @@ QString ManejoZip::getComentarios()
     qDebug()<<zip.getZipError();
     if (!comentario.isEmpty() ){
         return comentario;
-    }else{
-        return "";
     }
+    return "";
 }
 
 
@@ -73,10 +71,15 @@ void ManejoZip::setRutaDescompresion(QString rutaDescompresion)
     this->rutaDescompresion = rutaDescompresion;
 }
 
-void ManejoZip::setDetener(bool detener)
-{
-    this->detener = detener;
+void ManejoZip::setOpcion(int opcion){
+    this->opcion = opcion;
 }
+
+
+void ManejoZip::setNombreArchivo(QString nombreArchivo){
+    this->nombreArchivo = nombreArchivo;
+}
+
 
 void ManejoZip::detenerHilo()
 {
@@ -89,39 +92,89 @@ void ManejoZip::detenerHilo()
 
 void ManejoZip::run()
 {
-
-
     unsigned int i =0;
-    qDebug()<<totalArchivos;
     QByteArray ba;
     zip.open(QuaZip::mdUnzip);
-    for(bool more = zip.goToFirstFile();more  ;more = zip.goToNextFile()){
-        mutex.lock();
-        if(detener){
-           detener = false;
+    /*
+    *opcion
+    * 1.- descomprimir todo
+    * 2.- descompresion individual
+    * 3.- visualizar archivo
+    */
+
+    switch (opcion){
+    case 1:
+        for(bool more = zip.goToFirstFile();more  ;more = zip.goToNextFile()){
+            mutex.lock();
+            if(detener){
+                detener = false;
+                mutex.unlock();
+                break;
+            }
+            QString filePath = zip.getCurrentFileName();
+            QuaZipFile zFile( zip.getZipName(), filePath );
+            zFile.open( QIODevice::ReadOnly );
+            ba =zFile.read(zFile.size());
+            zFile.close();
+            //la ruta donde se guardara + el nobre del archivo
+            QFile dstFile( rutaDescompresion+filePath );
+            dstFile.open( QIODevice::WriteOnly);
+            dstFile.write( ba);
+            dstFile.close();
+            ba.clear();
+            ++i;
             mutex.unlock();
-            break;
+            emit valor(i);
         }
 
-        QString filePath = zip.getCurrentFileName();
-        QuaZipFile zFile( zip.getZipName(), filePath );
-        zFile.open( QIODevice::ReadOnly );
-        ba =zFile.read(zFile.size());
+        break;
+
+    case 2:
+    {
+        emit valor(1);
+        mutex.lock();
+        QuaZipFile zFile(zip.getZipName(),nombreArchivo);
+        zFile.open(QIODevice::ReadOnly);
+        ba = zFile.read(zFile.size());
         zFile.close();
         //la ruta donde se guardara + el nobre del archivo
-        QFile dstFile( rutaDescompresion+filePath );
+        QFile dstFile( rutaDescompresion+nombreArchivo );
         dstFile.open( QIODevice::WriteOnly);
         dstFile.write( ba);
         dstFile.close();
         ba.clear();
-        ++i;
         mutex.unlock();
-        emit valor(i);
+        emit valor(3);
+    }
+        break;
+
+    case 3:
+    {
+        QPixmap p;
+        emit valor(1);
+        mutex.lock();
+
+
+        QuaZipFile zFile(zip.getZipName(),nombreArchivo);
+        zFile.open(QIODevice::ReadOnly);
+        ba =zFile.read(zFile.size());
+        if(p.loadFromData(ba,"") ){
+            emit imagen( p);
+        }
+
+        zFile.close();
+        ba.clear();
+        mutex.unlock();
+        emit valor(3);
+    }
+        break;
+
+    default:
+        break;
+
     }
     zip.close();
 
-    qDebug()<<detener;
-    qDebug()<<"fin";
 }
 
 

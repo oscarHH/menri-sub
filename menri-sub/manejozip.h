@@ -6,6 +6,7 @@
 #include <QList>
 #include <QThread>
 #include "tipoarchivo.h"
+#include <QPixmap>
 
 #define MANEJOZIP_H
 
@@ -15,14 +16,13 @@ class ManejoZip: public QThread
 
 public:
     ManejoZip(QObject*);
-    void setArchivoZip(QString nombreZip);
     QList<TipoArchivo > getListarArchivos();
-    QString getComentarios();
-    bool descomprimir(QString archivo,QString rutaDescompresion);
-    bool descomprimirIndividual();
-    void setRutaDescompresion(QString rutaDescompresion);
+    QString getComentarios(); 
     int totalArchivos;
-    void setDetener(bool);
+    void setArchivoZip(QString nombreZip);
+    void setRutaDescompresion(QString rutaDescompresion);
+    void setOpcion(int);
+    void setNombreArchivo(QString);
     void detenerHilo();
 
 protected:
@@ -37,8 +37,12 @@ private:
     QList<TipoArchivo > datos;
     volatile bool detener;
     QMutex mutex;
+    QString nombreArchivo;
+    int opcion;
+
 signals:
     void valor(unsigned int);
+    void imagen(QPixmap );
 
 };
 

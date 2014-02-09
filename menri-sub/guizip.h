@@ -9,9 +9,14 @@
 #include <QMessageBox>
 #include "visor.h"
 #include "manejozip.h"
+#include <QtWebKit>
+#include <QtWebKitWidgets/QWebView>
 
 QT_BEGIN_NAMESPACE
 class visor;
+//class WebCore;
+class webview;
+
 QT_END_NAMESPACE
 
 namespace Ui {
@@ -36,7 +41,7 @@ private slots:
     void porcentaje(unsigned int i);
     void on_brnDetener_clicked();
     void on_treeWidget_itemClicked(QTreeWidgetItem *item /*int column*/);
-
+    void imagen(QPixmap p);
 private:
     Ui::GuiZip *ui;
     void limpiar();
@@ -50,10 +55,12 @@ private:
     ManejoZip *fileZip;
     QTreeWidgetItem *itm;
     QList <TipoArchivo> tip;
-    QList <TipoArchivo> respaldoDatosComprimidos;
+    QList <TipoArchivo> respalcarpertas;
     QMessageBox *msgBox;
     visor *vs;
     QPixmap p;
+    QString archivoIndividualcomprimido;
+    QString tipoArchivo;
 };
 
 #endif // GUIZIP_H

@@ -7,7 +7,7 @@ visor::visor(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags( Qt::FramelessWindowHint);
-
+    setStyleSheet("background-color: rgba(255, 255, 255, 60);");
 }
 
 visor::~visor()
@@ -21,7 +21,7 @@ void visor::cargarImagen(QPixmap img)
     this->imagenVista = new  QPixmap(img);
     int w = ui->lblVisor->width();
     int h = ui->lblVisor->height();
-    ui->lblVisor->setPixmap(imagenVista->scaled(w,h,Qt::IgnoreAspectRatio));
+    ui->lblVisor->setPixmap(imagenVista->scaled(w,h,Qt::KeepAspectRatio));
 
 }
 

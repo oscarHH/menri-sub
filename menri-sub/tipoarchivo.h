@@ -34,7 +34,7 @@ private:
     QString nombreDelArchivo;
     QString tipoArchivo;
     double tamanioArchivo;
-    double tamanioComprimido;
+    double tamanioComprimido;  
 };
 
 #endif // TIPOARCHIVO_H

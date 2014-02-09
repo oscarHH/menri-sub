@@ -26,6 +26,7 @@ void TipoArchivo::setTipoArchivo(QString tipoArchivo )
 {
     this->tipoArchivo =tipoArchivo ;
 }
+
 QString TipoArchivo::getTipoArchivo()const
 {
     if(tipoArchivo.endsWith("/") || tipoArchivo.endsWith("\\") ){
@@ -67,6 +68,7 @@ void TipoArchivo::setTamanioComprimido(double tamanioComprimido )
 {
     this->tamanioComprimido  = tamanioComprimido ;
 }
+
 
 double TipoArchivo::getTamanioComprimido() const
 {
