@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
+    <width>955</width>
     <height>441</height>
    </rect>
   </property>
@@ -92,34 +92,6 @@
    </property>
    <property name="text">
     <string>detener</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="txtComentarios">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>9</y>
-     <width>382</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-     <horstretch>30</horstretch>
-     <verstretch>30</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>382</width>
-     <height>30</height>
-    </size>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="btnvisualizar">
@@ -253,6 +225,16 @@
     <url>
      <string>about:blank</string>
     </url>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="txtComentarios">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>501</width>
+     <height>21</height>
+    </rect>
    </property>
   </widget>
  </widget>

@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     imagesview.cpp \
     manejozip.cpp \
     tipoarchivo.cpp \
-    guizip.cpp
+    guizip.cpp \
+    configuraciones.cpp
 
 
 
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     imagesview.h \
     manejozip.h \
     tipoarchivo.h \
-    guizip.h
+    guizip.h \
+    configuraciones.h
 
 
 RESOURCES += \
@@ -51,7 +53,8 @@ RESOURCES += \
 
 FORMS += \
     visor.ui \
-    guizip.ui
+    guizip.ui \
+    configuraciones.ui
 
 OTHER_FILES += \
     Menri-sub.txt

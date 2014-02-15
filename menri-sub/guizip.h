@@ -42,6 +42,8 @@ private slots:
     void on_brnDetener_clicked();
     void on_treeWidget_itemClicked(QTreeWidgetItem *item /*int column*/);
     void imagen(QPixmap p);
+    void on_treeWidget_clicked(const QModelIndex &index);
+
 private:
     Ui::GuiZip *ui;
     void limpiar();

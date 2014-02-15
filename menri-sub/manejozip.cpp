@@ -2,9 +2,13 @@
 #include <QDebug>
 #include <quazipfileinfo.h>
 #include<QMessageBox>
+
+
+
 ManejoZip::ManejoZip(QObject*parent):QThread(parent)
 {
     detener = false;
+
 }
 bool det  = true;
 //asigna el nombre del zip
@@ -22,7 +26,7 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
     if(!archivoZip.isEmpty()){
         respaldo = archivoZip;
     }
-
+    int i =1;
     zip.setZipName(archivoZip);
     //se abre el archivo zip
     zip.open(QuaZip::mdUnzip);
@@ -30,6 +34,12 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
     QuaZipFile inf (&zip);
     //borrar datos de los archivos
     datos.clear();
+    QStringList dat = zip.getFileNameList();
+    foreach (QString n, dat) {
+        qDebug()<<n;
+        i++;
+    }
+
 
     //agregamos la informacion de cada archivo comprimido
     for(bool more = zip.goToFirstFile();more;more=zip.goToNextFile()){
@@ -38,10 +48,18 @@ QList<TipoArchivo > ManejoZip::getListarArchivos()
         datos.append(tip);
 
     }
+    qDebug()<<i;
     //cierra zip
     zip.close();
+
+
+
     //ordenando los datos
     qSort(datos.begin(),datos.end(),qLess<TipoArchivo>());
+
+    /*foreach (TipoArchivo tp, datos) {
+        qDebug()<< "ren"<<tp.getNombreDelArchivo();
+    }*/
     this->totalArchivos = datos.size();
     return datos;
 }
@@ -54,13 +72,14 @@ QString ManejoZip::getComentarios()
     //abre el zip
     zip.open(QuaZip::mdUnzip);
     //accionamos la codificacion del comentario
-    zip.setCommentCodec(QTextCodec::codecForLocale());
+    //zip.setCommentCodec(QTextCodec::codecForName("UTF-8"));
     //obtiene el comentario
-    QString comentario = zip.getComment();
+    QString comentario =  zip.getComment() ;
     zip.close();
-    qDebug()<<zip.getZipError();
+
+
     if (!comentario.isEmpty() ){
-        return comentario;
+        return comentario.toLower();
     }
     return "";
 }
@@ -118,7 +137,7 @@ void ManejoZip::run()
             zFile.close();
             //la ruta donde se guardara + el nobre del archivo
             QFile dstFile( rutaDescompresion+filePath );
-            dstFile.open( QIODevice::WriteOnly);
+            dstFile.open( QIODevice::ReadWrite);
             dstFile.write( ba);
             dstFile.close();
             ba.clear();

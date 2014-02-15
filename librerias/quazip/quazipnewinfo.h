@@ -2,22 +2,21 @@
 #define QUA_ZIPNEWINFO_H
 
 /*
-Copyright (C) 2005-2014 Sergey A. Tachenov
+Copyright (C) 2005-2011 Sergey A. Tachenov
 
-This file is part of QuaZIP.
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
 
-QuaZIP is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-QuaZIP is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 See COPYING file for the full LGPL text.
 
@@ -26,7 +25,6 @@ quazip/(un)zip.h files for details, basically it's zlib license.
  **/
 
 #include <QDateTime>
-#include <QFile>
 #include <QString>
 
 #include "quazip_global.h"
@@ -36,14 +34,6 @@ quazip/(un)zip.h files for details, basically it's zlib license.
  * ZIP archive. At least name should be set to something correct before
  * passing this structure to
  * QuaZipFile::open(OpenMode,const QuaZipNewInfo&,int,int,bool).
- *
- * Zip64 support of this structure is slightly limited: in the raw mode (when
- * a pre-compressed file is written into a ZIP file as-is), it is necessary
- * to specify the uncompressed file size and the appropriate field is 32 bit.
- * Since the raw mode is used extremely rare, there is no real need to have
- * a separate QuaZipNewInfo64 structure like QuaZipFileInfo64. It may be added
- * in the future though, if there is a demand for the raw mode with zip64
- * archives.
  **/
 struct QUAZIP_EXPORT QuaZipNewInfo {
   /// File name.

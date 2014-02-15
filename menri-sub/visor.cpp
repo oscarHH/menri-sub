@@ -8,6 +8,7 @@ visor::visor(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags( Qt::FramelessWindowHint);
     setStyleSheet("background-color: rgba(255, 255, 255, 60);");
+
 }
 
 visor::~visor()

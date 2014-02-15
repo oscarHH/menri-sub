@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     img = a.arguments();
 
 
+
     //QString plataforma = QApplication::platformName();
     MainWindow w;
 

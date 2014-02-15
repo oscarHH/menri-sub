@@ -2,22 +2,21 @@
 #define QUA_ZIPFILE_H
 
 /*
-Copyright (C) 2005-2014 Sergey A. Tachenov
+Copyright (C) 2005-2011 Sergey A. Tachenov
 
-This file is part of QuaZIP.
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
 
-QuaZIP is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-QuaZIP is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 See COPYING file for the full LGPL text.
 
@@ -85,6 +84,7 @@ class QUAZIP_EXPORT QuaZipFile: public QIODevice {
     /// Implementation of the QIODevice::writeData().
     qint64 writeData(const char *data, qint64 maxSize);
   public:
+
     /// Constructs a QuaZipFile instance.
     /** You should use setZipName() and setFileName() or setZip() before
      * trying to call open() on the constructed object.
@@ -427,22 +427,9 @@ class QUAZIP_EXPORT QuaZipFile: public QIODevice {
      *
      * File must be open for reading before calling this function.
      *
-     * \return \c false in the case of an error.
-     *
-     * This function doesn't support zip64, but will still work fine on zip64
-     * archives if file sizes are below 4 GB, otherwise the values will be set
-     * as if converted using QuaZipFileInfo64::toQuaZipFileInfo().
-     *
-     * \sa getFileInfo(QuaZipFileInfo64*)
+     * Returns \c false in the case of an error.
      **/
     bool getFileInfo(QuaZipFileInfo *info);
-    /// Gets information about current file with zip64 support.
-    /**
-     * @overload
-     *
-     * \sa getFileInfo(QuaZipFileInfo*)
-     */
-    bool getFileInfo(QuaZipFileInfo64 *info);
     /// Closes the file.
     /** Call getZipError() to determine if the close was successful.
      **/

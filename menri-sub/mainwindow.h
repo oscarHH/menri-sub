@@ -44,7 +44,6 @@ public:
     //QPixmap *icon_to_be_shown;
     int posicion_ruta;
     void mandarImagen(QString  nombreImagen);
-    bool eventFilter(QObject * watched, QEvent * e);
     QLabel mStatLabel ;
     QLabel mStatLabel2 ;
 
@@ -69,6 +68,7 @@ public slots:
     void RotarImagen();
     void listarScripts();
 
+    void cambiarImagen(bool tev);
 signals:
     //void	itemClicked(QListWidgetItem * item);
     //metodos a implementar

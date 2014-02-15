@@ -12,7 +12,7 @@
 
 //variables
 float su ;
-QString version = " \t alfa-0.2   03/02/14";
+QString version = " \t alfa-0.2   14/02/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 int grados = 0;
@@ -126,6 +126,7 @@ MainWindow::MainWindow()
     connect(btnAnterior, SIGNAL(clicked()), this, SLOT(anteriorImagen()));
     connect(btnSiguiente, SIGNAL(clicked()), this, SLOT(siguienteImagen()));
     connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
+    connect (m_imageView,SIGNAL(cambiarImagen(bool)),this,SLOT(cambiarImagen(bool)));
     abrir = new QFileDialog();
 
 }
@@ -259,6 +260,7 @@ void MainWindow::createActions()
     anterior->setIcon((QIcon(QPixmap(":/img/iconos/atras.png"))));
     connect(anterior, SIGNAL(triggered()), this, SLOT(anteriorImagen()));
 
+
     siguiente = new QAction(tr("siguiente (>)"), this);
     siguiente->setShortcut(Qt::ALT + Qt::Key_Right);
     siguiente->setEnabled(false);
@@ -363,7 +365,7 @@ void MainWindow::updateActions()
     btnLimpiar->setEnabled(true);
     limpiar->setEnabled(true);
     //view->installEventFilter(this);
-    m_imageView->installEventFilter(this);
+    //m_imageView->installEventFilter(this);
     //view->setEnabled(true);
     m_imageView->setEnabled(true);
     scrollArea->setEnabled(true);
@@ -416,7 +418,8 @@ void MainWindow::dropEvent(QDropEvent * event)
 
     lista = event->mimeData()->urls();
     QString fileName = "";
-
+    QUrl s("file:///C:/Users/oscar/Videos/01.いつもこの場所で  .mp3");
+    qDebug()<< s.toLocalFile();
 
     //recorremos la lista
     for (int i = 0 ; i < lista.size(); i++) {
@@ -456,6 +459,8 @@ void MainWindow::dropEvent(QDropEvent * event)
     if (m_imagesModel->tamanioLista() <= 0) {
         mandarImagen(respaldo.at(0));
     }
+
+    qDebug()<<lista.size();
     respaldo.clear();
     updateActions();
 }
@@ -525,6 +530,7 @@ void MainWindow::anteriorImagen()
         posicion_ruta = 0;
         btnAnterior->setEnabled(false);
     }
+
 }
 
 void MainWindow::limpiar_lista()
@@ -544,6 +550,7 @@ void MainWindow::limpiar_lista()
     m_imageView->setEnabled(false);
     scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
+     posicion_ruta =0;
 }
 
 void MainWindow::RotarImagen()
@@ -569,20 +576,14 @@ void MainWindow::listarScripts()
     guizip->show();
 }
 
-
-//metodo para los eventos
-bool MainWindow::eventFilter(QObject * watched, QEvent * e)
+void MainWindow::cambiarImagen(bool tev)
 {
-    if (watched == m_imageView && e->type() == QEvent::KeyPress) {
-        QKeyEvent * ke = static_cast<QKeyEvent * >(e);
-
-        if (ke->key() == Qt::Key_Up) {
-            anteriorImagen();
-            return true;
-        } else if (ke->key() == Qt::Key_Down) {
-            siguienteImagen();
-            return true;
-        }
+    if(tev){
+        anteriorImagen();
+    }else{
+       siguienteImagen();
     }
-    return QWidget::eventFilter(watched, e);
 }
+
+
+
