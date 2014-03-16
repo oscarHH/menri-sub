@@ -12,12 +12,14 @@ public:
 protected:
     void contextMenuEvent( QContextMenuEvent *event );
     void keyPressEvent( QKeyEvent *event );
+    void keyReleaseEvent(QKeyEvent *event);
     void paintEvent( QPaintEvent *event );
 
 private slots:
     void removeSelectedImages();
 
-
+signals:
+    void cambiarImagen(bool);
 };
 
 #endif // IMAGESVIEW_H

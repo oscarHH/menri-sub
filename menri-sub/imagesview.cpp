@@ -17,6 +17,8 @@ ImagesView::ImagesView(QWidget *parent)
         setGridSize( QSize(200, 200) );
         setSpacing( 0 );
         setSelectionMode( QAbstractItemView::SingleSelection );
+
+
 }
 
 void ImagesView::removeSelectedImages()
@@ -61,8 +63,29 @@ void ImagesView::keyPressEvent( QKeyEvent *event )
         removeSelectedImages();
         return;
     }
+
     QListView::keyPressEvent( event );
 }
+
+void ImagesView::keyReleaseEvent(QKeyEvent *event )
+{
+    if (event->key() == Qt::Key_Up) {
+        emit cambiarImagen(true);
+        return;
+    }
+
+    if (event->key() == Qt::Key_Down) {
+        emit cambiarImagen(false);
+        return;
+    }
+
+
+
+    QListView::keyPressEvent( event );
+}
+
+
+
 
 void ImagesView::paintEvent( QPaintEvent *event )
 {

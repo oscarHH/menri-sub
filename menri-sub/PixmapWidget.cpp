@@ -5,13 +5,18 @@
 #include "PixmapWidget.h"
 #include "mainwindow.h"
 #include <QGraphicsPixmapItem>
-PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QWidget( parent )
+#include <QMimeData>
+PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QLabel( parent )
 {
     m_pm = new QPixmap( filename );
-    zoomFactor = 0.3;
-    this->f = zoomFactor;
+    this->f =0.4f;
+    zoomFactor = f;
+    emit(tamanioWidget());
     setMinimumSize(  m_pm->width()*zoomFactor, m_pm->height()*zoomFactor );
     grados = 0;
+    setAcceptDrops(true);
+
+
 }
 
 
@@ -23,6 +28,7 @@ PixmapWidget::~PixmapWidget()
 void PixmapWidget::setGrados(int grados)
 {
     this->grados = grados;
+
     tamanioWidget();
 }
 
@@ -31,13 +37,22 @@ int PixmapWidget::getGrados()
     return grados;
 }
 
+QString PixmapWidget::getTamanioImagen()
+{
+    return  QString::number(m_pm->width()) + " x "+ QString::number(m_pm->height());
+}
+
 void PixmapWidget::tamanioWidget(){
+
+    w = m_pm->width()*zoomFactor;
+    h = m_pm->height()*zoomFactor;
 
     if(getGrados() == 90 || getGrados() == 270){
         setMinimumSize( h, w );
     }else{
         setMinimumSize( w, h);
     }
+    repaint();
 }
 
 
@@ -115,6 +130,8 @@ void PixmapWidget::paintEvent( QPaintEvent * /*event*/ )
 
     p.rotate(getGrados());
     p.drawPixmap( -50, -50, 100, 100, *m_pm);
+
+
 }
 
 
@@ -124,6 +141,28 @@ void PixmapWidget::wheelEvent( QWheelEvent *event )
     this->f = zoomFactor + 0.001*event->delta();
     if( this->f < 32.0/m_pm->width() ){
         this->f = 32.0/m_pm->width();
+
     }
     setZoomFactor( this->f );
+}
+
+void PixmapWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+
+}
+
+void PixmapWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+
+}
+
+void PixmapWidget::dropEvent(QDropEvent *event)
+{
+
+}
+
+void PixmapWidget::startDrag(Qt::DropActions supportedActions)
+{
+
+
 }

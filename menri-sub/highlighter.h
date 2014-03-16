@@ -28,15 +28,26 @@ private:
     };
     QVector<HighlightingRule> highlightingRules;
 
-    QRegExp commentStartExpression;
-    QRegExp commentEndExpression;
-
     QTextCharFormat keywordFormat;
     QTextCharFormat classFormat;
+
+    //cajas cajas de texto
+    //QRegExp inicajatexto;
+    //QRegExp finalCajaTexto;
+    QTextCharFormat unalinea;
+    //QTextCharFormat variaslineas;
+
+
+    //comentarios de traduccion
+    //QRegExp commentStartExpression;
+    //QRegExp commentEndExpression;
+    //esta en una linea
     QTextCharFormat singleLineCommentFormat;
-    QTextCharFormat multiLineCommentFormat;
-    QTextCharFormat quotationFormat;
-    QTextCharFormat functionFormat;
+    //varias lineas
+    //QTextCharFormat multiLineCommentFormat;
+
+    //QTextCharFormat quotationFormat;
+    //QTextCharFormat functionFormat;
 };
 //! [0]
 

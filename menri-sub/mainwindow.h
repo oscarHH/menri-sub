@@ -2,16 +2,20 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "codeeditor.h"
-#include "highlighter.h"
-#include "PixmapWidget.h"
 #include <QListWidget>
 #include <QPushButton>
 #include <QFileInfo>
-#include "guizip.h"
+#include <QLabel>
 #include <QFileDialog>
+#include "guizip.h"
 #include "imagesmodel.h"
 #include "imagesview.h"
+#include "codeeditor.h"
+#include "highlighter.h"
+#include "PixmapWidget.h"
+#include <QImageIOPlugin>
+#include "configuraciones.h"
+
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
 class QAction;
@@ -26,6 +30,7 @@ class GuiZip;
 class ImagesView;
 class ImagesModel;
 class QSettings;
+//class Configuraciones;
 QT_END_NAMESPACE
 
 //![0]
@@ -37,17 +42,16 @@ public:
 
 
     MainWindow();
-    ~MainWindow(){}
+    ~MainWindow();
     //QPixmap *icon_to_be_shown;
     int posicion_ruta;
     void mandarImagen(QString  nombreImagen);
-    bool eventFilter(QObject * watched, QEvent * e);
-
+    QLabel mStatLabel ;
+    QLabel mStatLabel2 ;
 
     void updateActions();
     QFileDialog *abrir;
-
-     ImagesModel *m_imagesModel;
+    ImagesModel *m_imagesModel;
 
 public slots:
     void panelImagen();
@@ -65,7 +69,8 @@ public slots:
     void limpiar_lista();
     void RotarImagen();
     void listarScripts();
-
+    void configuraciones();
+    void cambiarImagen(bool tev);
 signals:
     //void	itemClicked(QListWidgetItem * item);
     //metodos a implementar
@@ -83,6 +88,7 @@ private:
     QDockWidget * templateDocker;
     QDockWidget * DocArchivos;
     GuiZip * guizip;
+    Configuraciones * config;
     CodeEditor *codeEditor;
     Highlighter *highlighter;
 
@@ -110,7 +116,7 @@ protected:
     QAction *imagenes;
     QAction *editor;
     QAction *herramientascript;
-
+    QAction *opciones;
 
     QMenu *fileMenu;
     QMenu *viewMenu;

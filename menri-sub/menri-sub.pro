@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets  webkit webkitwidgets network
+
 CONFIG+=static
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -22,12 +23,14 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     highlighter.cpp \
     PixmapWidget.cpp \
-    guizip.cpp \
     visor.cpp \
     imageloader.cpp \
     imagesmodel.cpp \
     imagesview.cpp \
-    manejozip.cpp
+    manejozip.cpp \
+    tipoarchivo.cpp \
+    guizip.cpp \
+    configuraciones.cpp
 
 
 
@@ -35,20 +38,23 @@ HEADERS  += mainwindow.h \
     codeeditor.h \
     highlighter.h \
     PixmapWidget.h \
-    guizip.h \
     visor.h \
     imageloader.h \
     imagesmodel.h \
     imagesview.h \
-    manejozip.h
+    manejozip.h \
+    tipoarchivo.h \
+    guizip.h \
+    configuraciones.h
 
 
 RESOURCES += \
     recursos.qrc
 
 FORMS += \
+    visor.ui \
     guizip.ui \
-    visor.ui
+    configuraciones.ui
 
 OTHER_FILES += \
     Menri-sub.txt

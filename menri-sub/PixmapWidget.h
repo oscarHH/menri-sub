@@ -1,12 +1,13 @@
 #ifndef PIXMAPWIDGET_H
 #define PIXMAPWIDGET_H
 
-#include <QWidget>
+//#include <QWidget>
+#include <QLabel>
 #include <QString>
 
 class QPixmap;
 
-class PixmapWidget : public QWidget
+class PixmapWidget : public QLabel
 {
     Q_OBJECT
 
@@ -18,7 +19,7 @@ public:
     int grados;
     void setGrados(int grados);
     int getGrados();
-
+    QString getTamanioImagen();
 
 public slots:
     void setZoomFactor( float );
@@ -28,9 +29,12 @@ signals:
 
 
 protected:
-    void paintEvent( QPaintEvent* );
-    void wheelEvent( QWheelEvent* );
-
+    virtual void paintEvent( QPaintEvent* );
+    virtual void wheelEvent( QWheelEvent* );
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dragMoveEvent(QDragMoveEvent *event);
+    virtual void dropEvent(QDropEvent *event);
+    virtual void startDrag(Qt::DropActions supportedActions);
 private:
      void tamanioWidget();
     int w, h;
