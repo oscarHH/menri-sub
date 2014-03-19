@@ -20,41 +20,41 @@ win32 {
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    codeeditor.cpp \
-    highlighter.cpp \
-    PixmapWidget.cpp \
-    visor.cpp \
-    imageloader.cpp \
-    imagesmodel.cpp \
-    imagesview.cpp \
-    manejozip.cpp \
-    tipoarchivo.cpp \
-    guizip.cpp \
-    configuraciones.cpp
+    editor/codeeditor.cpp \
+    editor/highlighter.cpp \
+    visor/PixmapWidget.cpp \
+    visor/visor.cpp \
+    visor/imageloader.cpp \
+    visor/imagesmodel.cpp \
+    visor/imagesview.cpp \
+    herramientas/ManejoComprimido/manejozip.cpp \
+    herramientas/ManejoComprimido/tipoarchivo.cpp \
+    herramientas/ManejoComprimido/guizip.cpp \
+    configuracion/configuraciones.cpp
 
 
 
 HEADERS  += mainwindow.h \
-    codeeditor.h \
-    highlighter.h \
-    PixmapWidget.h \
-    visor.h \
-    imageloader.h \
-    imagesmodel.h \
-    imagesview.h \
-    manejozip.h \
-    tipoarchivo.h \
-    guizip.h \
-    configuraciones.h
+    editor/codeeditor.h \
+    editor/highlighter.h \
+    visor/PixmapWidget.h \
+    visor/visor.h \
+    visor/imageloader.h \
+    visor/imagesmodel.h \
+    visor/imagesview.h \
+    herramientas/ManejoComprimido/manejozip.h \
+    herramientas/ManejoComprimido/tipoarchivo.h \
+    herramientas/ManejoComprimido/guizip.h \
+    configuracion/configuraciones.h
 
 
 RESOURCES += \
     recursos.qrc
 
 FORMS += \
-    visor.ui \
-    guizip.ui \
-    configuraciones.ui
+    visor/visor.ui \
+    herramientas/ManejoComprimido/guizip.ui \
+    configuracion/configuraciones.ui
 
 OTHER_FILES += \
     Menri-sub.txt

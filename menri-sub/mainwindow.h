@@ -7,14 +7,14 @@
 #include <QFileInfo>
 #include <QLabel>
 #include <QFileDialog>
-#include "guizip.h"
-#include "imagesmodel.h"
-#include "imagesview.h"
-#include "codeeditor.h"
-#include "highlighter.h"
-#include "PixmapWidget.h"
+#include "herramientas/ManejoComprimido/guizip.h"
+#include "visor/imagesmodel.h"
+#include "visor/imagesview.h"
+#include "editor/codeeditor.h"
+#include "editor/highlighter.h"
+#include "visor/PixmapWidget.h"
 #include <QImageIOPlugin>
-#include "configuraciones.h"
+#include "configuracion/configuraciones.h"
 
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
