@@ -130,14 +130,14 @@ MainWindow::MainWindow()
     abrir = new QFileDialog();
     guizip = new GuiZip();
     config = new Configuraciones();
-
-
+    QObject::connect(config,SIGNAL(valorColor(QColor)),codeEditor,SLOT(otroColor(QColor)) );
+    QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(otroColorFondo(QColor)) );
+    QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );
 
 }
 
 MainWindow::~MainWindow()
 {
-
 }
 
 
