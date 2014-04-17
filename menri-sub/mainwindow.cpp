@@ -130,8 +130,8 @@ MainWindow::MainWindow()
     abrir = new QFileDialog();
     guizip = new GuiZip();
     config = new Configuraciones();
-    QObject::connect(config,SIGNAL(valorColor(QColor)),codeEditor,SLOT(otroColor(QColor)) );
-    QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(otroColorFondo(QColor)) );
+    QObject::connect(config,SIGNAL(valorColor(QColor,QColor)),codeEditor,SLOT(otroColor(QColor,QColor)) );
+    //QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(otroColorFondo(QColor)) );
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );
 
 }
@@ -563,7 +563,7 @@ void MainWindow::limpiar_lista()
     m_imageView->setEnabled(false);
     scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
-     posicion_ruta =0;
+    posicion_ruta =0;
 }
 
 void MainWindow::RotarImagen()
