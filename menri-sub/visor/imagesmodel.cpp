@@ -107,9 +107,14 @@ void ImagesModel::addImages( const QStringList list )
     m_loadCount += list.size();
    // SquashWindow::instance()->setStatusBarText( tr( "Loading %n image(s)...", "", m_loadCount ) );
 
-    foreach( QString location, list )
-        addImage( location );
+    foreach( QString location, list ){
+        if(location.endsWith(".txt")){
+            emit rutaTxt(location);
+        }else{
+            addImage( location );
+        }
 
+    }
 }
 
 void ImagesModel::imageLoaded( const QString &filename, const QImage &thumbnail, const QString &description )

@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     herramientas/ManejoComprimido/manejozip.cpp \
     herramientas/ManejoComprimido/tipoarchivo.cpp \
     herramientas/ManejoComprimido/guizip.cpp \
-    configuracion/configuraciones.cpp
+    configuracion/configuraciones.cpp \
+    editor/manejodearchivostxt.cpp
 
 
 
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     herramientas/ManejoComprimido/manejozip.h \
     herramientas/ManejoComprimido/tipoarchivo.h \
     herramientas/ManejoComprimido/guizip.h \
-    configuracion/configuraciones.h
+    configuracion/configuraciones.h \
+    editor/manejodearchivostxt.h
 
 
 RESOURCES += \

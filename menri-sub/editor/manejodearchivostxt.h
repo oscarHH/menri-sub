@@ -2,12 +2,26 @@
 #define MANEJODEARCHIVOSTXT_H
 
 #include <QObject>
+#include <QTextStream>
 
 class ManejoDearchivosTxt : public QObject
 {
     Q_OBJECT
 public:
-    explicit ManejoDearchivosTxt(QObject *parent = 0);
+
+    QString ruta;
+    QString rutaGuardar;
+    //metodos constructor
+    //explicit ManejoDearchivosTxt(QObject *parent = 0);
+    ManejoDearchivosTxt (QString ruta);
+    //asignamos ruta del archivo abrir
+    void setRutaArchivo(QString ruta);
+    //asignamos la ruta para guardar archivo
+    void setRutaGuardar(QString ruta);
+    //metodo lectura de archivo txt
+    QString leerArchivo();
+    //metodo que guardara a un txt
+    bool archivoGuardar(QString datos);
 
 signals:
 

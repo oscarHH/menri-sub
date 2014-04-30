@@ -15,6 +15,7 @@
 #include "visor/PixmapWidget.h"
 #include <QImageIOPlugin>
 #include "configuracion/configuraciones.h"
+#include <editor/manejodearchivostxt.h>
 
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
@@ -30,6 +31,7 @@ class GuiZip;
 class ImagesView;
 class ImagesModel;
 class QSettings;
+class ManejoDearchivosTxt;
 //class Configuraciones;
 QT_END_NAMESPACE
 
@@ -45,14 +47,14 @@ public:
     ~MainWindow();
     //QPixmap *icon_to_be_shown;
     int posicion_ruta;
-    void mandarImagen(QString  nombreImagen);
+
     QLabel mStatLabel ;
     QLabel mStatLabel2 ;
 
     void updateActions();
     QFileDialog *abrir;
     ImagesModel *m_imagesModel;
-
+    void mandarImagen(QString  nombreImagen);
 public slots:
     void panelImagen();
     void panelEditor();
@@ -71,11 +73,14 @@ public slots:
     void listarScripts();
     void configuraciones();
     void cambiarImagen(bool tev);
+    void RutaTxt(QString ruta);
+    void GuardarTxt();
+
 signals:
     //void	itemClicked(QListWidgetItem * item);
     //metodos a implementar
 private:
-
+    ManejoDearchivosTxt * archivotxt;
     void createActions();
     void createMenus();
 
@@ -103,6 +108,7 @@ protected:
     void closeEvent(QCloseEvent *event);
 
     QAction *openAct;
+    QAction *guardar;
     QAction *exitAct;
     QAction *zoomInAct;
     QAction *zoomOutAct;
@@ -117,6 +123,7 @@ protected:
     QAction *editor;
     QAction *herramientascript;
     QAction *opciones;
+
 
     QMenu *fileMenu;
     QMenu *viewMenu;

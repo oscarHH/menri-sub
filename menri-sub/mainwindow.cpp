@@ -25,6 +25,8 @@ MainWindow::MainWindow()
 {
 
 
+    //QString d = m.ManejoDearchivosTxt();
+    ///qDebug()<< &d;
     //contenedor
     QWidget * w = new QWidget;
     //layout verticcal
@@ -35,6 +37,7 @@ MainWindow::MainWindow()
     posicion_ruta = 0;
     //creamos el editor
     codeEditor = new CodeEditor;
+    codeEditor->setAcceptDrops(false);
     //resalta la sintaxis
     highlighter = new Highlighter(codeEditor->document());
     //coloco el icono a la ventanaprincipal
@@ -127,12 +130,14 @@ MainWindow::MainWindow()
     connect(btnSiguiente, SIGNAL(clicked()), this, SLOT(siguienteImagen()));
     connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
     connect (m_imageView,SIGNAL(cambiarImagen(bool)),this,SLOT(cambiarImagen(bool)));
+    connect (m_imagesModel,SIGNAL(rutaTxt(QString)),this,SLOT(RutaTxt(QString)));
     abrir = new QFileDialog();
     guizip = new GuiZip();
     config = new Configuraciones();
     QObject::connect(config,SIGNAL(valorColor(QColor,QColor)),codeEditor,SLOT(otroColor(QColor,QColor)) );
     //QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(otroColorFondo(QColor)) );
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );
+    archivotxt = new ManejoDearchivosTxt("");
 
 }
 
@@ -172,7 +177,7 @@ void MainWindow::panelEditor()
 //metodo para obtener la imagen
 void MainWindow::obtenerImagen()
 {
-    listafileName = abrir->getOpenFileNames(this, tr("Open Image"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif"), 0, QFileDialog::DontUseNativeDialog);
+    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
@@ -241,10 +246,13 @@ void MainWindow::createActions()
     openAct->setShortcut(tr("Ctrl+O"));
     //colocamos un icono al menu
     openAct->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
-
-
-
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+    guardar = new QAction(tr("&Guardar"),this);
+    guardar->setShortcut(tr("Ctrl+S"));
+    guardar->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
+    connect(guardar,SIGNAL(triggered()),this,SLOT(GuardarTxt()));
+
 
     exitAct = new QAction(tr("&Salir"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
@@ -333,6 +341,7 @@ void MainWindow::createMenus()
 {
     fileMenu = new QMenu(tr("&Archivo"), this);
     fileMenu->addAction(openAct);
+    fileMenu->addAction(guardar);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -368,6 +377,36 @@ void MainWindow::createMenus()
 
 }
 
+void MainWindow::RutaTxt(QString ruta)
+{
+    archivotxt->setRutaArchivo(ruta);
+    codeEditor->setPlainText(archivotxt->leerArchivo());
+}
+
+void MainWindow::GuardarTxt()
+{
+
+
+     QString fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
+
+
+       if(!fileName.isNull()){
+           archivotxt->setRutaGuardar(fileName);
+           if (archivotxt->archivoGuardar(codeEditor->toPlainText())){
+               QMessageBox::information(
+                      this,
+                      tr("Guardar"),
+                      tr("Se a guardado correctamente") );
+
+           }else{
+               QMessageBox::critical(
+                     this,
+                     tr("Guardar"),
+                     tr("Ocurrio un error al guardar") );
+           }
+       }
+}
+
 //actualizamos el estado de los menus
 void MainWindow::updateActions()
 {
@@ -389,16 +428,18 @@ void MainWindow::updateActions()
 //metodo que recibe la ruta de la imagen y la manda para poder mostrar
 void MainWindow::mandarImagen(QString nombreImagen)
 {
+    if(!nombreImagen.endsWith(".txt")){
+        grados = 0;
+        pw = new PixmapWidget(nombreImagen,  scrollArea);
+        //asigamos que se pueda redimensionar
+        scrollArea->setWidgetResizable(true);
+        //el scrollArea contiene a pw y dibuja la imagen
+        scrollArea->setWidget(pw);
 
-    grados = 0;
-    pw = new PixmapWidget(nombreImagen,  scrollArea);
-    //asigamos que se pueda redimensionar
-    scrollArea->setWidgetResizable(true);
-    //el scrollArea contiene a pw y dibuja la imagen
-    scrollArea->setWidget(pw);
+        scrollArea->scroll(20,30);
+        mStatLabel.setText("Resolucion: "+pw->getTamanioImagen());
+    }
 
-    scrollArea->scroll(20,30);
-    mStatLabel.setText("Resolucion: "+pw->getTamanioImagen());
 }
 
 
@@ -434,7 +475,6 @@ void MainWindow::dropEvent(QDropEvent * event)
 
     lista = event->mimeData()->urls();
     QString fileName = "";
-
     //recorremos la lista
     for (int i = 0 ; i < lista.size(); i++) {
         //obtenemos la ruta del archivo
@@ -444,6 +484,11 @@ void MainWindow::dropEvent(QDropEvent * event)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()
         //sera bienvenido al codigo xD
+
+        //identifica archivos txt
+        if(info1.completeSuffix().endsWith("txt")){
+            RutaTxt(fileName);
+        }
 
         //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
         if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd") || info1.completeSuffix().endsWith("gif"))

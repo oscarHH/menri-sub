@@ -42,6 +42,7 @@ signals:
     void          imageRemoved();
     void          imageAddFinished();
     void          imageResizeFinished();
+    void          rutaTxt(QString);
 
 private:
     QStringList   m_filenames;

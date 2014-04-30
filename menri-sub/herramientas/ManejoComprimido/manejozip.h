@@ -7,7 +7,7 @@
 #include <QThread>
 #include "tipoarchivo.h"
 #include <QPixmap>
-
+#include <QMutex>
 #define MANEJOZIP_H
 
 class ManejoZip: public QThread
