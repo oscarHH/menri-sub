@@ -43,6 +43,7 @@ bool ManejoDearchivosTxt::archivoGuardar(QString datos)
     file.open(QFile::WriteOnly | QFile::Text);
     QTextStream out(&file);
     out << datos;
+
     file.close();
 }
 

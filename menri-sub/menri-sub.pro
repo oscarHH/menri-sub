@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     herramientas/ManejoComprimido/tipoarchivo.cpp \
     herramientas/ManejoComprimido/guizip.cpp \
     configuracion/configuraciones.cpp \
-    editor/manejodearchivostxt.cpp
+    editor/manejodearchivostxt.cpp \
+    promocion/like.cpp \
+    promocion/evento_qlabel.cpp
 
 
 
@@ -47,7 +49,9 @@ HEADERS  += mainwindow.h \
     herramientas/ManejoComprimido/tipoarchivo.h \
     herramientas/ManejoComprimido/guizip.h \
     configuracion/configuraciones.h \
-    editor/manejodearchivostxt.h
+    editor/manejodearchivostxt.h \
+    promocion/like.h \
+    promocion/evento_qlabel.h
 
 
 RESOURCES += \
@@ -56,7 +60,8 @@ RESOURCES += \
 FORMS += \
     visor/visor.ui \
     herramientas/ManejoComprimido/guizip.ui \
-    configuracion/configuraciones.ui
+    configuracion/configuraciones.ui \
+    promocion/like.ui
 
 OTHER_FILES += \
     Menri-sub.txt

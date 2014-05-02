@@ -16,7 +16,7 @@
 #include <QImageIOPlugin>
 #include "configuracion/configuraciones.h"
 #include <editor/manejodearchivostxt.h>
-
+#include "promocion/like.h"
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
 class QAction;
@@ -55,6 +55,7 @@ public:
     QFileDialog *abrir;
     ImagesModel *m_imagesModel;
     void mandarImagen(QString  nombreImagen);
+    QString archivoActual;
 public slots:
     void panelImagen();
     void panelEditor();
@@ -75,7 +76,7 @@ public slots:
     void cambiarImagen(bool tev);
     void RutaTxt(QString ruta);
     void GuardarTxt();
-
+    void siguenos();
 signals:
     //void	itemClicked(QListWidgetItem * item);
     //metodos a implementar
@@ -93,6 +94,7 @@ private:
     QDockWidget * templateDocker;
     QDockWidget * DocArchivos;
     GuiZip * guizip;
+    like * promocionLike;
     Configuraciones * config;
     CodeEditor *codeEditor;
     Highlighter *highlighter;
@@ -100,12 +102,16 @@ private:
 
     ImagesView  *m_imageView;
 
+    void leerCofiguracion();
+
+
 protected:
     virtual  void dragEnterEvent(QDragEnterEvent * event);
     virtual  void dragLeaveEvent(QDragLeaveEvent * event);
     virtual  void dragMoveEvent(QDragMoveEvent * event);
     virtual  void dropEvent(QDropEvent * event);
     void closeEvent(QCloseEvent *event);
+
 
     QAction *openAct;
     QAction *guardar;
@@ -123,6 +129,7 @@ protected:
     QAction *editor;
     QAction *herramientascript;
     QAction *opciones;
+    QAction *siguenoslike;
 
 
     QMenu *fileMenu;

@@ -1,67 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>like</class>
- <widget name="like" class="QDialog">
+ <widget class="QDialog" name="like">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>320</height>
+    <width>394</width>
+    <height>188</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Siguenos</string>
   </property>
-  <widget name="buttonBox" class="QDialogButtonBox">
+  <widget class="evento_qlabel" name="lbltwetter">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>270</y>
-     <width>221</width>
+     <x>130</x>
+     <y>50</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="../recursos.qrc">:/img/iconos/twetter.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="evento_qlabel" name="lblFacebook">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>50</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="../recursos.qrc">:/img/iconos/facebook.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="evento_qlabel" name="lblYoutube">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>50</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="../recursos.qrc">:/img/iconos/youtube.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>0</y>
+     <width>201</width>
      <height>41</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+   <property name="font">
+    <font>
+     <pointsize>25</pointsize>
+    </font>
    </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   <property name="text">
+    <string>siguenos en</string>
    </property>
   </widget>
  </widget>
- <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>like</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>like</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <customwidgets>
+  <customwidget>
+   <class>evento_qlabel</class>
+   <extends>QLabel</extends>
+   <header location="global">evento_qlabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../recursos.qrc"/>
+ </resources>
+ <connections/>
 </ui>

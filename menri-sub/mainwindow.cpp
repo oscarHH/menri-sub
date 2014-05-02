@@ -9,14 +9,17 @@
 #include <QtPlugin>
 #include <QPluginLoader>
 #include <QProcess>
+#include <QColor>
 
 //variables
 float su ;
 QString version = " \t alfa-0.2   12/03/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
+bool esGuardado = false;
 int grados = 0;
-
+QColor color ;
+QColor colorletra ;
 QStringList listafileName;
 QProcess proceso;
 
@@ -133,10 +136,13 @@ MainWindow::MainWindow()
     connect (m_imagesModel,SIGNAL(rutaTxt(QString)),this,SLOT(RutaTxt(QString)));
     abrir = new QFileDialog();
     guizip = new GuiZip();
-    config = new Configuraciones();
-    QObject::connect(config,SIGNAL(valorColor(QColor,QColor)),codeEditor,SLOT(otroColor(QColor,QColor)) );
-    //QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(otroColorFondo(QColor)) );
+    promocionLike = new like(this);
+    config = new Configuraciones(this);
+
+    QObject::connect(config,SIGNAL(valorColor(QColor)),codeEditor,SLOT(otroColor(QColor)) );
+    QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(colorFondo(QColor)));
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );
+    leerCofiguracion();
     archivotxt = new ManejoDearchivosTxt("");
 
 }
@@ -177,17 +183,20 @@ void MainWindow::panelEditor()
 //metodo para obtener la imagen
 void MainWindow::obtenerImagen()
 {
-    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
 
-    //verificamos que la cadena no este vacia
-    if (!listafileName.isEmpty()) {
-        m_imagesModel->addImages(listafileName);
-        if (m_imagesModel->tamanioLista() <= 0) {
-            mandarImagen(listafileName.at(0));
+        listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
+
+        //verificamos que la cadena no este vacia
+        if (!listafileName.isEmpty()) {
+            m_imagesModel->addImages(listafileName);
+            if (m_imagesModel->tamanioLista() <= 0) {
+                mandarImagen(listafileName.at(0));
+            }
+            updateActions();
         }
-        updateActions();
-    }
-    listafileName.clear();
+        listafileName.clear();
+
+
 }
 
 
@@ -291,7 +300,7 @@ void MainWindow::createActions()
 
 
     normalSizeAct = new QAction(tr("&Tamaño normal"), this);
-    normalSizeAct->setShortcut(tr("Ctrl+S"));
+    normalSizeAct->setShortcut(tr("Alt+S"));
     normalSizeAct->setEnabled(false);
     connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
 
@@ -318,6 +327,12 @@ void MainWindow::createActions()
     aboutAct->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
+    siguenoslike = new QAction(tr("Siguenos"),this);
+    siguenoslike->setShortcut(tr("Alt+s"));
+    siguenoslike->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
+    connect(siguenoslike, SIGNAL(triggered()), this, SLOT(siguenos()));
+
+
     aboutQtAct = new QAction(tr("&Acerca de Qt"), this);
     aboutQtAct->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -328,7 +343,7 @@ void MainWindow::createActions()
     connect(herramientascript, SIGNAL(triggered()), this, SLOT(listarScripts()));
 
     opciones = new QAction(tr("&Opciones"), this);
-    opciones->setShortcut(tr("Ctrl+o"));
+    opciones->setShortcut(tr("Alt+o"));
     opciones->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
     connect(opciones, SIGNAL(triggered()), this, SLOT(configuraciones()));
 
@@ -355,8 +370,10 @@ void MainWindow::createMenus()
     viewMenu->addAction(limpiar);
     viewMenu->addAction(rotarImagen);
     helpMenu = new QMenu(tr("&Ayuda"), this);
+    helpMenu->addAction(siguenoslike);
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
+
 
     herramientas  = new QMenu(tr("&Herramientas"), this);
     herramientas->addAction(herramientascript);
@@ -377,8 +394,37 @@ void MainWindow::createMenus()
 
 }
 
+void MainWindow::leerCofiguracion()
+{
+     QSettings settings("menri-sub", "menri-sub");
+
+     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
+     QSize size = settings.value("size", QSize(400, 400)).toSize();
+     color = qvariant_cast<QColor>(settings.value("color Fondo"));
+     colorletra = qvariant_cast<QColor>(settings.value("color Texto"));
+     QFont fondo = qvariant_cast<QFont>(settings.value("fuente beta"));
+     bool primeravez = qvariant_cast<bool>(settings.value("primer inicio"));
+     if(!primeravez){
+         emit config->valorColor(Qt::black);
+         emit config->valorColorFondo(Qt::white);
+         emit config->valorFormatoLetra(QFont("Arial", 12));
+         qDebug()<<"hola";
+         return;
+
+     }else{
+         emit config->valorColor(colorletra);
+         emit config->valorColorFondo(color);
+         emit config->valorFormatoLetra(fondo);
+         resize(size);
+         move(pos);
+     }
+}
+
+
+
 void MainWindow::RutaTxt(QString ruta)
 {
+    archivoActual = ruta;
     archivotxt->setRutaArchivo(ruta);
     codeEditor->setPlainText(archivotxt->leerArchivo());
 }
@@ -386,9 +432,15 @@ void MainWindow::RutaTxt(QString ruta)
 void MainWindow::GuardarTxt()
 {
 
-
-     QString fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
-
+    esGuardado = false;
+    QString fileName;
+    if(archivoActual.isEmpty() && !codeEditor->document()->isEmpty()){
+     fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
+    }else if(codeEditor->document()->isEmpty()){
+        return;
+    }else if(codeEditor->document()->isModified() && !codeEditor->document()->isEmpty()){
+        fileName = archivoActual;
+    }
 
        if(!fileName.isNull()){
            archivotxt->setRutaGuardar(fileName);
@@ -397,7 +449,8 @@ void MainWindow::GuardarTxt()
                       this,
                       tr("Guardar"),
                       tr("Se a guardado correctamente") );
-
+                    esGuardado = true;
+                    return;
            }else{
                QMessageBox::critical(
                      this,
@@ -405,6 +458,11 @@ void MainWindow::GuardarTxt()
                      tr("Ocurrio un error al guardar") );
            }
        }
+}
+
+void MainWindow::siguenos()
+{
+      promocionLike->exec();
 }
 
 //actualizamos el estado de los menus
@@ -486,7 +544,7 @@ void MainWindow::dropEvent(QDropEvent * event)
         //sera bienvenido al codigo xD
 
         //identifica archivos txt
-        if(info1.completeSuffix().endsWith("txt")){
+        if(info1.completeSuffix().endsWith(".txt")){
             RutaTxt(fileName);
         }
 
@@ -526,10 +584,33 @@ void MainWindow::dropEvent(QDropEvent * event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    //m_imagesModel->stopAddImages();
-    proceso.kill();
-    this->close();
-    event->accept();
+    if (codeEditor->document()->isModified()) {
+       QMessageBox::StandardButton ret;
+       ret = QMessageBox::warning(this, tr("Menri-sub"),
+                    tr("El documento a sido modificado.\n"
+                       "¿desea guardar los cambios?"),
+                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+       if (ret == QMessageBox::Save){
+           GuardarTxt();
+           if(esGuardado){
+               event->accept();
+
+           }else{
+               event->ignore();
+           }
+
+       }else if(ret == QMessageBox::Cancel){
+            event->ignore();
+       }else if(ret == QMessageBox::Discard){
+           proceso.kill();
+           event->accept();
+       }
+
+    }else{
+        proceso.kill();
+        event->accept();
+    }
+
 }
 
 //para la obtener la posicion de cada elemnto del  listwidget
@@ -609,6 +690,8 @@ void MainWindow::limpiar_lista()
     scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
     posicion_ruta =0;
+    codeEditor->setPlainText("");
+
 }
 
 void MainWindow::RotarImagen()
@@ -633,6 +716,7 @@ void MainWindow::listarScripts()
     // m_imagesModel->removeAll(1,RutaImagenes.size()-1 );
 
     guizip->exec();
+
 
 
 }

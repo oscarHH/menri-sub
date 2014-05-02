@@ -38,8 +38,9 @@ private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-    void otroColor(QColor color,QColor fondo);
 
+    void otroColor(QColor color);
+    void colorFondo(QColor fondo);
     void otroFormatoLetra(QFont formato);
 
 

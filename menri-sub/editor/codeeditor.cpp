@@ -12,17 +12,19 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
     updateLineNumberAreaWidth(0);
-    //setFont (QFont ("Courier", 14));
     highlightCurrentLine();
 
 }
 
-void CodeEditor::otroColor(QColor color, QColor fondo)
+void CodeEditor::otroColor(QColor color)
 {
-
     paleta.setColor(QPalette::Text,color);
-     paleta.setColor(QPalette::Base,fondo);
-    // paleta.setColor(QPalette::Text,fondo);
+    setPalette(paleta);
+}
+
+void CodeEditor::colorFondo(QColor fondo)
+{
+    paleta.setColor(QPalette::Base,fondo);
      setPalette(paleta);
 }
 

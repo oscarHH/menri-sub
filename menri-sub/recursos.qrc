@@ -12,5 +12,8 @@
         <file>iconos/siguiente.png</file>
         <file>iconos/zoom-.png</file>
         <file>iconos/portada.png</file>
+        <file>iconos/facebook.png</file>
+        <file>iconos/twetter.png</file>
+        <file>iconos/youtube.png</file>
     </qresource>
 </RCC>

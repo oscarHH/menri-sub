@@ -14,6 +14,10 @@ class like : public QDialog
 public:
     explicit like(QWidget *parent = 0);
     ~like();
+private slots:
+    void abrirFace();
+    void abrirTwee();
+    void abrirYoutube();
 
 private:
     Ui::like *ui;

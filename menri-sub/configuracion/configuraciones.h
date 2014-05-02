@@ -35,11 +35,13 @@ private slots:
 
     void guardarConfiguracion();
 
+
+
 private:
     Ui::Configuraciones *ui;
 
 signals:
-    void valorColor (const QColor,const QColor);
+    void valorColor (const QColor);
     void valorFormatoLetra(const QFont);
     void valorColorFondo (const QColor);
 };

@@ -12,13 +12,12 @@ ImagesView::ImagesView(QWidget *parent)
         setViewMode( QListView::IconMode );
         setMovement(QListView::Static );
         setResizeMode( QListView::Adjust );
-        //setWrapping( true );
+        setWrapping( true );
         setIconSize( QSize(150, 150) );
         setGridSize( QSize(200, 200) );
         setSpacing( 0 );
+
         setSelectionMode( QAbstractItemView::SingleSelection );
-
-
 }
 
 void ImagesView::removeSelectedImages()
@@ -69,15 +68,17 @@ void ImagesView::keyPressEvent( QKeyEvent *event )
 
 void ImagesView::keyReleaseEvent(QKeyEvent *event )
 {
-    if (event->key() == Qt::Key_Up) {
+    if (event->key() == Qt::Key_Up ) {
         emit cambiarImagen(true);
         return;
     }
 
-    if (event->key() == Qt::Key_Down) {
+    if (event->key() == Qt::Key_Down ) {
         emit cambiarImagen(false);
         return;
     }
+
+
 
     QListView::keyPressEvent( event );
 }
