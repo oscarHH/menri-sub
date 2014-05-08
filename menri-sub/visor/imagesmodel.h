@@ -31,8 +31,9 @@ public:
     void          stopAddImages();
 
     bool          isAdding() { return m_loadCount > 0; }
-
+    int   cantidad ;
     void          removeSelectedImages();
+    QString  rutaImagenes;
 
 private slots:
     void          imageLoaded( const QString &filename, const QImage &thumbnail, const QString &description );

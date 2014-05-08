@@ -77,6 +77,9 @@ public slots:
     void RutaTxt(QString ruta);
     void GuardarTxt();
     void siguenos();
+    void abrirProyecto();
+    void nuevoProyecto();
+    void guardarCOmo();
 signals:
     //void	itemClicked(QListWidgetItem * item);
     //metodos a implementar
@@ -104,7 +107,7 @@ private:
 
     void leerCofiguracion();
 
-
+    int guradarDatos();
 protected:
     virtual  void dragEnterEvent(QDragEnterEvent * event);
     virtual  void dragLeaveEvent(QDragLeaveEvent * event);
@@ -114,7 +117,11 @@ protected:
 
 
     QAction *openAct;
+    QAction *abrir_Proyecto;
+    QAction *nuevo_Proyecto;
+
     QAction *guardar;
+    QAction *guardarComo;
     QAction *exitAct;
     QAction *zoomInAct;
     QAction *zoomOutAct;

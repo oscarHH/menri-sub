@@ -18,10 +18,13 @@ public:
     void setRutaArchivo(QString ruta);
     //asignamos la ruta para guardar archivo
     void setRutaGuardar(QString ruta);
+    QString getRutaArchivos();
     //metodo lectura de archivo txt
     QString leerArchivo();
     //metodo que guardara a un txt
     bool archivoGuardar(QString datos);
+
+    QStringList leerRutas(QString rut);
 
 signals:
 

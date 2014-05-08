@@ -10,10 +10,11 @@
 #include <QPluginLoader>
 #include <QProcess>
 #include <QColor>
+#include <QtSvg>
 
 //variables
 float su ;
-QString version = " \t alfa-0.2   12/03/14";
+QString version = " \t beta1 2/04/14";
 bool activoPanelEditor = false;
 bool activoPanelImagen = true;
 bool esGuardado = false;
@@ -26,8 +27,6 @@ QProcess proceso;
 //! [0] construccion de la ventana
 MainWindow::MainWindow()
 {
-
-
     //QString d = m.ManejoDearchivosTxt();
     ///qDebug()<< &d;
     //contenedor
@@ -184,17 +183,19 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-        listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
+    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
 
-        //verificamos que la cadena no este vacia
-        if (!listafileName.isEmpty()) {
-            m_imagesModel->addImages(listafileName);
-            if (m_imagesModel->tamanioLista() <= 0) {
-                mandarImagen(listafileName.at(0));
-            }
-            updateActions();
+    //verificamos que la cadena no este vacia
+    if (!listafileName.isEmpty()) {
+        m_imagesModel->addImages(listafileName);
+        if (m_imagesModel->tamanioLista() <= 0) {
+            mandarImagen(listafileName.at(0));
         }
-        listafileName.clear();
+        updateActions();
+
+    }
+
+    listafileName.clear();
 
 
 }
@@ -204,7 +205,20 @@ void MainWindow::obtenerImagen()
 void MainWindow::open()
 {
     //color = QColorDialog::getColor(Qt::green, this);
-    obtenerImagen();
+    if(codeEditor->document()->isModified() && !codeEditor->document()->isEmpty()){
+        int opcion = guradarDatos();
+        if(opcion == 1 ){
+            GuardarTxt();
+            archivoActual = "";
+        }else if(opcion == 2){
+            return;
+        }else if(opcion == 3){
+            obtenerImagen();
+        }
+    }else{
+        obtenerImagen();
+    }
+
 }
 
 //implementacion del slot zoom +
@@ -253,15 +267,28 @@ void MainWindow::createActions()
     //menu abrir
     openAct = new QAction(tr("&Abrir..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
-    //colocamos un icono al menu
     openAct->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+    abrir_Proyecto = new QAction(tr("&Abrir Proyecto"),this);
+    abrir_Proyecto->setShortcut(tr("alt+o"));
+    abrir_Proyecto->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
+    connect(abrir_Proyecto,SIGNAL(triggered()),this,SLOT(abrirProyecto()));
+
+    nuevo_Proyecto = new QAction(tr("&Nuevo Proyecto"),this);
+    nuevo_Proyecto->setShortcut(tr("Ctrl+n"));
+    nuevo_Proyecto->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
+    connect(nuevo_Proyecto,SIGNAL(triggered()),this,SLOT(nuevoProyecto()));
 
     guardar = new QAction(tr("&Guardar"),this);
     guardar->setShortcut(tr("Ctrl+S"));
     guardar->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
     connect(guardar,SIGNAL(triggered()),this,SLOT(GuardarTxt()));
 
+    guardarComo = new QAction(tr("&Guardar Como"),this);
+    guardarComo->setShortcut(tr("Alt+S"));
+    guardarComo->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
+    connect(guardarComo,SIGNAL(triggered()),this,SLOT(guardarCOmo()));
 
     exitAct = new QAction(tr("&Salir"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
@@ -328,7 +355,6 @@ void MainWindow::createActions()
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
     siguenoslike = new QAction(tr("Siguenos"),this);
-    siguenoslike->setShortcut(tr("Alt+s"));
     siguenoslike->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(siguenoslike, SIGNAL(triggered()), this, SLOT(siguenos()));
 
@@ -356,7 +382,10 @@ void MainWindow::createMenus()
 {
     fileMenu = new QMenu(tr("&Archivo"), this);
     fileMenu->addAction(openAct);
+    fileMenu->addAction(abrir_Proyecto);
+    fileMenu->addAction(nuevo_Proyecto);
     fileMenu->addAction(guardar);
+    fileMenu->addAction(guardarComo);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -396,29 +425,30 @@ void MainWindow::createMenus()
 
 void MainWindow::leerCofiguracion()
 {
-     QSettings settings("menri-sub", "menri-sub");
+    QSettings settings("menri-sub", "menri-sub");
 
-     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-     QSize size = settings.value("size", QSize(400, 400)).toSize();
-     color = qvariant_cast<QColor>(settings.value("color Fondo"));
-     colorletra = qvariant_cast<QColor>(settings.value("color Texto"));
-     QFont fondo = qvariant_cast<QFont>(settings.value("fuente beta"));
-     bool primeravez = qvariant_cast<bool>(settings.value("primer inicio"));
-     if(!primeravez){
-         emit config->valorColor(Qt::black);
-         emit config->valorColorFondo(Qt::white);
-         emit config->valorFormatoLetra(QFont("Arial", 12));
-         qDebug()<<"hola";
-         return;
+    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
+    QSize size = settings.value("size", QSize(400, 400)).toSize();
+    color = qvariant_cast<QColor>(settings.value("color Fondo"));
+    colorletra = qvariant_cast<QColor>(settings.value("color Texto"));
+    QFont fondo = qvariant_cast<QFont>(settings.value("fuente beta"));
+    bool primeravez = qvariant_cast<bool>(settings.value("primer inicio"));
+    if(!primeravez){
+        emit config->valorColor(Qt::black);
+        emit config->valorColorFondo(Qt::white);
+        emit config->valorFormatoLetra(QFont("Arial", 12));
+        qDebug()<<"hola";
+        return;
 
-     }else{
-         emit config->valorColor(colorletra);
-         emit config->valorColorFondo(color);
-         emit config->valorFormatoLetra(fondo);
-         resize(size);
-         move(pos);
-     }
+    }else{
+        emit config->valorColor(colorletra);
+        emit config->valorColorFondo(color);
+        emit config->valorFormatoLetra(fondo);
+        resize(size);
+        move(pos);
+    }
 }
+
 
 
 
@@ -434,35 +464,178 @@ void MainWindow::GuardarTxt()
 
     esGuardado = false;
     QString fileName;
-    if(archivoActual.isEmpty() && !codeEditor->document()->isEmpty()){
-     fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
-    }else if(codeEditor->document()->isEmpty()){
+
+    if(archivoActual.isEmpty() && (!codeEditor->document()->isEmpty() || m_imagesModel->cantidad > 0)){
+        fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
+    }else if(codeEditor->document()->isEmpty() && m_imagesModel->cantidad < 0){
         return;
-    }else if(codeEditor->document()->isModified() && !codeEditor->document()->isEmpty()){
+    }else {
         fileName = archivoActual;
     }
 
-       if(!fileName.isNull()){
-           archivotxt->setRutaGuardar(fileName);
-           if (archivotxt->archivoGuardar(codeEditor->toPlainText())){
-               QMessageBox::information(
-                      this,
-                      tr("Guardar"),
-                      tr("Se a guardado correctamente") );
-                    esGuardado = true;
-                    return;
-           }else{
-               QMessageBox::critical(
-                     this,
-                     tr("Guardar"),
-                     tr("Ocurrio un error al guardar") );
-           }
-       }
+    if(!fileName.isNull()){
+
+        QString res;
+        res = fileName;
+        res.replace(".menri","");
+        res.replace(".mtxt","");
+        res.replace(".mimg","");
+        qDebug()<<res;
+        QString ruta;
+
+        archivotxt->setRutaGuardar(res +".mimg");
+        if (archivotxt->archivoGuardar(m_imagesModel->rutaImagenes)){
+            ruta += archivotxt->getRutaArchivos();
+
+            archivotxt->setRutaGuardar(res+".mtxt");
+            archivotxt->archivoGuardar(codeEditor->toPlainText());
+            ruta +="\n"+ archivotxt->getRutaArchivos();
+
+            archivotxt->setRutaGuardar(res+".menri");
+            archivotxt->archivoGuardar(ruta);
+
+            QMessageBox::information(
+                        this,
+                        tr("Guardar"),
+                        tr("Se a guardado correctamente") );
+            archivoActual = fileName;
+            esGuardado = true;
+            return;
+        }else{
+            QMessageBox::critical(
+                        this,
+                        tr("Guardar"),
+                        tr("Ocurrio un error al guardar") );
+            esGuardado = false;
+            return;
+
+        }
+    }
 }
 
 void MainWindow::siguenos()
 {
-      promocionLike->exec();
+    promocionLike->exec();
+}
+
+void MainWindow::abrirProyecto()
+{
+    QString archivo = abrir->getOpenFileName(this, tr("Archivo de proyecto menri"), QDir::homePath(), tr("archivo menri ( *.menri)"), 0, QFileDialog::DontUseNativeDialog);
+    if( !archivo.isEmpty()){
+        limpiar_lista();
+        codeEditor->setPlainText("");
+        QStringList rutas; //almacena las rutas del proyecto
+        QStringList imagenes;
+        archivoActual = archivo; //asigna el nombre del archivo abierto
+        qDebug()<<archivoActual;
+        rutas = archivotxt->leerRutas(archivo); //lee el proyecto
+        RutaTxt(rutas.at(1));//obtiene el texto
+
+
+        //lectura de imagenes
+        imagenes = archivotxt->leerRutas(rutas.at(0));
+        if (!imagenes.isEmpty()) {
+
+            m_imagesModel->addImages(imagenes);
+            if (m_imagesModel->tamanioLista() <= 0) {
+                mandarImagen(imagenes.at(0));
+            }
+            updateActions();
+        }
+    }
+}
+
+void MainWindow::nuevoProyecto()
+{
+    if(codeEditor->document()->isModified() && !codeEditor->document()->isEmpty()){
+        int opcion = guradarDatos();
+        if(opcion == 1 ){
+            GuardarTxt();
+            archivoActual = "";
+        }else if(opcion == 2){//cancelar
+            return;
+        }else if(opcion == 3){//descartar
+
+            listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
+
+            //verificamos que la cadena no este vacia
+            if (!listafileName.isEmpty()) {
+               limpiar_lista();
+               codeEditor->setPlainText("");
+                m_imagesModel->addImages(listafileName);
+                if (m_imagesModel->cantidad > 0) {
+                    mandarImagen(listafileName.at(0));
+                    updateActions();
+
+                }
+            listafileName.clear();
+            }
+
+
+        }
+    }else{
+
+        listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt)"), 0, QFileDialog::DontUseNativeDialog);
+        //verificamos que la cadena no este vacia
+        if (!listafileName.isEmpty()) {
+            limpiar_lista();
+            codeEditor->setPlainText("");
+            m_imagesModel->addImages(listafileName);
+            if (m_imagesModel->cantidad > 0) {
+                mandarImagen(listafileName.at(0));
+                updateActions();
+            }
+        listafileName.clear();
+        }
+
+    }
+
+
+}
+
+void MainWindow::guardarCOmo()
+{
+    esGuardado = false;
+    QString fileName;
+
+    if(!codeEditor->document()->isEmpty() || m_imagesModel->cantidad >0){
+        fileName = QFileDialog::getSaveFileName(this, tr("Guardar"),QDir::homePath(),tr("menri(*.menri)"));
+    }
+
+    if(!fileName.isNull()){
+
+
+        fileName.remove(QRegularExpression(".menri"));
+        QString ruta;
+
+        archivotxt->setRutaGuardar(fileName +".mimg");
+        if (archivotxt->archivoGuardar(m_imagesModel->rutaImagenes)){
+            ruta += archivotxt->getRutaArchivos();
+
+            archivotxt->setRutaGuardar(fileName+".mtxt");
+            archivotxt->archivoGuardar(codeEditor->toPlainText());
+            ruta +="\n"+ archivotxt->getRutaArchivos();
+
+            archivotxt->setRutaGuardar(fileName+".menri");
+            archivotxt->archivoGuardar(ruta);
+
+            QMessageBox::information(
+                        this,
+                        tr("Guardar"),
+                        tr("Se a guardado correctamente") );
+            esGuardado = true;
+            return;
+        }else{
+            QMessageBox::critical(
+                        this,
+                        tr("Guardar"),
+                        tr("Ocurrio un error al guardar") );
+            esGuardado = false;
+            return;
+
+        }
+    }
+
 }
 
 //actualizamos el estado de los menus
@@ -537,20 +710,18 @@ void MainWindow::dropEvent(QDropEvent * event)
     for (int i = 0 ; i < lista.size(); i++) {
         //obtenemos la ruta del archivo
         fileName = lista.at(i).toLocalFile();
-        // qDebug()<<fileName;
         //le pasamos la ruta del archivo a la variable info1 (QFileInfo)
         info1.setFile(fileName);
         //si alguien encuentra la forma de usar el event.mimedate().hasimage()
         //sera bienvenido al codigo xD
 
         //identifica archivos txt
-        if(info1.completeSuffix().endsWith(".txt")){
+        if(info1.completeSuffix().endsWith("txt")){
+            //*********************++preguntar si desea guardar los cambios*****************************
+            archivoActual = fileName;
             RutaTxt(fileName);
-        }
-
-        //por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista
-        if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd") || info1.completeSuffix().endsWith("gif"))
-           ) {
+        }else /*por lo mientras usare esto para identificar que sea una imagen y almacenar en  lista*/if ((info1.completeSuffix().endsWith("jpg") || info1.completeSuffix().endsWith("png") || info1.completeSuffix().endsWith("jpeg") || info1.completeSuffix().endsWith("bmp") || info1.completeSuffix().endsWith("svg") || info1.completeSuffix().endsWith("psd") || info1.completeSuffix().endsWith("gif")))
+        {
             //se agreaga la imagen a la lista
             respaldo.append(fileName);
 
@@ -564,7 +735,7 @@ void MainWindow::dropEvent(QDropEvent * event)
                     dato = direc.absoluteFilePath();
                     info1.setFile(dato);
                     if ((dato.endsWith(".jpg") || dato.endsWith(".png") || dato.endsWith(".jpeg") || dato.endsWith(".bmp") || dato.endsWith(".svg") || dato.endsWith(".psd") || dato.endsWith(".gif"))
-                        && (info1.isFile() == true)) {
+                            && (info1.isFile() == true)) {
                         respaldo.append(dato);
                     }
 
@@ -572,46 +743,60 @@ void MainWindow::dropEvent(QDropEvent * event)
             }
         }
     }
-    m_imagesModel->addImages(respaldo);
-    if (m_imagesModel->tamanioLista() <= 0) {
-        mandarImagen(respaldo.at(0));
+    if(respaldo.size() >0){
+        m_imagesModel->addImages(respaldo);
+        if (m_imagesModel->tamanioLista() <= 0) {
+            mandarImagen(respaldo.at(0));
+        }
     }
 
-    qDebug()<<lista.size();
     respaldo.clear();
     updateActions();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (codeEditor->document()->isModified()) {
-       QMessageBox::StandardButton ret;
-       ret = QMessageBox::warning(this, tr("Menri-sub"),
-                    tr("El documento a sido modificado.\n"
-                       "¿desea guardar los cambios?"),
-                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-       if (ret == QMessageBox::Save){
-           GuardarTxt();
-           if(esGuardado){
-               event->accept();
+    if (  codeEditor->document()->isModified() && !codeEditor->document()->isEmpty()) {
+        int valorDelMensaje = guradarDatos();
+        if (valorDelMensaje==1){
+            GuardarTxt();
+            if(esGuardado){
+                event->accept();
+            }else{
+                event->ignore();
+            }
 
-           }else{
-               event->ignore();
-           }
-
-       }else if(ret == QMessageBox::Cancel){
+        }else if(valorDelMensaje==2){
             event->ignore();
-       }else if(ret == QMessageBox::Discard){
-           proceso.kill();
-           event->accept();
-       }
-
+        }else if(valorDelMensaje==3){
+            proceso.kill();
+            event->accept();
+        }
     }else{
         proceso.kill();
         event->accept();
     }
 
+
 }
+
+int MainWindow::guradarDatos()
+{
+    QMessageBox::StandardButton ret;
+    ret = QMessageBox::warning(this, tr("Menri-sub"),
+                               tr("El documento a sido modificado.\n"
+                                  "¿desea guardar los cambios?"),
+                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    if (ret == QMessageBox::Save){
+        return 1;
+    }else if(ret == QMessageBox::Cancel){
+        return 2;
+    }else if(ret == QMessageBox::Discard){
+        return 3;
+    }
+    return 0;
+}
+
 
 //para la obtener la posicion de cada elemnto del  listwidget
 void MainWindow::on_listWidget_clicked(const QModelIndex &index)
@@ -690,7 +875,7 @@ void MainWindow::limpiar_lista()
     scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
     posicion_ruta =0;
-    codeEditor->setPlainText("");
+    //codeEditor->setPlainText("");
 
 }
 
@@ -723,7 +908,7 @@ void MainWindow::listarScripts()
 
 void MainWindow::configuraciones()
 {
- config->exec();
+    config->exec();
 }
 
 void MainWindow::cambiarImagen(bool tev)
@@ -731,7 +916,7 @@ void MainWindow::cambiarImagen(bool tev)
     if(tev){
         anteriorImagen();
     }else{
-       siguienteImagen();
+        siguienteImagen();
     }
 
 }

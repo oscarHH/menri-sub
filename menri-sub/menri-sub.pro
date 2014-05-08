@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets  webkit webkitwidgets network
+QT       += core gui widgets  webkit webkitwidgets network svg
 
 CONFIG+=static
 

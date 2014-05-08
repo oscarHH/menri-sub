@@ -5,6 +5,7 @@
 #include "imagesmodel.h"
 #include "imageloader.h"
 
+
 ImagesModel::ImagesModel(QObject *parent): QAbstractListModel( parent )
   , m_loadCount( 0 )
 {
@@ -94,6 +95,7 @@ void ImagesModel::removeAll()
         m_thumbnails.clear();
         m_filenames.clear();
         m_descriptions.clear();
+        cantidad=0;
         emit imageRemoved();
 }
 
@@ -112,6 +114,8 @@ void ImagesModel::addImages( const QStringList list )
             emit rutaTxt(location);
         }else{
             addImage( location );
+            rutaImagenes  += location+"\n";
+            cantidad ++;
         }
 
     }
