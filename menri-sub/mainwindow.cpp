@@ -11,12 +11,10 @@
 #include <QProcess>
 #include <QColor>
 #include <QtSvg>
-
+#include <QFile>
 //variables
 float su ;
-QString version = " \t beta1 2/04/14";
-bool activoPanelEditor = false;
-bool activoPanelImagen = true;
+QString version = " \t beta1 15/05/14";
 bool esGuardado = false;
 int grados = 0;
 QColor color ;
@@ -102,15 +100,14 @@ MainWindow::MainWindow()
     setWindowTitle(tr("Menri-sub  ") + version);
     mandarImagen(":/img/iconos/portada.png");
     pw->setZoomFactor(0.3f);
-    templateDocker->setVisible(false);
+    templateDocker->setVisible(true);
     //menu
-    QToolBar * mainToolBar = addToolBar(tr("Main Toolbar"));
+    mainToolBar = addToolBar(tr("Main Toolbar"));
     mainToolBar->addAction(anterior);
     mainToolBar->addAction(limpiar);
     mainToolBar->addAction(siguiente);
     mainToolBar->addAction(zoomInAct);
     mainToolBar->addAction(zoomOutAct);
-
     //toolBarArea();
     addToolBar(Qt::BottomToolBarArea, mainToolBar);
 
@@ -125,7 +122,7 @@ MainWindow::MainWindow()
     setAcceptDrops(true);
     //tamaño de la ventana
     //el programa inicia maximizado
-    setWindowState(Qt::WindowMaximized);
+    //setWindowState(Qt::WindowMaximized);
     //conectamos
     connect(m_imageView, SIGNAL(clicked(QModelIndex)), this, SLOT(on_listWidget_clicked(QModelIndex)));
     connect(btnAnterior, SIGNAL(clicked()), this, SLOT(anteriorImagen()));
@@ -136,30 +133,42 @@ MainWindow::MainWindow()
     abrir = new QFileDialog();
     guizip = new GuiZip();
     promocionLike = new like(this);
-    config = new Configuraciones(this);
+    config = new Configuraciones();
 
     QObject::connect(config,SIGNAL(valorColor(QColor)),codeEditor,SLOT(otroColor(QColor)) );
     QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(colorFondo(QColor)));
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );
     leerCofiguracion();
-    archivotxt = new ManejoDearchivosTxt("");
+    archivotxt = new ManejoDearchivosTxt();
+    comprobarConfiguraciones();
 
+
+    //agregamos los atajos teclado
+    this->addAction(openAct);
+    this->addAction(modolectura);
+    this->addAction(siguiente);
+    this->addAction(anterior);
+    this->addAction(zoomInAct);
+    this->addAction(zoomOutAct);
+    this->addAction(pantallaCompleta);
+    this->addAction(rotarImagen);
+    this->addAction(limpiar);
+    zoom  = 1;
 }
 
 MainWindow::~MainWindow()
 {
+
 }
 
 
 //implementacion del slot para mostrar u ocultar el panel imagenes
 void MainWindow::panelImagen()
 {
-    if (activoPanelImagen == true) {
-        DocArchivos->setVisible(false);
-        activoPanelImagen = false;
-    } else {
+    if (imagenes->isChecked()) {
         DocArchivos->setVisible(true);
-        activoPanelImagen = true;
+    } else {
+        DocArchivos->setVisible(false);
     }
 }
 
@@ -168,13 +177,12 @@ void MainWindow::panelImagen()
 void MainWindow::panelEditor()
 {
 
-    if (activoPanelEditor == false) {
+    if (editor->isChecked()) {
         templateDocker->setVisible(true);
-        activoPanelEditor = true;
     } else {
         templateDocker->setVisible(false);
-        activoPanelEditor = false;
     }
+
 
 }
 
@@ -183,7 +191,7 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog);
+    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog );
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
@@ -228,7 +236,7 @@ void MainWindow::zoomIn()
     zoom  = pw->f + 0.05f;
     //pasamos el valor del zoom
     pw->setZoomFactor(zoom);
-    qDebug()<<zoom;
+    //qDebug()<<zoom;
 }
 
 //implementacion del slot zoom -
@@ -255,9 +263,12 @@ void MainWindow::normalSize()
 //implementacion del slot acerca de menri-sub
 void MainWindow::about()
 {
+
     QMessageBox::about(this, tr("Acerca de Menri-sub"),
-                       tr("<p><b>Menri-sub</b> Herramienta para ayudar a traducir manga, comics, etc. "
-                          "</p>"));
+                       tr("<p><b>Menri-sub</b> Herramienta para ayudar a traducir manga, comics, etc."
+                          "</p>"
+                          " by Oscar Hernandez Hernandez (H2O)"
+                          ));
 }
 
 
@@ -290,6 +301,13 @@ void MainWindow::createActions()
     guardarComo->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
     connect(guardarComo,SIGNAL(triggered()),this,SLOT(guardarCOmo()));
 
+
+    exportar = new QAction(tr("&Exportar"), this);
+    exportar->setShortcut(tr("Alt+e"));
+    exportar->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
+    connect(exportar, SIGNAL(triggered()), this, SLOT(exportarTraduccion()));
+
+
     exitAct = new QAction(tr("&Salir"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -300,21 +318,35 @@ void MainWindow::createActions()
     zoomInAct->setIcon((QIcon(QPixmap(":/img/iconos/zoom+.png"))));
     connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
+
+
     zoomOutAct = new QAction(tr("Zoom (-)"), this);
     zoomOutAct->setShortcut(tr("Ctrl+-"));
     zoomOutAct->setEnabled(false);
     zoomOutAct->setIcon((QIcon(QPixmap(":/img/iconos/zoom-.png"))));
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
+    normalSizeAct = new QAction(tr("&Tamaño normal"), this);
+    normalSizeAct->setShortcut(tr("Alt+N"));
+    normalSizeAct->setEnabled(false);
+    connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
+
+    pantallaCompleta = new QAction(tr("&Pantalla completa"), this);
+    pantallaCompleta->setShortcut(tr("F11"));
+    pantallaCompleta->setEnabled(true);
+    pantallaCompleta->setCheckable(true);
+    pantallaCompleta->setChecked(true);
+    connect(pantallaCompleta, SIGNAL(triggered()), this, SLOT(fullpantalla()));
+
     anterior = new QAction(tr("anterior (<)"), this);
-    anterior->setShortcut(Qt::ALT +Qt::Key_Left);
+    anterior->setShortcut(Qt::CTRL +Qt::Key_Left);
     anterior->setEnabled(false);
     anterior->setIcon((QIcon(QPixmap(":/img/iconos/atras.png"))));
     connect(anterior, SIGNAL(triggered()), this, SLOT(anteriorImagen()));
 
 
     siguiente = new QAction(tr("siguiente (>)"), this);
-    siguiente->setShortcut(Qt::ALT + Qt::Key_Right);
+    siguiente->setShortcut(Qt::CTRL + Qt::Key_Right);
     siguiente->setEnabled(false);
     siguiente->setIcon((QIcon(QPixmap(":/img/iconos/siguiente.png"))));
     connect(siguiente, SIGNAL(triggered()), this, SLOT(siguienteImagen()));
@@ -324,12 +356,6 @@ void MainWindow::createActions()
     limpiar->setEnabled(false);
     limpiar->setIcon((QIcon(QPixmap(":/img/iconos/limpiar.png"))));
     connect(limpiar, SIGNAL(triggered()), this, SLOT(limpiar_lista()));
-
-
-    normalSizeAct = new QAction(tr("&Tamaño normal"), this);
-    normalSizeAct->setShortcut(tr("Alt+S"));
-    normalSizeAct->setEnabled(false);
-    connect(normalSizeAct, SIGNAL(triggered()), this, SLOT(normalSize()));
 
 
     rotarImagen = new QAction(tr("&Rotar Imagen"), this);
@@ -347,14 +373,14 @@ void MainWindow::createActions()
     editor = new QAction(tr("&Editor"), this);
     editor->setShortcut(tr("Ctrl+e"));
     editor->setCheckable(true);
-    editor->setChecked(false);
+    editor->setChecked(true);
     connect(editor, SIGNAL(triggered()), this, SLOT(panelEditor()));
 
     aboutAct = new QAction(tr("&Acerca de"), this);
     aboutAct->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    siguenoslike = new QAction(tr("Siguenos"),this);
+    siguenoslike = new QAction(tr("Visitanos"),this);
     siguenoslike->setIcon((QIcon(QPixmap(":/img/iconos/ayuda.png"))));
     connect(siguenoslike, SIGNAL(triggered()), this, SLOT(siguenos()));
 
@@ -369,9 +395,18 @@ void MainWindow::createActions()
     connect(herramientascript, SIGNAL(triggered()), this, SLOT(listarScripts()));
 
     opciones = new QAction(tr("&Opciones"), this);
-    opciones->setShortcut(tr("Alt+o"));
+    opciones->setShortcut(tr("Alt+c"));
     opciones->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
     connect(opciones, SIGNAL(triggered()), this, SLOT(configuraciones()));
+
+
+
+
+    modolectura = new QAction(tr("&Modo lectura"), this);
+    modolectura->setShortcut(tr("ALT+r"));
+    modolectura->setCheckable(true);
+    modolectura->setChecked(false);
+    connect(modolectura, SIGNAL(triggered()), this, SLOT(lectura()));
 
 
 
@@ -387,17 +422,23 @@ void MainWindow::createMenus()
     fileMenu->addAction(guardar);
     fileMenu->addAction(guardarComo);
     fileMenu->addSeparator();
+    fileMenu->addAction(exportar);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
     viewMenu = new QMenu(tr("&Ver"), this);
     viewMenu->addAction(zoomInAct);
     viewMenu->addAction(zoomOutAct);
     viewMenu->addAction(normalSizeAct);
+    viewMenu->addAction(pantallaCompleta);
+    viewMenu->addAction( modolectura);
+
     viewMenu->addSeparator();
     viewMenu->addAction(anterior);
     viewMenu->addAction(siguiente);
     viewMenu->addAction(limpiar);
     viewMenu->addAction(rotarImagen);
+
     helpMenu = new QMenu(tr("&Ayuda"), this);
     helpMenu->addAction(siguenoslike);
     helpMenu->addAction(aboutAct);
@@ -454,7 +495,7 @@ void MainWindow::leerCofiguracion()
 
 void MainWindow::RutaTxt(QString ruta)
 {
-    archivoActual = ruta;
+    //archivoActual = ruta;
     archivotxt->setRutaArchivo(ruta);
     codeEditor->setPlainText(archivotxt->leerArchivo());
 }
@@ -476,22 +517,19 @@ void MainWindow::GuardarTxt()
     if(!fileName.isNull()){
 
         QString res;
-        res = fileName;
-        res.replace(".menri","");
-        res.replace(".mtxt","");
-        res.replace(".mimg","");
-        qDebug()<<res;
+        res = fileName.replace(".menri","");
+
         QString ruta;
 
-        archivotxt->setRutaGuardar(res +".mimg");
+        archivotxt->setRutaArchivo(res +".mimg");
         if (archivotxt->archivoGuardar(m_imagesModel->rutaImagenes)){
             ruta += archivotxt->getRutaArchivos();
 
-            archivotxt->setRutaGuardar(res+".mtxt");
+            archivotxt->setRutaArchivo(res+".mtxt");
             archivotxt->archivoGuardar(codeEditor->toPlainText());
             ruta +="\n"+ archivotxt->getRutaArchivos();
 
-            archivotxt->setRutaGuardar(res+".menri");
+            archivotxt->setRutaArchivo(res+".menri");
             archivotxt->archivoGuardar(ruta);
 
             QMessageBox::information(
@@ -525,12 +563,10 @@ void MainWindow::abrirProyecto()
         limpiar_lista();
         codeEditor->setPlainText("");
         QStringList rutas; //almacena las rutas del proyecto
-        QStringList imagenes;
+        QStringList imagenes; //almacena ruta de las imagenes
         archivoActual = archivo; //asigna el nombre del archivo abierto
-        qDebug()<<archivoActual;
-        rutas = archivotxt->leerRutas(archivo); //lee el proyecto
-        RutaTxt(rutas.at(1));//obtiene el texto
 
+        rutas = archivotxt->leerRutas(archivo); //lee el proyecto
 
         //lectura de imagenes
         imagenes = archivotxt->leerRutas(rutas.at(0));
@@ -542,6 +578,10 @@ void MainWindow::abrirProyecto()
             }
             updateActions();
         }
+        //lectura de archivos
+        RutaTxt(rutas.at(1));//obtiene el texto
+        archivoActual = archivo;
+        codeEditor->document()->setModified(false);
     }
 }
 
@@ -560,15 +600,14 @@ void MainWindow::nuevoProyecto()
 
             //verificamos que la cadena no este vacia
             if (!listafileName.isEmpty()) {
-               limpiar_lista();
-               codeEditor->setPlainText("");
+                limpiar_lista();
+                codeEditor->setPlainText("");
                 m_imagesModel->addImages(listafileName);
                 if (m_imagesModel->cantidad > 0) {
                     mandarImagen(listafileName.at(0));
                     updateActions();
-
                 }
-            listafileName.clear();
+                listafileName.clear();
             }
 
 
@@ -585,7 +624,7 @@ void MainWindow::nuevoProyecto()
                 mandarImagen(listafileName.at(0));
                 updateActions();
             }
-        listafileName.clear();
+            listafileName.clear();
         }
 
     }
@@ -608,15 +647,15 @@ void MainWindow::guardarCOmo()
         fileName.remove(QRegularExpression(".menri"));
         QString ruta;
 
-        archivotxt->setRutaGuardar(fileName +".mimg");
+        archivotxt->setRutaArchivo(fileName +".mimg");
         if (archivotxt->archivoGuardar(m_imagesModel->rutaImagenes)){
             ruta += archivotxt->getRutaArchivos();
 
-            archivotxt->setRutaGuardar(fileName+".mtxt");
+            archivotxt->setRutaArchivo(fileName+".mtxt");
             archivotxt->archivoGuardar(codeEditor->toPlainText());
             ruta +="\n"+ archivotxt->getRutaArchivos();
 
-            archivotxt->setRutaGuardar(fileName+".menri");
+            archivotxt->setRutaArchivo(fileName+".menri");
             archivotxt->archivoGuardar(ruta);
 
             QMessageBox::information(
@@ -638,6 +677,19 @@ void MainWindow::guardarCOmo()
 
 }
 
+void MainWindow::fullpantalla()
+{
+    if(pantallaCompleta->isChecked()){
+        this->showFullScreen();
+
+
+    }else{
+        this->showMaximized();
+
+    }
+
+}
+
 //actualizamos el estado de los menus
 void MainWindow::updateActions()
 {
@@ -650,6 +702,8 @@ void MainWindow::updateActions()
     btnSiguiente->setEnabled(true);
     btnLimpiar->setEnabled(true);
     limpiar->setEnabled(true);
+    codeEditor->installEventFilter(this);
+    scrollArea->installEventFilter(this);
     //view->setEnabled(true);
     m_imageView->setEnabled(true);
     scrollArea->setEnabled(true);
@@ -662,13 +716,20 @@ void MainWindow::mandarImagen(QString nombreImagen)
     if(!nombreImagen.endsWith(".txt")){
         grados = 0;
         pw = new PixmapWidget(nombreImagen,  scrollArea);
+        //pw->setZoomFactor(zoom);
+        //qDebug()<<zoom;
         //asigamos que se pueda redimensionar
         scrollArea->setWidgetResizable(true);
         //el scrollArea contiene a pw y dibuja la imagen
         scrollArea->setWidget(pw);
 
         scrollArea->scroll(20,30);
-        mStatLabel.setText("Resolucion: "+pw->getTamanioImagen());
+
+        QFileInfo info1;
+        info1.setFile(nombreImagen);
+
+        mStatLabel.setText("Nombre: "+info1.baseName()+"    Resolucion: "+pw->getTamanioImagen());
+
     }
 
 }
@@ -773,8 +834,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
             event->accept();
         }
     }else{
-        proceso.kill();
+
         event->accept();
+        proceso.kill();
+        this->close();
+
+
     }
 
 
@@ -814,6 +879,11 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
 
 void MainWindow::siguienteImagen()
 {
+    if(m_imagesModel->tamanioLista() == 1){
+        return;
+
+    }
+
     if (posicion_ruta < m_imagesModel->tamanioLista()) {
         posicion_ruta++;
         btnSiguiente->setEnabled(true);
@@ -836,6 +906,10 @@ void MainWindow::siguienteImagen()
 void MainWindow::anteriorImagen()
 {
     grados = 0;
+    if(m_imagesModel->tamanioLista() == 1){
+        return;
+    }
+
     //comprobamos el tamaño de la lista
     if (m_imagesModel->tamanioLista() > 0) {
         posicion_ruta--;
@@ -862,6 +936,7 @@ void MainWindow::limpiar_lista()
     //limpia el listwidget
     m_imagesModel->removeAll();
     mandarImagen(":/img/iconos/portada.png");
+    pw->setZoomFactor(0.3f);
     zoomInAct->setEnabled(false);
     zoomOutAct->setEnabled(false);
     normalSizeAct->setEnabled(false);
@@ -908,6 +983,8 @@ void MainWindow::listarScripts()
 
 void MainWindow::configuraciones()
 {
+
+    config->cargarPalabras();
     config->exec();
 }
 
@@ -920,3 +997,111 @@ void MainWindow::cambiarImagen(bool tev)
     }
 
 }
+
+void MainWindow::lectura(){
+    if(modolectura->isChecked()){
+        this->showFullScreen();
+        menuBar()->setVisible(false);
+        statusBar()->setVisible(false);
+        DocArchivos->setVisible(false);
+        templateDocker->setVisible(false);
+        imagenes->setChecked(false);
+        editor->setChecked(false);
+        mainToolBar->setVisible(false);
+
+        //if(!pantallaCompleta->isChecked()){pantallaCompleta->setChecked(true);}
+    }else{
+        DocArchivos->setVisible(true);
+        statusBar()->setVisible(true);
+        templateDocker->setVisible(true);
+        menuBar()->setVisible(true);
+        imagenes->setChecked(true);
+        editor->setChecked(true);
+        mainToolBar->setVisible(true);
+    }
+
+}
+
+//metodo para los eventos
+bool MainWindow::eventFilter(QObject * watched, QEvent * e)
+{
+    if (watched == codeEditor && e->type() == QEvent::KeyPress) {
+        QKeyEvent * ke = static_cast<QKeyEvent * >(e);
+
+        if (ke->key() == Qt::CTRL ) {
+            if(ke->key() ==  Qt::Key_Left){
+            qDebug()<<"hola";
+            anteriorImagen();
+            return true;
+            }
+        }else if(ke->key() == Qt::CTRL && Qt::Key_Right){
+            siguienteImagen();
+            return true;
+        }
+    }
+
+    return QWidget::eventFilter(watched, e);
+}
+
+void MainWindow::exportarTraduccion(){
+
+
+    if(codeEditor->document()->isEmpty()){
+        return;
+    }
+
+    QString fileName;
+    fileName = QFileDialog::getSaveFileName(this, tr("Exportar traduccion"),QDir::homePath(),tr("txt(*.txt)"));
+
+
+    if(!fileName.isNull()){
+        if (archivotxt->archivoGuardar(fileName)){
+
+            QMessageBox::information(
+                        this,
+                        tr("Exportar"),
+                        tr("Se a exportado correctamente") );
+            return;
+        }else{
+            QMessageBox::critical(
+                        this,
+                        tr("Guardar"),
+                        tr("Ocurrio un error al guardar") );
+            return;
+
+        }
+    }
+}
+
+void MainWindow::comprobarConfiguraciones()
+{
+    QDir ruta(QDir::homePath()+"/.menri-sub");
+
+    //--------verifica todas las carpetas existan de lo contrario se crean----------
+    if(!ruta.mkdir(QDir::homePath()+"/.menri-sub")){
+        qDebug()<<"ocurrio un error1";
+    }
+
+    if(!ruta.mkdir(QDir::homePath()+"/.menri-sub/config")){
+        qDebug()<<"ocurrio un error 2";
+    }
+
+    if(!ruta.mkdir(QDir::homePath()+"/.menri-sub/comandos")){
+        qDebug()<<"ocurrio un error 3";
+    }
+
+    if(!ruta.mkdir(QDir::homePath()+"/.menri-sub/temas")){
+        qDebug()<<"ocurrio un error 4";
+    }
+
+    //-------comprueba que los archivos existan de lo contrariose crean------
+    QFile archivo(QDir::homePath()+"/.menri-sub/config/recortes.mconfig");
+
+    if(!archivo.exists()){//archivo de recortes
+        QString pal = "page,rgb,etiqueta\nhola,mkv,palabra"; //datos por default
+        archivotxt->setRutaArchivo(archivo.fileName());
+        archivotxt->archivoGuardar(pal);
+    }
+
+}
+

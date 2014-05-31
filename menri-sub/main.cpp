@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <QTextCodec>
+//#include <QTextCodec>
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         w.mandarImagen(img.at(1));
         w.updateActions();
     }
-
+    w.showFullScreen();
     w.show();
     w.setAcceptDrops(true);
 

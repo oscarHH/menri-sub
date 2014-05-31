@@ -4,6 +4,7 @@
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
+#include <QDir>
 
 //atributos de clase pra almacenar los colores
 QColor respaldo1;
@@ -12,6 +13,7 @@ QFont  respaldo3;
 bool  cambioFormato = false;
 bool cambioColorLetra = false;
 bool cambioColorFondo = false;
+ManejoDearchivosTxt *archtxt = new ManejoDearchivosTxt();
 
 //metodo construcotr
 Configuraciones::Configuraciones(QWidget *parent) :
@@ -58,11 +60,16 @@ Configuraciones::Configuraciones(QWidget *parent) :
     respaldo3 = qvariant_cast<QFont>(settings.value("fuente beta"));
     ui->txtFuente->setText(respaldo3.family());
     ui->tamanioLetra->setText(QString::number(respaldo3.pointSize()));
+   // nuevaPalabra = new AgregarNuevaPalabra(this);
+
+        //qDebug()<<QDir::currentPath();
+
 }
 
 //metodo destructor
 Configuraciones::~Configuraciones()
 {
+    delete ui;
 }
 
 //metodo que emite la informacion del color
@@ -86,6 +93,15 @@ void Configuraciones::mandarFormatoLetra()
 
 }
 
+//lee archivo de configuracion
+void Configuraciones::cargarPalabras()
+{
+
+    archtxt->setRutaArchivo(QDir::homePath()+"/.menri-sub/config/recortes.mconfig");
+    qDebug()<<archtxt->leerArchivo();
+
+}
+
 //acciones de cuando se da click en el boton aceptar
 void Configuraciones::on_btnAceptar_clicked()
 {
@@ -93,7 +109,7 @@ void Configuraciones::on_btnAceptar_clicked()
     this->mandarFormatoLetra();
     this->close();
     guardarConfiguracion();
-
+    accept();
 }
 
 //cierra la ventana de configuracion
@@ -105,6 +121,7 @@ void Configuraciones::on_btnCancelar_clicked()
 //fuente de letra del editor
 void Configuraciones::on_btnFuente_clicked()
 {
+    cambioFormato = false;
     bool ok;
     font = QFontDialog::getFont(&ok, QFont(respaldo3.family(), respaldo3.pointSize()), this);
     if (ok){
@@ -114,9 +131,7 @@ void Configuraciones::on_btnFuente_clicked()
         cambioFormato = true;
     }else{
         font = respaldo3;
-        ui->txtFuente->setText(font.family());
-        ui->tamanioLetra->setText(QString::number( font.pointSize()));
-        cambioFormato = false;
+        return;
     }
 
 }
@@ -124,8 +139,10 @@ void Configuraciones::on_btnFuente_clicked()
 //boton para cambiar el   color de letra del editor de texto
 void Configuraciones::cambiarColor()
 {
+    cambioColorLetra = false;
     QPalette paleta;
-    color = QColorDialog::getColor(Qt::white,this);
+    color = QColorDialog::getColor(Qt::white,this,"Color de letra",QColorDialog::DontUseNativeDialog);
+
     if(color.isValid()){
         paleta.setColor(QPalette::Base,color);
         ui->lineEdit_5->setPalette(paleta);
@@ -133,9 +150,7 @@ void Configuraciones::cambiarColor()
         cambioColorLetra = true;
     }else{
         color = respaldo1;
-        //paleta.setColor(QPalette::Base,color);
-        //ui->lineEdit_5->setPalette(paleta);
-        cambioColorLetra = false;
+        return;
     }
 
 }
@@ -143,6 +158,8 @@ void Configuraciones::cambiarColor()
 //boton para cambiar el fondo de color del editor de texto
 void Configuraciones::on_btnColorFondo_clicked()
 {
+
+    cambioColorFondo = false;
     QPalette paleta;
     colorFondo = QColorDialog::getColor(Qt::white,this);
     if(colorFondo.isValid()){
@@ -151,12 +168,9 @@ void Configuraciones::on_btnColorFondo_clicked()
         respaldo2 = colorFondo;
         cambioColorFondo = true;
     }else{
-        colorFondo = respaldo2;
-       // paleta.setColor(QPalette::Base,colorFondo);
-        //ui->lineEdit_6->setPalette(paleta);
-        cambioColorFondo = false;
+         colorFondo = respaldo2;
+        return;
     }
-
 }
 
 //metodo que guarda la configuracion
@@ -169,4 +183,13 @@ void Configuraciones::guardarConfiguracion()
     settings.setValue("color Fondo",colorFondo);
     settings.setValue("fuente beta",font);
     settings.setValue("primer inicio",true);
+}
+
+void Configuraciones::on_pushButton_clicked()
+{
+    AgregarNuevaPalabra nuevaPalabra(this);
+    nuevaPalabra.exec();
+    datosConfiguracion config =  nuevaPalabra.getConfig();
+    qDebug()<< config.getCOlor();
+    qDebug()<< config.getPalabra();
 }

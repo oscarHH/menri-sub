@@ -4,9 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets  webkit webkitwidgets network svg
+QT       += core gui widgets network svg
 
 CONFIG+=static
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,8 +33,10 @@ SOURCES += main.cpp\
     herramientas/ManejoComprimido/guizip.cpp \
     configuracion/configuraciones.cpp \
     editor/manejodearchivostxt.cpp \
+    promocion/evento_qlabel.cpp    \
     promocion/like.cpp \
-    promocion/evento_qlabel.cpp
+    configuracion/agregarnuevapalabra.cpp
+
 
 
 
@@ -50,8 +53,11 @@ HEADERS  += mainwindow.h \
     herramientas/ManejoComprimido/guizip.h \
     configuracion/configuraciones.h \
     editor/manejodearchivostxt.h \
+    promocion/evento_qlabel.h    \
     promocion/like.h \
-    promocion/evento_qlabel.h
+    configuracion/agregarnuevapalabra.h \
+    configuracion/datosconfiguracion.h
+
 
 
 RESOURCES += \
@@ -61,7 +67,8 @@ FORMS += \
     visor/visor.ui \
     herramientas/ManejoComprimido/guizip.ui \
     configuracion/configuraciones.ui \
-    promocion/like.ui
+    promocion/like.ui \
+    configuracion/agregarnuevapalabra.ui
 
 OTHER_FILES += \
     Menri-sub.txt
@@ -75,8 +82,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../librerias/quazip/re
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../librerias/quazip/debug/ -lquazip
 else:unix: LIBS += -L$$OUT_PWD/../librerias/quazip/ -lquazip
 
+
 INCLUDEPATH += $$PWD/../librerias/quazip
 DEPENDPATH += $$PWD/../librerias/quazip
-HEADERS +=
 
 

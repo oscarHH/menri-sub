@@ -9,13 +9,11 @@
 #include <QMessageBox>
 #include "../../visor/visor.h"
 #include "manejozip.h"
-#include <QtWebKit>
-#include <QtWebKitWidgets/QWebView>
+
 
 QT_BEGIN_NAMESPACE
 class visor;
 //class WebCore;
-class webview;
 
 QT_END_NAMESPACE
 

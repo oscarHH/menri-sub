@@ -2,13 +2,9 @@
 #include "guizip.h"
 #include <QFileDialog>
 #include <QDebug>
-//#include <QDesktopServices>
 #include <QMessageBox>
 #include <QMovie>
-
-#include <QWebElement>
 #include <QTextStream>
-#include <QSslSocket>
 #include <QDir>
 
 /*
@@ -28,18 +24,6 @@ GuiZip::GuiZip(QWidget *parent) :
     ui->txtComentarios->setEnabled(false);
     ui->treeWidget->setColumnCount(4);
     ui->treeWidget->setHeaderLabels(QStringList () <<"Nombre"<<"Tamaño"<<"Comprimido"<<"Tipo");
-
-
-    //QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptEnabled, false);
-    //QWebSettings::globalSettings()->setAttribute(QWebSettings::AutoLoadImages, true);
-    //QWebSettings::globalSettings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
-    //QWebSettings::globalSettings()->setAttribute(QWebSettings::CSSGridLayoutEnabled, true);
-    //QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
-
-    //QNetworkProxyFactory::setUseSystemConfiguration (true);
-    //ui->webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
-    // ui->webView->load(QUrl("http://google.com"));
-
 
     vs = new visor();
     fileZip = new ManejoZip(this);

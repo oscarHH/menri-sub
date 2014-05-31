@@ -2,6 +2,8 @@
 #define CONFIGURACIONES_H
 
 #include <QDialog>
+#include "agregarnuevapalabra.h"
+#include "../editor/manejodearchivostxt.h"
 namespace Ui {
 class Configuraciones;
 }
@@ -9,6 +11,7 @@ class Configuraciones;
 class Configuraciones : public QDialog
 {
     Q_OBJECT
+
 
 public:
     explicit Configuraciones(QWidget *parent = 0);
@@ -21,6 +24,8 @@ public:
 
     void mandarcolor();
     void mandarFormatoLetra();
+    void cargarPalabras();
+
 private slots:
 
     void cambiarColor();
@@ -35,7 +40,7 @@ private slots:
 
     void guardarConfiguracion();
 
-
+    void on_pushButton_clicked();
 
 private:
     Ui::Configuraciones *ui;

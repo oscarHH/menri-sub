@@ -14,8 +14,6 @@ public:
 
 signals:
     void mouse_pressed();
-public slots:
-
 };
 
 #endif // EVENTO_QLABEL_H

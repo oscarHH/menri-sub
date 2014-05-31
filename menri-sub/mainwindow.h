@@ -15,7 +15,7 @@
 #include "visor/PixmapWidget.h"
 #include <QImageIOPlugin>
 #include "configuracion/configuraciones.h"
-#include <editor/manejodearchivostxt.h>
+#include "editor/manejodearchivostxt.h"
 #include "promocion/like.h"
 QT_BEGIN_NAMESPACE
 class PixmapWidget;
@@ -56,6 +56,7 @@ public:
     ImagesModel *m_imagesModel;
     void mandarImagen(QString  nombreImagen);
     QString archivoActual;
+     bool eventFilter(QObject * watched, QEvent * e);
 public slots:
     void panelImagen();
     void panelEditor();
@@ -80,9 +81,10 @@ public slots:
     void abrirProyecto();
     void nuevoProyecto();
     void guardarCOmo();
-signals:
-    //void	itemClicked(QListWidgetItem * item);
-    //metodos a implementar
+    void fullpantalla();
+    void lectura();
+    void exportarTraduccion();
+    void comprobarConfiguraciones();
 private:
     ManejoDearchivosTxt * archivotxt;
     void createActions();
@@ -113,9 +115,10 @@ protected:
     virtual  void dragLeaveEvent(QDragLeaveEvent * event);
     virtual  void dragMoveEvent(QDragMoveEvent * event);
     virtual  void dropEvent(QDropEvent * event);
+
     void closeEvent(QCloseEvent *event);
 
-
+    QToolBar * mainToolBar;
     QAction *openAct;
     QAction *abrir_Proyecto;
     QAction *nuevo_Proyecto;
@@ -129,6 +132,7 @@ protected:
     QAction *anterior;
     QAction *limpiar;
     QAction *normalSizeAct;
+    QAction *pantallaCompleta;
     QAction *rotarImagen;
     QAction *aboutAct;
     QAction *aboutQtAct;
@@ -137,6 +141,8 @@ protected:
     QAction *herramientascript;
     QAction *opciones;
     QAction *siguenoslike;
+    QAction * modolectura;
+    QAction * exportar;
 
 
     QMenu *fileMenu;

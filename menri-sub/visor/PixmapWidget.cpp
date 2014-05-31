@@ -6,17 +6,16 @@
 #include "../mainwindow.h"
 #include <QGraphicsPixmapItem>
 #include <QMimeData>
+float valorZoom = 1;
 PixmapWidget::PixmapWidget( const QString &filename, QWidget *parent ) : QLabel( parent )
 {
     m_pm = new QPixmap( filename );
-    this->f =0.4f;
-    zoomFactor = f;
+    zoomFactor =valorZoom;
+    this->f = zoomFactor;
     emit(tamanioWidget());
     setMinimumSize(  m_pm->width()*zoomFactor, m_pm->height()*zoomFactor );
     grados = 0;
     setAcceptDrops(true);
-
-
 }
 
 
@@ -80,7 +79,7 @@ void PixmapWidget::setZoomFactor( float f )
     if( p )
         resize( p->width(), p->height() );
 
-
+    valorZoom  = f;
     repaint();
 }
 
@@ -138,6 +137,7 @@ void PixmapWidget::paintEvent( QPaintEvent * /*event*/ )
 
 void PixmapWidget::wheelEvent( QWheelEvent *event )
 {
+
     this->f = zoomFactor + 0.001*event->delta();
     if( this->f < 32.0/m_pm->width() ){
         this->f = 32.0/m_pm->width();
