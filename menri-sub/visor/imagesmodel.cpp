@@ -51,6 +51,7 @@ int ImagesModel::rowCount( const QModelIndex &parent ) const
     return m_filenames.size();
 }
 
+
 int ImagesModel::imageCount() const { return m_filenames.size(); }
 
 QString ImagesModel::rutaImagen(int index)
@@ -58,10 +59,13 @@ QString ImagesModel::rutaImagen(int index)
     return m_filenames.at(index);
 }
 
+
 int ImagesModel::tamanioLista()
 {
     return m_filenames.size();
 }
+
+
 
 bool ImagesModel::removeRows( int row, int count, const QModelIndex &parent )
 {

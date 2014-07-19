@@ -4,7 +4,7 @@
 //#include <QWidget>
 #include <QLabel>
 #include <QString>
-
+#include <QMouseEvent>
 class QPixmap;
 
 class PixmapWidget : public QLabel
@@ -26,6 +26,8 @@ public slots:
 
 signals:
     void zoomFactorChanged( float );
+    void getCordenas(int,int);
+
 
 
 protected:
@@ -35,6 +37,9 @@ protected:
     virtual void dragMoveEvent(QDragMoveEvent *event);
     virtual void dropEvent(QDropEvent *event);
     virtual void startDrag(Qt::DropActions supportedActions);
+    virtual void mousePressEvent (QMouseEvent *ev);
+    virtual void mouseReleaseEvent (QMouseEvent *ev);
+    virtual void mouseDoubleClickEvent (QMouseEvent *ev);
 private:
      void tamanioWidget();
     int w, h;

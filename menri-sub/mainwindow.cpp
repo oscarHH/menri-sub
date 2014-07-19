@@ -14,7 +14,7 @@
 #include <QFile>
 //variables
 float su ;
-QString version = " \t beta1 15/05/14";
+QString version = " \t beta2 19/07/14";
 bool esGuardado = false;
 int grados = 0;
 QColor color ;
@@ -130,6 +130,10 @@ MainWindow::MainWindow()
     connect(btnLimpiar, SIGNAL(clicked()), this, SLOT(limpiar_lista()));
     connect (m_imageView,SIGNAL(cambiarImagen(bool)),this,SLOT(cambiarImagen(bool)));
     connect (m_imagesModel,SIGNAL(rutaTxt(QString)),this,SLOT(RutaTxt(QString)));
+    connect(m_imageView, SIGNAL(pressed(QModelIndex)), this, SLOT(obtenerIndex(QModelIndex)));
+    connect (m_imageView,SIGNAL(imagenRemovida(bool)),this,SLOT(esImagenRemovida(bool)));
+    
+
     abrir = new QFileDialog();
     guizip = new GuiZip();
     promocionLike = new like(this);
@@ -154,6 +158,7 @@ MainWindow::MainWindow()
     this->addAction(rotarImagen);
     this->addAction(limpiar);
     zoom  = 1;
+
 }
 
 MainWindow::~MainWindow()
@@ -191,7 +196,7 @@ void MainWindow::panelEditor()
 void MainWindow::obtenerImagen()
 {
 
-    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0, QFileDialog::DontUseNativeDialog );
+    listafileName = abrir->getOpenFileNames(this, tr("Seleccion de archivos"), QDir::homePath() + "/Pictures", tr("Image Files ( *.jpg *.png *.bmp *.psd *.svg *.psd *.jpeg *.gif *.txt"), 0 );
 
     //verificamos que la cadena no este vacia
     if (!listafileName.isEmpty()) {
@@ -722,13 +727,12 @@ void MainWindow::mandarImagen(QString nombreImagen)
         scrollArea->setWidgetResizable(true);
         //el scrollArea contiene a pw y dibuja la imagen
         scrollArea->setWidget(pw);
-
-        scrollArea->scroll(20,30);
-
+        connect (pw,SIGNAL(getCordenas(int,int)),this,SLOT(moverbarrasDesplazadoras(int,int)));
         QFileInfo info1;
         info1.setFile(nombreImagen);
 
         mStatLabel.setText("Nombre: "+info1.baseName()+"    Resolucion: "+pw->getTamanioImagen());
+
 
     }
 
@@ -866,6 +870,7 @@ int MainWindow::guradarDatos()
 //para la obtener la posicion de cada elemnto del  listwidget
 void MainWindow::on_listWidget_clicked(const QModelIndex &index)
 {
+    
     //obtenemos el valor de la listwidget
     posicion_ruta = index.row();
     //obtenemos el valor y lo convertimos a texto
@@ -873,6 +878,30 @@ void MainWindow::on_listWidget_clicked(const QModelIndex &index)
     //pasamos el nombre de la imagen
     mandarImagen(Ruta);
     updateActions();
+}
+
+void MainWindow::obtenerIndex(const QModelIndex &index)
+{
+    posicion_ruta = index.row ();
+    
+    
+    
+}
+void MainWindow::esImagenRemovida(const bool imagenRemovida)
+{
+    if(imagenRemovida == true){
+        if(posicion_ruta  > m_imagesModel->tamanioLista ()-1) posicion_ruta -=1;
+        if(m_imagesModel->tamanioLista () == 0 ){
+                mandarImagen (":/img/iconos/portada.png");
+                return;
+        }
+        
+                
+        QString Ruta = m_imagesModel->rutaImagen(posicion_ruta);
+        //pasamos el nombre de la imagen
+        mandarImagen(Ruta);
+        updateActions();
+    }
 }
 
 
@@ -1055,7 +1084,8 @@ void MainWindow::exportarTraduccion(){
 
 
     if(!fileName.isNull()){
-        if (archivotxt->archivoGuardar(fileName)){
+        archivotxt->setRutaArchivo (fileName);
+        if (archivotxt->archivoGuardar(codeEditor->toPlainText ())){
 
             QMessageBox::information(
                         this,
@@ -1102,6 +1132,19 @@ void MainWindow::comprobarConfiguraciones()
         archivotxt->setRutaArchivo(archivo.fileName());
         archivotxt->archivoGuardar(pal);
     }
+
+}
+int i=0;
+
+void MainWindow::moverbarrasDesplazadoras(int x, int y)
+{
+    qDebug()<<"-----------"<<i;
+    qDebug ()<<x<<","<<y;
+
+
+    //scrollArea->setCursor(Qt::CrossCursor);
+    scrollArea->horizontalScrollBar()->setValue(x);
+    scrollArea->verticalScrollBar()->setValue(y);
 
 }
 

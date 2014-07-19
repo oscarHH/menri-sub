@@ -20,6 +20,7 @@ private slots:
 
 signals:
     void cambiarImagen(bool);
+    void imagenRemovida(bool);
 };
 
 #endif // IMAGESVIEW_H

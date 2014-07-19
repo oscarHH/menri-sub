@@ -67,7 +67,8 @@ public slots:
     void about();
     void obtenerImagen();
     void on_listWidget_clicked(const QModelIndex &index);
-
+    void obtenerIndex(const QModelIndex &index);
+    void esImagenRemovida(const bool);
     void siguienteImagen();
     void anteriorImagen();
     void limpiar_lista();
@@ -85,6 +86,9 @@ public slots:
     void lectura();
     void exportarTraduccion();
     void comprobarConfiguraciones();
+    void moverbarrasDesplazadoras(int x,int y);
+
+
 private:
     ManejoDearchivosTxt * archivotxt;
     void createActions();
@@ -115,7 +119,6 @@ protected:
     virtual  void dragLeaveEvent(QDragLeaveEvent * event);
     virtual  void dragMoveEvent(QDragMoveEvent * event);
     virtual  void dropEvent(QDropEvent * event);
-
     void closeEvent(QCloseEvent *event);
 
     QToolBar * mainToolBar;

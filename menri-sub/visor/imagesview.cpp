@@ -24,11 +24,17 @@ void ImagesView::removeSelectedImages()
 {
     QModelIndexList indexes = selectedIndexes();
 
+  
     if( indexes.isEmpty() )
         return;
 
+    
+    
     foreach( QModelIndex i, indexes )
         model()->removeRows( i.row(), 1, QModelIndex() );
+      
+    emit imagenRemovida(true);
+    
 }
 
 
@@ -50,7 +56,7 @@ void ImagesView::contextMenuEvent( QContextMenuEvent *event )
         return;
 
     QMenu context( tr( "Accion" ), this );
-    const QString text = tr( "Remover %n imagen(es)", "", indexes.size() );
+    const QString text = tr( "Remover", "", indexes.size() );
     context.addAction( text, this, SLOT( removeSelectedImages() ) );
     context.exec( event->globalPos() );
 }

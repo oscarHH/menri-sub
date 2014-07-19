@@ -53,13 +53,15 @@ QStringList ManejoDearchivosTxt::leerRutas(QString rut)
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
 
-    QString line;
+    QString line = "";
+
+    //line = stream.readAll();
 
     do {
         line =stream.readLine();
 
-        if(line.isNull())
-            break;
+        /*if(line.isNull())
+            break;*/
 
         rutaImagenes.append(line);
     } while (!line.isNull());
