@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     editor/manejodearchivostxt.cpp \
     promocion/evento_qlabel.cpp    \
     promocion/like.cpp \
-    configuracion/agregarnuevapalabra.cpp
+    configuracion/agregarnuevapalabra.cpp \
+    visor/visorversion2.cpp
 
 
 
@@ -56,7 +57,8 @@ HEADERS  += mainwindow.h \
     promocion/evento_qlabel.h    \
     promocion/like.h \
     configuracion/agregarnuevapalabra.h \
-    configuracion/datosconfiguracion.h
+    configuracion/datosconfiguracion.h \
+    visor/visorversion2.h
 
 
 
@@ -68,7 +70,8 @@ FORMS += \
     herramientas/ManejoComprimido/guizip.ui \
     configuracion/configuraciones.ui \
     promocion/like.ui \
-    configuracion/agregarnuevapalabra.ui
+    configuracion/agregarnuevapalabra.ui \
+    atajos.ui
 
 OTHER_FILES += \
     Menri-sub.txt

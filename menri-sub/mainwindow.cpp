@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QtSvg>
 #include <QFile>
+
 //variables
 float su ;
 QString version = " \t beta2 19/07/14";
@@ -29,6 +30,7 @@ MainWindow::MainWindow()
     ///qDebug()<< &d;
     //contenedor
     QWidget * w = new QWidget;
+    v2 = new VisorVersion2;
     //layout verticcal
     QVBoxLayout * mainLayout = new  QVBoxLayout(w);
     //layout horizontal
@@ -66,9 +68,9 @@ MainWindow::MainWindow()
     mainLayout->addLayout(buttonLayout);
 
     //cuando la imagen es de mayor tamaño se le  coloca una barra de desplazamiento
-    scrollArea = new QScrollArea;
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setEnabled(false);
+   // scrollArea = new QScrollArea;
+   // scrollArea->setBackgroundRole(QPalette::Dark);
+   // scrollArea->setEnabled(false);
     //creamos el panel flotante del editor
     templateDocker = new QDockWidget;
     //creamos el panel flotante de la lista de imagenes
@@ -91,15 +93,18 @@ MainWindow::MainWindow()
     templateDocker->setWidget(codeEditor);
     DocArchivos->setWidget(w);
     //agregamos en el are de en medio
-    setCentralWidget(scrollArea);
+
+    setCentralWidget(v2);
+    
+    
     //creamos acciones
     createActions();
     //se crea los menus
     createMenus();
     //titulo de la ventana
     setWindowTitle(tr("Menri-sub  ") + version);
-    mandarImagen(":/img/iconos/portada.png");
-    pw->setZoomFactor(0.3f);
+    //mandarImagen(":/img/iconos/portada.png");
+    //pw->setZoomFactor(0.3f);
     templateDocker->setVisible(true);
     //menu
     mainToolBar = addToolBar(tr("Main Toolbar"));
@@ -202,7 +207,8 @@ void MainWindow::obtenerImagen()
     if (!listafileName.isEmpty()) {
         m_imagesModel->addImages(listafileName);
         if (m_imagesModel->tamanioLista() <= 0) {
-            mandarImagen(listafileName.at(0));
+            //mandarImagen(listafileName.at(0));
+            
         }
         updateActions();
 
@@ -238,16 +244,16 @@ void MainWindow::open()
 void MainWindow::zoomIn()
 //! [9] //! [10]
 {
-    zoom  = pw->f + 0.05f;
+    //zoom  = pw->f + 0.05f;
     //pasamos el valor del zoom
-    pw->setZoomFactor(zoom);
+   // pw->setZoomFactor(zoom);
     //qDebug()<<zoom;
 }
 
 //implementacion del slot zoom -
 void MainWindow::zoomOut()
 {
-    zoom = pw->f - 0.05f;
+   /* zoom = pw->f - 0.05f;
     if (zoom <= 0.00968523) {
         zoom = 00.00968523f;
         //pasamos el valor del zoom
@@ -255,14 +261,14 @@ void MainWindow::zoomOut()
     } else {
         //pasamos el valor del zoom
         pw->setZoomFactor(zoom);
-    }
+    }*/
 }
 
 //implementacion del slot tamaño normal de la imagen
 void MainWindow::normalSize()
 {
-    zoom = 1.0f;
-    pw->setZoomFactor(zoom);
+    /*zoom = 1.0f;
+    pw->setZoomFactor(zoom);*/
 }
 
 //implementacion del slot acerca de menri-sub
@@ -404,7 +410,10 @@ void MainWindow::createActions()
     opciones->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
     connect(opciones, SIGNAL(triggered()), this, SLOT(configuraciones()));
 
-
+    modoAjustePantalla = new QAction(tr("&Ajustar imagen en pantalla"), this);
+    modoAjustePantalla->setShortcut(tr("ALT+i"));
+    //connect(modoAjustePantalla, SIGNAL(triggered()), this, SLOT(slotAjustarImagenPantalla()));
+    
 
 
     modolectura = new QAction(tr("&Modo lectura"), this);
@@ -429,6 +438,7 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(exportar);
     fileMenu->addSeparator();
+    //fileMenu->addAction(modoAjustePantalla);
     fileMenu->addAction(exitAct);
 
     viewMenu = new QMenu(tr("&Ver"), this);
@@ -466,7 +476,8 @@ void MainWindow::createMenus()
     menuBar()->addMenu(herramientas);
     menuBar()->addMenu(helpMenu);
 
-
+   
+    
 }
 
 void MainWindow::leerCofiguracion()
@@ -684,13 +695,12 @@ void MainWindow::guardarCOmo()
 
 void MainWindow::fullpantalla()
 {
+    
+   
     if(pantallaCompleta->isChecked()){
         this->showFullScreen();
-
-
     }else{
         this->showMaximized();
-
     }
 
 }
@@ -708,10 +718,10 @@ void MainWindow::updateActions()
     btnLimpiar->setEnabled(true);
     limpiar->setEnabled(true);
     codeEditor->installEventFilter(this);
-    scrollArea->installEventFilter(this);
+  //  scrollArea->installEventFilter(this);
     //view->setEnabled(true);
     m_imageView->setEnabled(true);
-    scrollArea->setEnabled(true);
+   // scrollArea->setEnabled(true);
     rotarImagen->setEnabled(true);
 }
 
@@ -719,19 +729,19 @@ void MainWindow::updateActions()
 void MainWindow::mandarImagen(QString nombreImagen)
 {
     if(!nombreImagen.endsWith(".txt")){
-        grados = 0;
-        pw = new PixmapWidget(nombreImagen,  scrollArea);
+       v2->mostrarImagen (nombreImagen);
+        // grados = 0;
+       // pw = new PixmapWidget(nombreImagen,  scrollArea);
         //pw->setZoomFactor(zoom);
         //qDebug()<<zoom;
         //asigamos que se pueda redimensionar
-        scrollArea->setWidgetResizable(true);
+       // scrollArea->setWidgetResizable(true);
         //el scrollArea contiene a pw y dibuja la imagen
-        scrollArea->setWidget(pw);
-        connect (pw,SIGNAL(getCordenas(int,int)),this,SLOT(moverbarrasDesplazadoras(int,int)));
+       // scrollArea->setWidget(pw);
+       // connect (pw,SIGNAL(getCordenas(int,int)),this,SLOT(moverbarrasDesplazadoras(int,int)));
         QFileInfo info1;
         info1.setFile(nombreImagen);
-
-        mStatLabel.setText("Nombre: "+info1.baseName()+"    Resolucion: "+pw->getTamanioImagen());
+       // mStatLabel.setText("Nombre: "+info1.baseName()+"    Resolucion: "+pw->getTamanioImagen());
 
 
     }
@@ -770,6 +780,14 @@ void MainWindow::dropEvent(QDropEvent * event)
     QStringList respaldo;
 
     lista = event->mimeData()->urls();
+    
+    
+    if(event->mimeData ()->hasImage ()){
+        qDebug()<<"es una imagen";
+    }else{
+        qDebug()<<"no es una imagen";
+    }
+    
     QString fileName = "";
     //recorremos la lista
     for (int i = 0 ; i < lista.size(); i++) {
@@ -846,8 +864,24 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     }
 
-
+    
 }
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+ 
+}
+
 
 int MainWindow::guradarDatos()
 {
@@ -884,9 +918,9 @@ void MainWindow::obtenerIndex(const QModelIndex &index)
 {
     posicion_ruta = index.row ();
     
-    
-    
 }
+
+
 void MainWindow::esImagenRemovida(const bool imagenRemovida)
 {
     if(imagenRemovida == true){
@@ -965,7 +999,7 @@ void MainWindow::limpiar_lista()
     //limpia el listwidget
     m_imagesModel->removeAll();
     mandarImagen(":/img/iconos/portada.png");
-    pw->setZoomFactor(0.3f);
+   // pw->setZoomFactor(0.3f);
     zoomInAct->setEnabled(false);
     zoomOutAct->setEnabled(false);
     normalSizeAct->setEnabled(false);
@@ -976,7 +1010,7 @@ void MainWindow::limpiar_lista()
     btnLimpiar->setEnabled(false);
     limpiar->setEnabled(false);
     m_imageView->setEnabled(false);
-    scrollArea->setEnabled(false);
+   // scrollArea->setEnabled(false);
     rotarImagen->setEnabled(false);
     posicion_ruta =0;
     //codeEditor->setPlainText("");
@@ -985,13 +1019,11 @@ void MainWindow::limpiar_lista()
 
 void MainWindow::RotarImagen()
 {
-    grados += 90;
+    grados = 90;
 
-    if (grados > 360) {
-        grados = 90;
-    }
+    v2->rotarImagen (grados);
 
-    pw->setGrados(grados);
+   // pw->setGrados(grados);
 }
 
 void MainWindow::listarScripts()
@@ -1134,17 +1166,11 @@ void MainWindow::comprobarConfiguraciones()
     }
 
 }
-int i=0;
-
-void MainWindow::moverbarrasDesplazadoras(int x, int y)
-{
-    qDebug()<<"-----------"<<i;
-    qDebug ()<<x<<","<<y;
 
 
-    //scrollArea->setCursor(Qt::CrossCursor);
-    scrollArea->horizontalScrollBar()->setValue(x);
-    scrollArea->verticalScrollBar()->setValue(y);
-
-}
-
+//void MainWindow::moverbarrasDesplazadoras(int x, int y)
+//{
+    //qDebug ()<<"x: "<<x<<","<<"y: "<<y;
+   // scrollArea->horizontalScrollBar()->setValue(x);
+   // scrollArea->verticalScrollBar()->setValue(y);
+//}

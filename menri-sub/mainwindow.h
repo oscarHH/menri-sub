@@ -12,13 +12,15 @@
 #include "visor/imagesview.h"
 #include "editor/codeeditor.h"
 #include "editor/highlighter.h"
-#include "visor/PixmapWidget.h"
+//#include "visor/PixmapWidget.h"
 #include <QImageIOPlugin>
 #include "configuracion/configuraciones.h"
 #include "editor/manejodearchivostxt.h"
 #include "promocion/like.h"
+#include <visor/visorversion2.h>
+
 QT_BEGIN_NAMESPACE
-class PixmapWidget;
+//class PixmapWidget;
 class QAction;
 class QLabel;
 class QMenu;
@@ -32,6 +34,7 @@ class ImagesView;
 class ImagesModel;
 class QSettings;
 class ManejoDearchivosTxt;
+class VisorVersion2;
 //class Configuraciones;
 QT_END_NAMESPACE
 
@@ -57,6 +60,7 @@ public:
     void mandarImagen(QString  nombreImagen);
     QString archivoActual;
      bool eventFilter(QObject * watched, QEvent * e);
+
 public slots:
     void panelImagen();
     void panelEditor();
@@ -86,8 +90,9 @@ public slots:
     void lectura();
     void exportarTraduccion();
     void comprobarConfiguraciones();
-    void moverbarrasDesplazadoras(int x,int y);
-
+    //void moverbarrasDesplazadoras(int x,int y);
+    //void slotAjustarImagenPantalla();
+    
 
 private:
     ManejoDearchivosTxt * archivotxt;
@@ -120,7 +125,10 @@ protected:
     virtual  void dragMoveEvent(QDragMoveEvent * event);
     virtual  void dropEvent(QDropEvent * event);
     void closeEvent(QCloseEvent *event);
-
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    
     QToolBar * mainToolBar;
     QAction *openAct;
     QAction *abrir_Proyecto;
@@ -145,18 +153,19 @@ protected:
     QAction *opciones;
     QAction *siguenoslike;
     QAction * modolectura;
+    QAction * modoAjustePantalla;
     QAction * exportar;
-
 
     QMenu *fileMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
     QMenu *panel;
     QMenu *herramientas;
+    
     // QColor color;
-    QScrollArea *scrollArea;
-
-    PixmapWidget *pw;
+    //QScrollArea *scrollArea;
+    VisorVersion2 * v2;
+    //PixmapWidget *pw;
 
     QPushButton *btnSiguiente;
     QPushButton *btnAnterior;
@@ -164,8 +173,8 @@ protected:
 
     float zoom;
     QList<QUrl> lista;
-    QImage *qImg;
-
+    QImage *qImg;    
+    
 };
 //![0]
 
