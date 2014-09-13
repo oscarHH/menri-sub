@@ -205,10 +205,7 @@ void PixmapWidget::mousePressEvent(QMouseEvent *ev)
 void PixmapWidget::mouseReleaseEvent(QMouseEvent *ev)
 {
     zoomRaton =false;
-    
-    
- 
-    
+
 }
 
 void PixmapWidget::mouseDoubleClickEvent(QMouseEvent *ev)

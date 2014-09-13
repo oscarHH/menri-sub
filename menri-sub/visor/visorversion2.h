@@ -1,11 +1,10 @@
 #ifndef VISORVERSION2_H
 #define VISORVERSION2_H
 
-#include <QWidget>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
-#include <QBoxLayout>
+#include <QColor>
 
 class VisorVersion2 : public QGraphicsView
 {
@@ -14,14 +13,28 @@ public:
     VisorVersion2(QWidget *parent=0);
     QGraphicsScene  * scene ;
     QGraphicsPixmapItem * item;
-//signals:
+
+    //set y get 
+    QColor getColor() const;
+    void setColor(const QColor &value);
     
+    QString getRuta() const;
+    void setRuta(const QString &value);
     
-public slots:
-    void mostrarImagen(QString ruta);
-    void rotarImagen(int grados);
-    void escalarImagen(qreal tamanio);
+    int getGrados() const;
+    void setGrados(int value);
     
+    qreal getTamanio() const;
+    void setTamanio(const qreal &value);
+    
+private:
+    QColor color;
+    QString ruta;
+    int grados;
+    qreal tamanio;    
+//signals:    
+//public slots:
+   
 };
 
 #endif // VISORVERSION2_H

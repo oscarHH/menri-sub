@@ -1,6 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtWidgets>
+#include <QFileSystemModel>
+#include <QTreeView>
+#include <QDebug>
+#include <QDragEnterEvent>
+#include <QToolButton>
+#include <QMimeData>
+#include <QtPlugin>
+#include <QPluginLoader>
+#include <QProcess>
+#include <QColor>
+#include <QtSvg>
+#include <QFile>
 #include <QMainWindow>
 #include <QListWidget>
 #include <QPushButton>
@@ -12,7 +25,6 @@
 #include "visor/imagesview.h"
 #include "editor/codeeditor.h"
 #include "editor/highlighter.h"
-//#include "visor/PixmapWidget.h"
 #include <QImageIOPlugin>
 #include "configuracion/configuraciones.h"
 #include "editor/manejodearchivostxt.h"
@@ -44,23 +56,28 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-
-
+    
+    
     MainWindow();
-    ~MainWindow();
-    //QPixmap *icon_to_be_shown;
+    //~MainWindow();
     int posicion_ruta;
-
     QLabel mStatLabel ;
     QLabel mStatLabel2 ;
-
     void updateActions();
     QFileDialog *abrir;
     ImagesModel *m_imagesModel;
     void mandarImagen(QString  nombreImagen);
     QString archivoActual;
-     bool eventFilter(QObject * watched, QEvent * e);
-
+    void AgregarAtajos();
+    void conexiones();
+    void InterfasGrafica();
+    
+    float su ;
+    QColor color ;
+    QColor colorletra ;
+    QStringList listafileName;
+    QProcess proceso;
+    
 public slots:
     void panelImagen();
     void panelEditor();
@@ -76,10 +93,12 @@ public slots:
     void siguienteImagen();
     void anteriorImagen();
     void limpiar_lista();
-    void RotarImagen();
+    void RotarImagenDerecha();
+    void RotarImagenIzquierda();
+    void RotarImagenPersonalizado();
     void listarScripts();
     void configuraciones();
-    void cambiarImagen(bool tev);
+    void cambiarImagen(bool cambiar);
     void RutaTxt(QString ruta);
     void GuardarTxt();
     void siguenos();
@@ -93,18 +112,15 @@ public slots:
     //void moverbarrasDesplazadoras(int x,int y);
     //void slotAjustarImagenPantalla();
     
-
+    
 private:
     ManejoDearchivosTxt * archivotxt;
     void createActions();
     void createMenus();
-
-    //void scaleImage(double factor);
-    //void adjustScrollBar(QScrollBar *scrollBar, double factor);
-
+        
     QAction   *m_addImages;
     bool       m_stopImageAdd;
-
+    
     QDockWidget * templateDocker;
     QDockWidget * DocArchivos;
     GuiZip * guizip;
@@ -112,28 +128,28 @@ private:
     Configuraciones * config;
     CodeEditor *codeEditor;
     Highlighter *highlighter;
-
-
+    
+    
     ImagesView  *m_imageView;
-
+    
     void leerCofiguracion();
-
+    
     int guradarDatos();
+    
+
+    
+
+    
 protected:
     virtual  void dragEnterEvent(QDragEnterEvent * event);
-    virtual  void dragLeaveEvent(QDragLeaveEvent * event);
-    virtual  void dragMoveEvent(QDragMoveEvent * event);
     virtual  void dropEvent(QDropEvent * event);
     void closeEvent(QCloseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    
+  
     QToolBar * mainToolBar;
     QAction *openAct;
     QAction *abrir_Proyecto;
     QAction *nuevo_Proyecto;
-
+    
     QAction *guardar;
     QAction *guardarComo;
     QAction *exitAct;
@@ -144,7 +160,9 @@ protected:
     QAction *limpiar;
     QAction *normalSizeAct;
     QAction *pantallaCompleta;
-    QAction *rotarImagen;
+    QAction *rotarImagenIzq;
+    QAction *rotarImagenDer;
+    QAction *rotarImagenPersonalizado;
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *imagenes;
@@ -155,7 +173,7 @@ protected:
     QAction * modolectura;
     QAction * modoAjustePantalla;
     QAction * exportar;
-
+    
     QMenu *fileMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
@@ -164,13 +182,13 @@ protected:
     
     // QColor color;
     //QScrollArea *scrollArea;
-    VisorVersion2 * v2;
+    VisorVersion2 * visor2;
     //PixmapWidget *pw;
-
+    
     QPushButton *btnSiguiente;
     QPushButton *btnAnterior;
     QPushButton *btnLimpiar;
-
+    
     float zoom;
     QList<QUrl> lista;
     QImage *qImg;    

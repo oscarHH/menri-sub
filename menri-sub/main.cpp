@@ -1,20 +1,14 @@
 #include "mainwindow.h"
 #include <QApplication>
-//#include <QTextCodec>
+
 
 int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);
     a.setStyle("fusion");
-   // QByteArray  encodedString =(char) a.arguments().at(0);
-    //QTextCodec *codec = QTextCodec::codecForName("ISO 8859-15");
-   // QTextCodec *codec =  QTextCodec::codecForLocale();
-    //QString img = codec->toUnicode(encodedString);
     QStringList img;
     img = a.arguments();
-
-
 
     //QString plataforma = QApplication::platformName();
     MainWindow w;
