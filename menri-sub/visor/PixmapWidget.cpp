@@ -1,3 +1,5 @@
+/******************clase descontinuada*********************/
+
 #include <QPixmap>
 #include <QPainter>
 

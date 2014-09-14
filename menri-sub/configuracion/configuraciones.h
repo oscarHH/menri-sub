@@ -17,7 +17,7 @@ public:
     explicit Configuraciones(QWidget *parent = 0);
     ~Configuraciones();
 
-
+    QColor fondoVisor;
     QColor color;
     QColor colorFondo;
     QFont font;
@@ -42,6 +42,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_btnFondoVisor_clicked();
+    
 private:
     Ui::Configuraciones *ui;
 
@@ -49,6 +51,7 @@ signals:
     void valorColor (const QColor);
     void valorFormatoLetra(const QFont);
     void valorColorFondo (const QColor);
+    void valorColorFondoVisor (const QColor);
 };
 
 #endif // CONFIGURACIONES_H

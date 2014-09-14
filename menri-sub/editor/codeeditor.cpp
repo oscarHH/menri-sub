@@ -1,5 +1,5 @@
 #include <QtWidgets>
-
+#include <QPixmap>
 #include "codeeditor.h"
 #include <QDebug>
 
@@ -20,6 +20,8 @@ void CodeEditor::otroColor(QColor color)
 {
     paleta.setColor(QPalette::Text,color);
     setPalette(paleta);
+    
+    
 }
 
 void CodeEditor::colorFondo(QColor fondo)

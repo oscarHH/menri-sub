@@ -67,6 +67,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) {
         codeEditor->lineNumberAreaPaintEvent(event);
+       
     }
 
 private:

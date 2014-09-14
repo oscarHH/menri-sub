@@ -27,6 +27,5 @@ int main(int argc, char *argv[])
     w.show();
     w.setAcceptDrops(true);
 
-
     return a.exec();
 }

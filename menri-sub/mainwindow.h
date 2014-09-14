@@ -75,6 +75,7 @@ public:
     float su ;
     QColor color ;
     QColor colorletra ;
+    QColor fondoVisor;
     QStringList listafileName;
     QProcess proceso;
     
@@ -103,7 +104,7 @@ public slots:
     void GuardarTxt();
     void siguenos();
     void abrirProyecto();
-    void nuevoProyecto();
+   // void nuevoProyecto();
     void guardarCOmo();
     void fullpantalla();
     void lectura();
@@ -148,7 +149,7 @@ protected:
     QToolBar * mainToolBar;
     QAction *openAct;
     QAction *abrir_Proyecto;
-    QAction *nuevo_Proyecto;
+    //QAction *nuevo_Proyecto;
     
     QAction *guardar;
     QAction *guardarComo;

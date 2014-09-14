@@ -9,10 +9,13 @@
 //atributos de clase pra almacenar los colores
 QColor respaldo1;
 QColor respaldo2;
+QColor respaldo4;
+
 QFont  respaldo3;
 bool  cambioFormato = false;
 bool cambioColorLetra = false;
 bool cambioColorFondo = false;
+bool cambioColorFondoVisor = false;
 ManejoDearchivosTxt *archtxt = new ManejoDearchivosTxt();
 
 //metodo construcotr
@@ -38,11 +41,13 @@ Configuraciones::Configuraciones(QWidget *parent) :
         ui->txtFuente->setText(font.family());
         ui->tamanioLetra->setText(QString::number(font.pointSize()));
 
+        
         respaldo1 = Qt::black;
         color = respaldo1;
         respaldo2 = Qt::white;
         colorFondo = respaldo2;
         respaldo3 = font;
+        respaldo4 = Qt::white;
 
         return;
     }
@@ -60,8 +65,12 @@ Configuraciones::Configuraciones(QWidget *parent) :
     respaldo3 = qvariant_cast<QFont>(settings.value("fuente beta"));
     ui->txtFuente->setText(respaldo3.family());
     ui->tamanioLetra->setText(QString::number(respaldo3.pointSize()));
-   // nuevaPalabra = new AgregarNuevaPalabra(this);
-
+   
+    respaldo4 = qvariant_cast<QColor>(settings.value("color Fondo Visor"));
+    fondoVisor = respaldo4;
+    paleta.setColor (QPalette::Base,respaldo4);
+    ui->txtFondoColor->setPalette (paleta);
+    // nuevaPalabra = new AgregarNuevaPalabra(this);
         //qDebug()<<QDir::currentPath();
 
 }
@@ -82,6 +91,13 @@ void Configuraciones::mandarcolor()
     if(cambioColorFondo){
         emit valorColorFondo(colorFondo);
     }
+    
+    if(cambioColorFondoVisor){
+        emit valorColorFondoVisor(fondoVisor);
+    }
+    
+    
+    
 }
 
 //metodo que emite la informacion del tipo de letra
@@ -181,6 +197,7 @@ void Configuraciones::guardarConfiguracion()
     settings.setValue("size", size());
     settings.setValue("color Texto",color);
     settings.setValue("color Fondo",colorFondo);
+    settings.setValue("color Fondo Visor",fondoVisor);
     settings.setValue("fuente beta",font);
     settings.setValue("primer inicio",true);
 }
@@ -192,4 +209,23 @@ void Configuraciones::on_pushButton_clicked()
     datosConfiguracion config =  nuevaPalabra.getConfig();
     qDebug()<< config.getCOlor();
     qDebug()<< config.getPalabra();
+}
+
+
+//obtener el color para asignar de fondo al visor
+void Configuraciones::on_btnFondoVisor_clicked()
+{
+    
+    cambioColorFondoVisor = false;
+    QPalette paleta;
+    fondoVisor = QColorDialog::getColor(Qt::white,this,"Cambiar color de fondo del visor");
+    if(fondoVisor.isValid()){
+        paleta.setColor(QPalette::Base,fondoVisor);
+        ui->txtFondoColor->setPalette(paleta);
+        respaldo4 = fondoVisor;
+        cambioColorFondoVisor = true;
+    }else{
+         fondoVisor = respaldo4;
+        return;
+    }
 }

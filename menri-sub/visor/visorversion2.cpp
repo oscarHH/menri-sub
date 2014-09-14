@@ -26,6 +26,8 @@ QColor VisorVersion2::getColor() const
 void VisorVersion2::setColor(const QColor &value)
 {
     color = value;
+    this->setBackgroundBrush (color);
+    
 }
 QString VisorVersion2::getRuta() const
 {
@@ -36,10 +38,11 @@ void VisorVersion2::setRuta(const QString &value)
 {
     ruta = value;
     item->setPixmap (QPixmap(ruta)); //agrega la imagen
-    this->setDragMode (QGraphicsView::ScrollHandDrag);
+    this->setDragMode (QGraphicsView::ScrollHandDrag );
     this->setSceneRect (item->boundingRect ());   //ajusta al tamaño de la imagen    
     this->setScene (scene);
-    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+    this->centerOn (0,0);
     
 }
 int VisorVersion2::getGrados() const
@@ -64,11 +67,6 @@ qreal VisorVersion2::getTamanio() const
 void VisorVersion2::setTamanio(const qreal &value)
 {
     tamanio = value;
-    if(tamanio <= 0){
-        tamanio = 0.1;
-    }
-    
     this->scale(tamanio,tamanio);
-    qDebug()<<tamanio;
 }
 

@@ -59,13 +59,14 @@ QStringList ManejoDearchivosTxt::leerRutas(QString rut)
 
     do {
         line =stream.readLine();
-
-        /*if(line.isNull())
+        /*if(line.isNull()
             break;*/
-
-        rutaImagenes.append(line);
+        if(line.isEmpty ()){
+            continue;
+        }
+           rutaImagenes.append(line); 
+        
     } while (!line.isNull());
-
     return rutaImagenes;
 }
 

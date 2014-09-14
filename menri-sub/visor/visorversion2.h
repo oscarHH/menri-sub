@@ -16,7 +16,7 @@ public:
 
     //set y get 
     QColor getColor() const;
-    void setColor(const QColor &value);
+
     
     QString getRuta() const;
     void setRuta(const QString &value);
@@ -33,8 +33,8 @@ private:
     int grados;
     qreal tamanio;    
 //signals:    
-//public slots:
-   
+public slots:
+       void setColor(const QColor &value);
 };
 
 #endif // VISORVERSION2_H
