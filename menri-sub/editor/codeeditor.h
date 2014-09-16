@@ -29,11 +29,15 @@ public:
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
+    
+    QColor ColorLineaActual;
 
-
+    QColor getColorLineaActual() const;
+    
+    
 protected:
     void resizeEvent(QResizeEvent *event);
-
+    
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
@@ -42,7 +46,7 @@ private slots:
     void otroColor(QColor color);
     void colorFondo(QColor fondo);
     void otroFormatoLetra(QFont formato);
-
+    void setColorLineaActual(const QColor &value);
 
 
 private:

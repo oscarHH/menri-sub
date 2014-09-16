@@ -60,7 +60,9 @@ public:
     
     MainWindow();
     //~MainWindow();
+    
     int posicion_ruta;
+
     QLabel mStatLabel ;
     QLabel mStatLabel2 ;
     void updateActions();
@@ -76,6 +78,7 @@ public:
     QColor color ;
     QColor colorletra ;
     QColor fondoVisor;
+    QColor colorLineaActual;
     QStringList listafileName;
     QProcess proceso;
     
@@ -108,7 +111,7 @@ public slots:
     void guardarCOmo();
     void fullpantalla();
     void lectura();
-    void exportarTraduccion();
+   // void exportarTraduccion();
     void comprobarConfiguraciones();
     //void moverbarrasDesplazadoras(int x,int y);
     //void slotAjustarImagenPantalla();
@@ -173,7 +176,7 @@ protected:
     QAction *siguenoslike;
     QAction * modolectura;
     QAction * modoAjustePantalla;
-    QAction * exportar;
+   // QAction * exportar;
     
     QMenu *fileMenu;
     QMenu *viewMenu;

@@ -12,7 +12,6 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
     updateLineNumberAreaWidth(0);
-    highlightCurrentLine();
 
 }
 
@@ -53,6 +52,17 @@ int CodeEditor::lineNumberAreaWidth()
 
     return space;
 }
+QColor CodeEditor::getColorLineaActual() const
+{
+    return ColorLineaActual;
+}
+
+void CodeEditor::setColorLineaActual(const QColor &value)
+{
+    ColorLineaActual = value;
+    highlightCurrentLine ();
+}
+
 
 //![extraAreaWidth]
 
@@ -109,15 +119,14 @@ void CodeEditor::highlightCurrentLine()
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = Qt::yellow;
+     //   QColor lineColor = Qt::black;
 
-        selection.format.setBackground(lineColor);
+        selection.format.setBackground(ColorLineaActual);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
         extraSelections.append(selection);
     }
-
     setExtraSelections(extraSelections);
 }
 

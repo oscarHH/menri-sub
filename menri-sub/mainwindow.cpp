@@ -1,3 +1,4 @@
+
 #include "mainwindow.h"
 
 
@@ -150,10 +151,10 @@ void MainWindow::createActions()
     guardarComo->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
     connect(guardarComo,SIGNAL(triggered()),this,SLOT(guardarCOmo()));
     
-    exportar = new QAction(tr("&Exportar"), this);
+   /* exportar = new QAction(tr("&Exportar"), this);
     exportar->setShortcut(tr("Alt+e"));
     exportar->setIcon(QIcon(QPixmap(":/img/iconos/ayuda.png")));
-    connect(exportar, SIGNAL(triggered()), this, SLOT(exportarTraduccion()));
+    connect(exportar, SIGNAL(triggered()), this, SLOT(exportarTraduccion()));*/
     
     exitAct = new QAction(tr("&Salir"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
@@ -270,7 +271,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(guardar);
     fileMenu->addAction(guardarComo);
     fileMenu->addSeparator();
-    fileMenu->addAction(exportar);
+    //fileMenu->addAction(exportar);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
     
@@ -319,6 +320,7 @@ void MainWindow::leerCofiguracion()
     color = qvariant_cast<QColor>(settings.value("color Fondo"));
     colorletra = qvariant_cast<QColor>(settings.value("color Texto"));
     fondoVisor = qvariant_cast<QColor>(settings.value("color Fondo Visor"));
+    colorLineaActual = qvariant_cast<QColor>(settings.value("color Linea Actual"));
     QFont fondo = qvariant_cast<QFont>(settings.value("fuente beta"));
     bool primeravez = qvariant_cast<bool>(settings.value("primer inicio"));
     if(!primeravez){
@@ -326,6 +328,7 @@ void MainWindow::leerCofiguracion()
         emit config->valorColorFondo(Qt::white);
         emit config->valorFormatoLetra(QFont("Arial", 12));
         emit config->valorColorFondoVisor (Qt::white);
+        emit config->valorColorLineaActual (Qt::yellow);
         return;
         
     }else{
@@ -333,11 +336,16 @@ void MainWindow::leerCofiguracion()
         emit config->valorColorFondo(color);
         emit config->valorFormatoLetra(fondo);
         emit config->valorColorFondoVisor (fondoVisor);
+        emit config->valorColorLineaActual (colorLineaActual);
         resize(size);
         move(pos);
     }
 }
 
+/**
+ * [MainWindow::RutaTxt description]
+ * @param ruta
+ */
 void MainWindow::RutaTxt(QString ruta)
 {
     //archivoActual = ruta;
@@ -899,6 +907,7 @@ void MainWindow::conexiones()
     QObject::connect(config,SIGNAL(valorColorFondo(QColor)),codeEditor,SLOT(colorFondo(QColor)));
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );    
     QObject::connect(config,SIGNAL(valorColorFondoVisor(QColor)),visor2,SLOT(setColor(QColor)) );    
+    QObject::connect(config,SIGNAL(valorColorLineaActual(QColor)),codeEditor,SLOT(setColorLineaActual(QColor)));    
 }
 
 void MainWindow::InterfasGrafica()
@@ -979,7 +988,7 @@ void MainWindow::InterfasGrafica()
 }
 
 
-void MainWindow::exportarTraduccion(){
+/*void MainWindow::exportarTraduccion(){
     
     if(codeEditor->document()->isEmpty()){
         return;
@@ -1007,7 +1016,7 @@ void MainWindow::exportarTraduccion(){
             
         }
     }
-}
+}*/
 
 
 void MainWindow::comprobarConfiguraciones()

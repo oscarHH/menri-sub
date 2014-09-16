@@ -20,6 +20,7 @@ public:
     QColor fondoVisor;
     QColor color;
     QColor colorFondo;
+    QColor colorLineaActual;
     QFont font;
 
     void mandarcolor();
@@ -44,6 +45,8 @@ private slots:
 
     void on_btnFondoVisor_clicked();
     
+    void on_btnColorLineaActual_clicked();
+    
 private:
     Ui::Configuraciones *ui;
 
@@ -52,6 +55,7 @@ signals:
     void valorFormatoLetra(const QFont);
     void valorColorFondo (const QColor);
     void valorColorFondoVisor (const QColor);
+      void valorColorLineaActual (const QColor);
 };
 
 #endif // CONFIGURACIONES_H
