@@ -38,10 +38,12 @@ void VisorVersion2::setRuta(const QString &value)
 {
     ruta = value;
     item->setPixmap (QPixmap(ruta)); //agrega la imagen
+    this->setCacheMode (QGraphicsView::CacheNone);
     this->setDragMode (QGraphicsView::ScrollHandDrag );
+    this->setOptimizationFlag (QGraphicsView::DontAdjustForAntialiasing);
     this->setSceneRect (item->boundingRect ());   //ajusta al tamaño de la imagen    
     this->setScene (scene);
-    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+    this->setRenderHints(QPainter::HighQualityAntialiasing );
     this->centerOn (0,0);
     
 }

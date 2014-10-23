@@ -9,14 +9,14 @@
 ImagesView::ImagesView(QWidget *parent)
  : QListView( parent )
 {
-        setViewMode( QListView::IconMode );
-        setMovement(QListView::Static );
+        setViewMode( QListView::IconMode);
         setResizeMode( QListView::Adjust );
+        
         setWrapping( true );
         setIconSize( QSize(150, 150) );
         setGridSize( QSize(200, 200) );
         setSpacing( 0 );
-
+        
         setSelectionMode( QAbstractItemView::SingleSelection );
 }
 
@@ -113,8 +113,8 @@ void ImagesView::paintEvent( QPaintEvent *event )
     const QString text = tr( "Agregar \n Imagenes" );
 
     const QFontMetrics fm( font );
-    if( fm.width( text ) > viewport()->rect().width() )
-        return;
+  //  if( fm.width( text ) > viewport()->rect().width() )
+    //    return;
 
     painter.setPen( pen );
     painter.setFont( font );

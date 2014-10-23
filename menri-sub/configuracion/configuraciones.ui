@@ -258,6 +258,16 @@
       <attribute name="title">
        <string>Teclado</string>
       </attribute>
+      <widget class="QKeySequenceEdit" name="teclado">
+       <property name="geometry">
+        <rect>
+         <x>60</x>
+         <y>30</y>
+         <width>113</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

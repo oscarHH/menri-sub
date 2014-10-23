@@ -133,17 +133,24 @@ void Configuraciones::cargarPalabras()
 //acciones de cuando se da click en el boton aceptar
 void Configuraciones::on_btnAceptar_clicked()
 {
+    secuencia = ui->teclado->keySequence ();
+    emit teclado (secuencia);
     this->mandarcolor();
     this->mandarFormatoLetra();
     this->close();
     guardarConfiguracion();
+    
+    qDebug()<<secuencia;
     accept();
 }
 
 //cierra la ventana de configuracion
 void Configuraciones::on_btnCancelar_clicked()
 {
+    
+    
     this->close();
+    
 }
 
 //fuente de letra del editor

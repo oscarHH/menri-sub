@@ -5,7 +5,7 @@
 
 #include <QAbstractListModel>
 #include <QIcon>
-#include <QImage>
+//#include <QImage>
 #include <QList>
 #include <QPoint>
 

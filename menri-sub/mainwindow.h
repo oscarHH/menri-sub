@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QKeySequence>
 #include <QtWidgets>
 #include <QFileSystemModel>
 #include <QTreeView>
@@ -115,6 +115,7 @@ public slots:
     void comprobarConfiguraciones();
     //void moverbarrasDesplazadoras(int x,int y);
     //void slotAjustarImagenPantalla();
+    void cambiarTeclado(QKeySequence tecla);
     
     
 private:

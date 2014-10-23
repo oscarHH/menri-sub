@@ -53,7 +53,7 @@ void ImageLoader::run()
         m_mutex.unlock();
 
         QImage image( filename );
-        QImage scaled = image.scaled( 170, 170, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        QImage scaled = image.scaled( 170, 170, Qt::KeepAspectRatio, Qt::FastTransformation );
 
         QStringList suffixes;
         suffixes << "B" << "KB" << "MB" << "GB";

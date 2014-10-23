@@ -39,9 +39,9 @@ QVariant ImagesModel::data( const QModelIndex &index, int role ) const
 Qt::ItemFlags ImagesModel::flags( const QModelIndex &index ) const
 {
     if( index.isValid() )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+        return (Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-    return Qt::ItemIsDropEnabled;
+   // return Qt::ItemIsDropEnabled;
 }
 
 

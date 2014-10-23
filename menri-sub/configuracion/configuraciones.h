@@ -22,7 +22,7 @@ public:
     QColor colorFondo;
     QColor colorLineaActual;
     QFont font;
-
+    QKeySequence secuencia;
     void mandarcolor();
     void mandarFormatoLetra();
     void cargarPalabras();
@@ -55,7 +55,8 @@ signals:
     void valorFormatoLetra(const QFont);
     void valorColorFondo (const QColor);
     void valorColorFondoVisor (const QColor);
-      void valorColorLineaActual (const QColor);
+    void valorColorLineaActual (const QColor);
+    void teclado(const QKeySequence);
 };
 
 #endif // CONFIGURACIONES_H

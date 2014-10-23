@@ -127,7 +127,9 @@ void MainWindow::createActions()
 {
     //menu abrir
     openAct = new QAction(tr("&Abrir..."), this);
-    openAct->setShortcut(tr("Ctrl+O"));
+    //openAct->setShortcut(tr("Ctrl+O"));
+    //openAct->setShortcut (config->secuencia);
+    
     openAct->setIcon((QIcon(QPixmap(":/img/iconos/archivos.png"))));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
     
@@ -220,6 +222,7 @@ void MainWindow::createActions()
     imagenes = new QAction(tr("&Imagen"), this);
     imagenes->setCheckable(true);
     imagenes->setShortcut(tr("Ctrl+i"));
+    
     imagenes->setChecked(true);
     connect(imagenes, SIGNAL(triggered()), this, SLOT(panelImagen()));
     
@@ -329,6 +332,7 @@ void MainWindow::leerCofiguracion()
         emit config->valorFormatoLetra(QFont("Arial", 12));
         emit config->valorColorFondoVisor (Qt::white);
         emit config->valorColorLineaActual (Qt::yellow);
+        emit config->teclado (QKeySequence());
         return;
         
     }else{
@@ -337,6 +341,7 @@ void MainWindow::leerCofiguracion()
         emit config->valorFormatoLetra(fondo);
         emit config->valorColorFondoVisor (fondoVisor);
         emit config->valorColorLineaActual (colorLineaActual);
+        emit config->teclado (QKeySequence());
         resize(size);
         move(pos);
     }
@@ -908,6 +913,7 @@ void MainWindow::conexiones()
     QObject::connect(config,SIGNAL(valorFormatoLetra(QFont)),codeEditor,SLOT(otroFormatoLetra(QFont)) );    
     QObject::connect(config,SIGNAL(valorColorFondoVisor(QColor)),visor2,SLOT(setColor(QColor)) );    
     QObject::connect(config,SIGNAL(valorColorLineaActual(QColor)),codeEditor,SLOT(setColorLineaActual(QColor)));    
+    QObject::connect(config,SIGNAL(teclado(secuencia)),this,SLOT(cambiarTelado(QKeySequence)));    
 }
 
 void MainWindow::InterfasGrafica()
@@ -1048,5 +1054,13 @@ void MainWindow::comprobarConfiguraciones()
         archivotxt->setRutaArchivo(archivo.fileName());
         archivotxt->archivoGuardar(pal);
     }
+    
+}
+
+void MainWindow::cambiarTeclado(QKeySequence tecla)
+{
+    qDebug()<<"conexion exitosa";
+    openAct->setShortcut (tecla);
+    
     
 }
